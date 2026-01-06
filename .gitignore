@@ -1,0 +1,20 @@
+/drivers/
+/Reports/features/
+/Reports/allure-report/
+/Reports/cumulative-results/
+/Reports/allure-results/
+/Reports/api_tests/
+/logs/
+/node_modules/
+/myenv/
+/.venv/
+package-lock.json
+/features/__pycache__/
+/features/common/__pycache__/
+/features/pages/__pycache__/
+.idea/
+/screenshots/
+# Python bytecode
+*.pyc
+__pycache__/
+configuration/config.ini

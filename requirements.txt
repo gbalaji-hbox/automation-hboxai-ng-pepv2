@@ -1,0 +1,16 @@
+tornado
+django-livereload
+livereload
+selenium
+behave~=1.3.3
+behavex
+allure-behave
+webdriver-manager
+pytest
+allure-python-commons
+allure-pytest
+requests
+Faker
+python-dateutil~=2.9.0.post0
+jsonschema~=4.21.0
+loguru

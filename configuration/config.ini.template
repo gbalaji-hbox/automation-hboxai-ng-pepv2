@@ -1,0 +1,55 @@
+[basic info]
+browser=chrome
+
+[stg_env]
+url=your_stg_url_here
+
+[prod_env]
+url=your_prod_url_here
+
+[Credentials]
+twilio_number=your_twilio_number_here
+enroller_admin_user_name=your_admin_vpe_username_here
+vpe_user_name=your_vpe_username_here
+cs_user_name=your_cs_username_here
+pes_user_name=your_pes_username_here
+
+common_stg_password=your_common_stg_password_here
+
+[Execution Environment]
+; Configuration for execution environment detection
+; execution_mode: local (local dev) or ci_cd (CI/CD pipelines)
+; driver_mode: local (local ChromeDriver) or remote (Selenoid)
+;
+; Valid combinations:
+; - local + local: Local development with local ChromeDriver
+; - local + remote: Local development with Selenoid
+; - ci_cd + local: CI/CD with native Chrome (Jenkins agent)
+; - ci_cd + remote: CI/CD with Selenoid (most common)
+
+execution_mode = local
+driver_mode = remote
+
+[Selenoid]
+; Selenoid remote driver configuration
+
+; Selenoid URL - defaults to http://localhost:4444/wd/hub if not set
+; Can also be set via SELENOID_URL environment variable
+selenoid_url = your_selenoid_url_here
+
+; Selenoid capabilities
+enable_vnc = true
+enable_video = false
+enable_log = true
+session_timeout = 300s
+
+; Browser versions (optional - Selenoid will use latest if not specified)
+chrome_version = latest
+firefox_version = latest
+edge_version = latest
+
+[Logging]
+; Logging configuration
+log_to_file = false
+log_file_path = logs/automation.log
+log_to_console = true
