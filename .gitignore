@@ -12,7 +12,7 @@ package-lock.json
 /features/__pycache__/
 /features/common/__pycache__/
 /features/pages/__pycache__/
-.idea/
+/.idea/
 /screenshots/
 # Python bytecode
 *.pyc
