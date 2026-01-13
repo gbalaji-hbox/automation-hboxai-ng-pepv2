@@ -52,11 +52,11 @@ def step_impl(context):
 def step_impl(context):
     assert context.login_page.is_password_error_displayed(), "Password error message is not displayed"
 
-@when(u'I click on signout from dashboard header')
+@when(u'I click on logout from dashboard header')
 def step_impl(context):
     context.login_page.click_sign_out()
     sleep(5)
-    printf("clicked signout")
+    printf("clicked logout")
 
 
 @then(u'I should be logged out successfully')

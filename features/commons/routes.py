@@ -22,6 +22,7 @@ class Routes:
     # Route paths
     LOGIN = "/"
     DASHBOARD = "/admin/dashboard"
+    EDIT_USER = "/admin/users/edit/"
 
 
     @staticmethod

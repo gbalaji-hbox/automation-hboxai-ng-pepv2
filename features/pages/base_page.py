@@ -1,5 +1,6 @@
 import time
 import traceback
+from datetime import datetime
 from time import sleep
 from urllib.parse import urlparse
 
@@ -99,6 +100,10 @@ class BasePage:
     # Loader locators
     LOADER_XPATH = (By.XPATH, "//div[@data-component-file='LoaderComponent.tsx' and @data-component-line='27']")
     VPE_LOADER_XPATH = (By.XPATH, "//p[contains(normalize-space(.), 'Loading patient')]")
+    SPINNER_LOADER_XPATH = (By.XPATH, "//div[contains(@class, 'animate-spin')]")
+    
+    # All loader locators
+    ALL_LOADER_LOCATORS = [LOADER_XPATH, VPE_LOADER_XPATH, SPINNER_LOADER_XPATH]
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
@@ -377,7 +382,7 @@ class BasePage:
         else:
             return self.wait.until(ec.url_contains(text.lower()))
 
-    def check_uri_contains(self, text):
+    def check_url_match(self, text):
         current_url = self.driver.current_url
         if text != current_url:
             f"Expected URL '{text}', but got '{current_url}'"
@@ -709,42 +714,83 @@ class BasePage:
 
         return all_data
 
-    def wait_for_loader(self, timeout=15, strict=True, loader_locator=LOADER_XPATH):
+    def wait_for_loader(self, timeout=15, strict=True, loader_locators=None):
+        if loader_locators is None:
+            loader_locators = self.ALL_LOADER_LOCATORS
+        elif not isinstance(loader_locators, list):
+            loader_locators = [loader_locators]
+        
         original_wait = self.driver.timeouts.implicit_wait
         self.driver.implicitly_wait(0)
-        printf(f"⏳ Waiting for loader to disappear (timeout={timeout}, strict={strict})...")
+        printf(f"⏳ Waiting for loaders to disappear (timeout={timeout}, strict={strict})...")
         start_time = time.time()
 
         while time.time() - start_time < timeout:
-            try:
-                loader: WebElement = self.driver.find_element(*loader_locator)
-
-                if loader.is_displayed():
-                    time.sleep(0.2)
+            any_loader_visible = False
+            for locator in loader_locators:
+                try:
+                    loader: WebElement = self.driver.find_element(*locator)
+                    if loader.is_displayed():
+                        any_loader_visible = True
+                        break
+                except (NoSuchElementException, StaleElementReferenceException):
                     continue
-                else:
-                    # Loader not visible
-                    self.driver.implicitly_wait(original_wait)
-                    elapsed = time.time() - start_time
-                    printf(f"✅ Loader not visible after {elapsed:.2f}s")
-                    return True
-            except (NoSuchElementException, StaleElementReferenceException):
-                # Loader gone
+            
+            if not any_loader_visible:
+                # All loaders gone or not visible
                 self.driver.implicitly_wait(original_wait)
                 elapsed = time.time() - start_time
-                printf(f"✅ Loader disappeared after {elapsed:.2f}s")
+                printf(f"✅ All loaders disappeared after {elapsed:.2f}s")
                 return True
+            
+            time.sleep(0.2)
 
         # Timeout
         elapsed = time.time() - start_time
-        msg = f"❌ Loader still visible after {elapsed:.2f}s"
+        msg = f"❌ Some loaders still visible after {elapsed:.2f}s"
         if strict:
-
             raise TimeoutException(msg)
         else:
             self.driver.implicitly_wait(original_wait)
             printf(msg)
             return False
+
+    def select_calender_date(self, date_str: str):
+        """
+        Select a date in the calendar popup.
+        Assumes the calendar is already open.
+        date_str format: dd/mm/yyyy
+        """
+        date = datetime.strptime(date_str, "%d/%m/%Y")
+        day = date.day
+        month = date.month
+        year = date.year
+
+        # Get current displayed month
+        month_text_locator = (By.XPATH, "//div[@aria-live='polite' and @role='presentation']")
+        current_month_element = self.driver.find_element(*month_text_locator)
+        current_month_text = current_month_element.text  # e.g. "January 2026"
+        current_date = datetime.strptime(current_month_text, "%B %Y")
+        current_month = current_date.month
+        current_year = current_date.year
+
+        # Calculate months to navigate
+        months_diff = (year - current_year) * 12 + (month - current_month)
+
+        if months_diff > 0:
+            for _ in range(months_diff):
+                next_button = self.driver.find_element(By.XPATH, "//button[@name='next-month']")
+                next_button.click()
+                time.sleep(0.2)  # Wait for calendar update
+        elif months_diff < 0:
+            for _ in range(-months_diff):
+                prev_button = self.driver.find_element(By.XPATH, "//button[@name='previous-month']")
+                prev_button.click()
+                time.sleep(0.2)
+
+        # Click the day button (ensure it's not a day from previous/next month)
+        day_button = self.driver.find_element(By.XPATH, f"//button[@name='day' and not(contains(@class, 'day-outside')) and text()='{day}']")
+        day_button.click()
 
     # -------------------- Misc / State Checks --------------------
 
@@ -783,3 +829,12 @@ class BasePage:
             arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
         """, element)
         return element
+
+    def custom_select_by_locator(self, base_locator, option_locator):
+        """Custom dropdown selection for non-standard select elements."""
+        dropdown = self.find_element(base_locator)
+        dropdown.click()
+        time.sleep(0.5)  # wait for options to render
+        option = self.find_element(option_locator)
+        option.click()
+        return True

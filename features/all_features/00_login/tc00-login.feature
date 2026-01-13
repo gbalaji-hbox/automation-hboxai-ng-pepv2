@@ -1,4 +1,4 @@
-Feature: Login Functionality Verification
+Feature: tc00 - Login Functionality Verification
 
   As a user
   I want to be able to log in to the application
@@ -10,7 +10,7 @@ Feature: Login Functionality Verification
     When I enter valid email and password
     And I click the Submit button
     Then I should be logged in successfully
-    When I click on signout from dashboard header
+    When I click on logout from dashboard header
     Then I should be logged out successfully
 
   @regression

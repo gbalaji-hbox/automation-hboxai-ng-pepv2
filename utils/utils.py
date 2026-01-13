@@ -119,19 +119,21 @@ def convert_to_human_readable_date(date_str, expected_format=None):
 
 
 def row_count_check(expected, actual):
-    if actual == 0:
+    actual_count = int(actual)
+    expected_count = int(expected)
+    if actual_count == 0:
         printf(f"Expected at least 1 row, but got {actual}")
         return False
 
-    if actual < expected:
+    if actual_count < expected_count:
         printf(f"Only {actual} rows displayed, which is less than the requested {expected} entries per page.")
         return True,
 
-    if actual > expected:
+    if actual_count > expected_count:
         printf(f"Expected at most {expected} rows, but got {actual}")
         return False
 
-    printf(f"Found exactly {actual} rows as expected")
+    printf(f"Found exactly {actual_count} rows as expected")
     return True
 
 def format_number(number: str) -> str:
