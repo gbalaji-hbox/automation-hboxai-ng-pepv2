@@ -21,3 +21,10 @@ class LoginPageLocators:
     HEADER_LOGO = (By.XPATH, "//img[@id='admin_header_logo']")
     SIGN_OUT_BUTTON = (By.XPATH, "//button[@id='sidebar_logout_btn']")
     LOG_OUT_CONFIRM_BUTTON = (By.XPATH, "//button[@id='logout_dialog_confirm_btn']")
+
+class DashboardPageLocators:
+    """Locators for the dashboard page elements."""
+    HEADER_USER_MENU = (By.XPATH, "//button[@id='admin_header_user_menu_btn']")
+    HAMBURGER_MENU = (By.XPATH, "//button[@id='admin_header_toggle_sidebar_btn']")
+    HAMBURGER_MENU_OPTION = lambda option_text: (By.XPATH, f"//a/span[normalize-space(text())='{option_text}']")
+    HEADER_LOGO = (By.XPATH, "//img[@id='admin_header_logo']")

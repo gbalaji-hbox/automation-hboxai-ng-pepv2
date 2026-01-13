@@ -21,24 +21,8 @@ class Routes:
 
     # Route paths
     LOGIN = "/"
-    DASHBOARD = "/dashboard"
-    GLOBAL_SEARCH = "/global-search"
-    PATIENT_DETAILS = "/patient-details"
-    MANAGE_CLINIC_SLOTS = "/appointment-slots"
-    TRANSFER_PATIENTS = "/transfer-patients"
-    CS_FOLLOWUP_PATIENTS = "/cs-followup-patients"
-    CS_DEFERRED_PATIENTS = "/cs-deferred-patients"
-    PE_FOLLOWUP_PATIENTS = "/pe-followup-patients"
-    PE_DEFERRED_PATIENTS = "/pe-deferred-patients"
+    DASHBOARD = "/admin/dashboard"
 
-    # VPE Admin Group Actions
-    EDIT_GROUP = "/group-operations/edit/"
-    DUPLICATE_GROUP = "/group-operations/duplicate/"
-    CREATE_GROUP = "/group-operations/create"
-    ARCHIVED_GROUPS = "/archived-groups"
-    MANAGE_VPE = "/manage-es"
-    CALL_HISTORY = "/call-history"
-    SMS = "/sms"
 
     @staticmethod
     def get_full_url(route_path):
