@@ -8,7 +8,7 @@ from features.pages.login_page.login_page import LoginPage
 def step_impl(context, page_name):
     context.dashboard_page = DashboardPage(context.driver)
     context.dashboard_page.navigate_to_dashboard(page_name)
-    context.dashboard_page.wait_for_dom_stability(timeout=5)
+    context.dashboard_page.wait_for_dom_stability(timeout=2)
 
 
 @when(u'I extract all available hamburger menu options')

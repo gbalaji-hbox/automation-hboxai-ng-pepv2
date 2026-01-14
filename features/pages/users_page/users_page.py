@@ -3,7 +3,7 @@ from time import sleep
 from faker.proxy import Faker
 from selenium.common import NoSuchElementException
 
-from features.commons.locators import UsersPageLocators
+from features.commons.locators import UsersPageLocators, UserGroupPageLocators
 from features.commons.routes import Routes
 from features.pages.base_page import BasePage
 from utils.logger import printf
@@ -18,16 +18,22 @@ class UsersPage(BasePage):
 
     def click_on_tab(self, tab_name):
         """Click on the specified tab in the users page."""
-        try:
-            if self.is_element_visible(UsersPageLocators.CLEAR_SEARCH_BUTTON):
-                self.click(UsersPageLocators.CLEAR_SEARCH_BUTTON)
-                self.wait_for_loader(timeout=10)
+        if tab_name == 'User':
+            tab_locator = UsersPageLocators.USER_TAB
+        else:
+            tab_locator = UserGroupPageLocators.USER_GROUP_TAB
 
-            tab_ele = self.find_element(UsersPageLocators.USER_TABS(tab_name))
-            if self.get_attribute(tab_ele,"aria-selected"):
+        try:
+            if self.is_element_visible(UsersPageLocators.CLEAR_SEARCH_BUTTON, timeout=2):
+                self.click(UsersPageLocators.CLEAR_SEARCH_BUTTON)
+                self.wait_for_dom_stability_full()
+
+            tab_ele = self.find_element(tab_locator)
+            if self.get_attribute(tab_ele,"aria-selected") == "true":
                 printf(f"Tab '{tab_name}' is already selected.")
                 return
             tab_ele.click()
+            self.wait_for_loader()
         except NoSuchElementException:
             printf(f"Tab with name '{tab_name}' not found on Users Page.")
             raise
@@ -47,7 +53,7 @@ class UsersPage(BasePage):
             self.click(option_locator)
             sleep(1)
             # Enter the search value
-            if field in ['Update Date', 'Last Active']:
+            if field in ['Update Date', 'Last Active', 'Created Date', 'Updated Date']:
                 self.click(UsersPageLocators.SEARCH_DATEPICKER_INPUT)
                 sleep(1)
                 self.select_calender_date(value)
@@ -62,25 +68,35 @@ class UsersPage(BasePage):
             printf(f"Error during search operation: {e}")
             return False
 
-    def verify_search_results(self, search_criteria, search_value):
+    def verify_search_results(self, search_criteria, search_value, tab_name):
         """Verify search results contain the matching patient data."""
         self.wait_for_loader(timeout=10)
+        if tab_name == 'User':
+            table_locator = UsersPageLocators.USERS_TABLE_ROWS
+        else:
+            table_locator = UserGroupPageLocators.USER_GROUPS_TABLE_ROWS
+
         return verify_search_results_in_table(
             self,
             search_value,
-            UsersPageLocators.USERS_TABLE_ROWS,
+            table_locator,
             search_criteria
         )
 
-    def click_on_action_button(self, action_button):
+    def click_on_action_button(self, action_button, tab_name, table_name):
         """Click on the specified action button for the first user in the users table."""
         try:
+            if table_name.lower() == "user":
+                locators = UsersPageLocators
+            else:
+                locators = UserGroupPageLocators
+
             if action_button == "View History":
-                self.click(UsersPageLocators.HISTORY_BUTTON)
+                self.click(locators.HISTORY_BUTTON)
             elif action_button == "Edit":
-                self.click(UsersPageLocators.EDIT_BUTTON)
+                self.click(locators.EDIT_BUTTON)
             elif action_button == "Delete":
-                self.click(UsersPageLocators.DELETE_BUTTON)
+                self.click(locators.DELETE_BUTTON)
             else:
                 printf(f"Action button '{action_button}' is not recognized.")
                 raise ValueError(f"Unknown action button: {action_button}")

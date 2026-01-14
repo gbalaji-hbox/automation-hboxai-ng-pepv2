@@ -6,10 +6,10 @@ Feature: tc03- Users Management CRUD Operations
 
   Scenario Outline: User tab search Functionality
     Given I am on the Users page
-    And I am on the user tab
+    And I am on the Users tab
     When I fetch the first row data from the users table
     And I enter that value in the "<field>" search field and search
-    Then the users table should filter results to show matching groups
+    Then the users table should filter results to show matching users
 
     Examples:
       | field        |
@@ -32,7 +32,6 @@ Feature: tc03- Users Management CRUD Operations
       | Delete       | confirmation dialog appears         |
 
 
-  @only
   Scenario Outline: User Table Pagination - <records> Records per View
     Given I am on the Users page
     And I am on the user tab

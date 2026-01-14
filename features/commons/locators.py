@@ -34,7 +34,7 @@ class DashboardPageLocators:
 
 class UsersPageLocators:
     """Locators for the users page elements."""
-    USER_TABS = lambda tab_name: (By.XPATH, f"//button[@id='users_page_tab_{tab_name}']")
+    USER_TAB = (By.XPATH, "//button[@id='users_page_tab_user']")
     SEARCH_TYPE_DROPDOWN = (By.XPATH, "(//button[@role='combobox'])[1]")
     SEARCH_TYPE_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
     SEARCH_INPUT = (By.XPATH, "//button[@role='combobox']/following-sibling::input[1]")
@@ -49,6 +49,29 @@ class UsersPageLocators:
     HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
     HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
     DELETE_DIALOG = (By.XPATH, "//p[normalize-space(text())='This action cannot be undone. This will permanently delete the user.']")
+    DELETE_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+    NEXT_PAGE_BUTTON = (By.XPATH, "//a[@aria-label='Go to next page']")
+    PREVIOUS_PAGE_BUTTON = (By.XPATH, "//a[@aria-label='Go to next page']")
+    SECOND_PAGE_BUTTON = (By.XPATH, "//a[text()='2']")
+
+class UserGroupPageLocators:
+    """Locators for the user groups page elements."""
+    USER_GROUP_TAB = (By.XPATH, "//button[@id='users_page_tab_user_group']")
+    SEARCH_TYPE_DROPDOWN = (By.XPATH, "(//button[@role='combobox'])[1]")
+    SEARCH_TYPE_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+    SEARCH_INPUT = (By.XPATH, "//button[@role='combobox']/following-sibling::input[1]")
+    SEARCH_DATEPICKER_INPUT = (By.XPATH, "//button[@role='combobox']/following-sibling::button[1]")
+    SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
+    CLEAR_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Clear']")
+    USER_GROUPS_TABLE = (By.XPATH, "//table[@id='table-admin-user-groups']")
+    USER_GROUPS_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-user-groups']/tbody/tr")
+    HISTORY_BUTTON = (By.XPATH, "//table[@id='table-admin-user-groups']/tbody/tr/td[5]//button[contains(@id,'history')][1]")
+    EDIT_BUTTON = (By.XPATH, "//table[@id='table-admin-user-groups']/tbody/tr/td[5]//button[contains(@id,'edit')][1]")
+    DELETE_BUTTON = (By.XPATH, "//table[@id='table-admin-user-groups']/tbody/tr/td[5]//button[contains(@id,'delete')][1]")
+    HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
+    HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
+    DELETE_DIALOG = (By.XPATH, "//h2[normalize-space(text())='Delete User Group']")
     DELETE_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
     NEXT_PAGE_BUTTON = (By.XPATH, "//a[@aria-label='Go to next page']")

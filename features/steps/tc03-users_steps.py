@@ -1,7 +1,7 @@
 from behave import when, then, given
-from behave.exception import StepNotImplementedError
 
 from features.pages.users_page.users_page import UsersPage
+from utils.logger import printf
 
 
 @given(u'I am on the {tab_name} tab')
@@ -23,6 +23,8 @@ def step_impl(context, field):
     context.search_criteria = field
     if field == 'Email':
         data_field = 'Email Address'
+    elif field == 'Group Name':
+        data_field = 'User Group Name'
     else:
         data_field = field
 
@@ -34,18 +36,19 @@ def step_impl(context, field):
         raise AssertionError(f"Failed to perform search for field: {field}")
 
 
-@then(u'the users table should filter results to show matching groups')
-def step_impl(context):
+@then(u'the {tab_name} table should filter results to show matching {table_name}')
+def step_impl(context, tab_name, table_name):
+    printf(f"verifying search results for tab: {tab_name}, table: {table_name}")
     if not hasattr(context, 'search_criteria') or not hasattr(context, 'search_value'):
         raise AssertionError("Search criteria and value not set. Run search step first.")
 
     assert context.user_page.verify_search_results(
-        context.search_criteria, context.search_value
+        context.search_criteria, context.search_value, tab_name
     ), f"Dynamic search failed for {context.search_criteria}: {context.search_value}"
 
-@when(u'I click on "{action_button}" button for a user in the users table')
-def step_impl(context, action_button):
-    context.user_page.click_on_action_button(action_button)
+@when(u'I click on "{action_button}" button for a {tab_name} in the {table_name} table')
+def step_impl(context, action_button,tab_name, table_name):
+    context.user_page.click_on_action_button(action_button, tab_name, table_name)
 
 
 @then(u'"User Operation History dialog opens" should happen')

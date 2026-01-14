@@ -23,6 +23,7 @@ class Routes:
     LOGIN = "/"
     DASHBOARD = "/admin/dashboard"
     EDIT_USER = "/admin/users/edit/"
+    EDIT_GROUP = "/admin/users/groups/edit/"
 
 
     @staticmethod
