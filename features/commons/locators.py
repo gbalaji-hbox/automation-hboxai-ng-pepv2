@@ -77,3 +77,44 @@ class UserGroupPageLocators:
     NEXT_PAGE_BUTTON = (By.XPATH, "//a[@aria-label='Go to next page']")
     PREVIOUS_PAGE_BUTTON = (By.XPATH, "//a[@aria-label='Go to next page']")
     SECOND_PAGE_BUTTON = (By.XPATH, "//a[text()='2']")
+
+
+class ProgramTypePageLocators:
+    """Locators for the Program Type & Patient Program Status page elements."""
+    PAGE_TITLE = (By.XPATH, "//h1[normalize-space(text())='Program Type & Patient Program Status']")
+
+    # Tab navigation
+    PROGRAM_TAB = (By.XPATH, "//button[normalize-space(text())='Program']")
+    PATIENT_PROGRAM_STATUS_TAB = (By.XPATH, "//button[normalize-space(text())='Patient Program Status']")
+
+    # Add buttons
+    ADD_NEW_PROGRAM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Add New Program']")
+    ADD_NEW_PATIENT_PROGRAM_STATUS_BUTTON = (By.XPATH, "//button[normalize-space(text())='Add New Patient Program Status']")
+
+    # Program tab elements
+    PROGRAM_TABLE_HEADERS = (By.XPATH, "//table[contains(@class, 'program-table')]//thead//th")
+    PROGRAM_TABLE_ROWS = (By.XPATH, "//table[contains(@class, 'program-table')]//tbody//tr")
+    PROGRAM_SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Enter program name']")
+    PROGRAM_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space(text())='Search']")
+    PROGRAM_CLEAR_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space(text())='Clear']")
+    PROGRAM_ENTRIES_DROPDOWN = (By.XPATH, "//select[contains(@class, 'entries-dropdown')]")
+    PROGRAM_PAGINATION_INFO = (By.XPATH, "//div[contains(text(), 'Showing')]")
+
+    # Program action buttons (relative to row)
+    PROGRAM_ROW = lambda program_name: (By.XPATH, f"//table[contains(@class, 'program-table')]//tbody//tr[td[1][normalize-space(text())='{program_name}']]")
+    PROGRAM_EDIT_BUTTON = (By.XPATH, ".//button[contains(@id,'edit')]")
+    PROGRAM_VIEW_BUTTON = (By.XPATH, ".//button[contains(@id,'view')]")
+    PROGRAM_DELETE_BUTTON = (By.XPATH, ".//button[contains(@id,'delete')]")
+
+    # Patient Program Status tab elements
+    PATIENT_PROGRAM_STATUS_TABLE_HEADERS = (By.XPATH, "//table[contains(@class, 'status-table')]//thead//th")
+    PATIENT_PROGRAM_STATUS_TABLE_ROWS = (By.XPATH, "//table[contains(@class, 'status-table')]//tbody//tr")
+    PATIENT_PROGRAM_STATUS_SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Search by Status Name']")
+    PATIENT_PROGRAM_STATUS_ENTRIES_DROPDOWN = (By.XPATH, "//select[contains(@class, 'entries-dropdown')]")
+    PATIENT_PROGRAM_STATUS_PAGINATION_INFO = (By.XPATH, "//div[contains(text(), 'Showing')]")
+
+    # Status action buttons (relative to row)
+    PATIENT_PROGRAM_STATUS_ROW = lambda status_name: (By.XPATH, f"//table[contains(@class, 'status-table')]//tbody//tr[td[1][normalize-space(text())='{status_name}']]")
+    PATIENT_PROGRAM_STATUS_EDIT_BUTTON = (By.XPATH, ".//button[contains(@id,'edit')]")
+    PATIENT_PROGRAM_STATUS_VIEW_BUTTON = (By.XPATH, ".//button[contains(@id,'view')]")
+    PATIENT_PROGRAM_STATUS_DELETE_BUTTON = (By.XPATH, ".//button[contains(@id,'delete')]")

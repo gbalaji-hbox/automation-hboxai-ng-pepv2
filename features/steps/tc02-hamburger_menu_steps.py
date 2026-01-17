@@ -21,11 +21,16 @@ def step_impl(context):
 @then(u'I should verify each menu option navigates to the correct page')
 def step_impl(context):
     return_option = context.dashboard_page.choose_return_option(context.extracted_menu_options)
-    context.navigation_results = context.dashboard_page.verify_all_menu_navigation_with_options(
+    context.navigation_results = context.dashboard_page.verify_all_menu_navigation_with_titles(
         context.extracted_menu_options,
         return_option,
     )
     context.dashboard_page.assert_navigation_results(context.navigation_results)
+
+
+@then(u'I should verify each menu option has the correct browser title')
+def step_impl(context):
+    context.dashboard_page.assert_browser_titles_correct(context.navigation_results)
 
 
 @then(u'I should verify all menu option links are functional')
@@ -52,4 +57,3 @@ def step_impl(context):
     current_url = context.driver.current_url
     expected_login_url = login_page.url
     assert expected_login_url in current_url, f"Not on login page. Expected: {expected_login_url}, Current: {current_url}"
-

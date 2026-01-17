@@ -24,6 +24,7 @@ class Routes:
     DASHBOARD = "/admin/dashboard"
     EDIT_USER = "/admin/users/edit/"
     EDIT_GROUP = "/admin/users/groups/edit/"
+    PROGRAM_TYPE = "/admin/program-type"
 
 
     @staticmethod

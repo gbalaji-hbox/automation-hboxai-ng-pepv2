@@ -27,3 +27,9 @@ def step_impl(context):
 @then(u'I should see the user profile section')
 def step_impl(context):
     assert context.dashboard_page.verify_user_profile_section(), "User profile section is not visible"
+
+
+@then(u'I should see the browser Tab contains "{expected_title}"')
+def step_impl(context, expected_title):
+    """Verify that the browser tab title contains the expected text"""
+    assert context.dashboard_page.verify_browser_tab_contains(expected_title), f"Browser tab does not contain '{expected_title}'"

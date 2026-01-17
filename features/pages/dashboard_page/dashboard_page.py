@@ -175,8 +175,8 @@ class DashboardPage(BasePage):
         texts = [opt.get("text", "") for opt in menu_options]
         return texts[0]
 
-    def verify_all_menu_navigation_with_options(self, menu_options, return_option=None):
-        """Visit each menu option and record whether navigation succeeded."""
+    def verify_all_menu_navigation_with_titles(self, menu_options, return_option=None):
+        """Visit each menu option, record navigation success, and capture browser titles."""
         results = {}
         for opt in menu_options:
             text = opt.get("text")
@@ -199,14 +199,24 @@ class DashboardPage(BasePage):
                 if href:
                     expected_path = urlparse(href).path.rstrip("/")
                     current_path = urlparse(current_url).path.rstrip("/")
-                    passed = current_path == expected_path or current_path.endswith(expected_path.split("/")[-1])
+                    url_passed = current_path == expected_path or current_path.endswith(expected_path.split("/")[-1])
                 else:
-                    passed = text.lower() in current_url.lower()
+                    url_passed = text.lower() in current_url.lower()
+
+                # Get expected title based on menu text
+                expected_title = self._get_expected_title_for_menu_option(text)
+                actual_title = self.driver.title
+
+                title_passed = actual_title == expected_title
 
                 results[text] = {
-                    "status": "passed" if passed else "failed",
+                    "status": "passed" if (url_passed and title_passed) else "failed",
                     "current_url": current_url,
-                    "expected": href or text,
+                    "expected_url": href or text,
+                    "actual_title": actual_title,
+                    "expected_title": expected_title,
+                    "url_passed": url_passed,
+                    "title_passed": title_passed,
                 }
             except Exception as e:
                 results[text] = {"status": "failed", "error": str(e)}
@@ -238,7 +248,7 @@ class DashboardPage(BasePage):
 
     def click_logout_option(self):
         """Click on the 'Logout' option in the hamburger menu."""
-        try:            
+        try:
             self.click(DashboardPageLocators.LOGOUT_BUTTON)
             sleep(1)
             self.is_element_visible(DashboardPageLocators.LOGOUT_DIALOG_CONFIRM_BUTTON, timeout=5)
@@ -246,4 +256,47 @@ class DashboardPage(BasePage):
             return True
         except Exception as e:
             printf(f"Error clicking logout option: {e}")
+            return False
+
+    def _get_expected_title_for_menu_option(self, menu_text):
+        """Get the expected browser title for a menu option."""
+        title_map = {
+            "Dashboard": "Dashboard | Admin",
+            "Users": "Users & User Groups | Admin",
+            "Program Type": "Program Type | Admin",
+            "Patient Groups": "Patient Groups | Admin",
+            "Workflow": "Workflow & Tasks | Admin",
+            "Activities": "Activities | Admin",
+            "Facility Availability": "Facility Availability | Admin",
+            "Scheduled Appointments": "Scheduled Appointments | Admin",
+            "SMS": "SMS | Admin",
+            "Call History": "Call History | Admin",
+            "Patients": "Patients | Admin",
+        }
+        return title_map.get(menu_text, f"{menu_text} | Admin")
+
+    def assert_browser_titles_correct(self, navigation_results):
+        """Assert that all menu options have correct browser titles."""
+        title_failures = []
+        for name, res in navigation_results.items():
+            if res.get("status") == "skipped":
+                continue
+            if not res.get("title_passed", False):
+                expected = res.get("expected_title", "Unknown")
+                actual = res.get("actual_title", "Unknown")
+                title_failures.append(f"{name} (expected: '{expected}', actual: '{actual}')")
+
+        if title_failures:
+            raise AssertionError(f"Browser title verification failed for: {', '.join(title_failures)}")
+
+        printf(f"All {len([r for r in navigation_results.values() if r.get('status') != 'skipped'])} menu options have correct browser titles")
+
+    def verify_browser_tab_contains(self, expected_text):
+        """Verify that the browser tab title contains the expected text."""
+        try:
+            actual_title = self.driver.title
+            printf(f"Browser tab title: '{actual_title}'")
+            return expected_text in actual_title
+        except Exception as e:
+            printf(f"Error checking browser tab title: {e}")
             return False

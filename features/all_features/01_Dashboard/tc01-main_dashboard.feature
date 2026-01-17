@@ -10,3 +10,4 @@ Feature: tc01 - Main Dashboard
     Then I should see the dashboard header
     And I should see the main navigation menu
     And I should see the user profile section
+    And I should see the browser Tab contains "Dashboard"

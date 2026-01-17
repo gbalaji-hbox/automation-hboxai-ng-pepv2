@@ -31,7 +31,6 @@ Feature: tc04- User Group Management CRUD Operations
       | Delete       | delete User Group confirmation dialog appears |
 
 
-  @only
   Scenario Outline: User Table Pagination - <records> Records per View
     Given I am on the Users page
     And I am on the User Group tab
