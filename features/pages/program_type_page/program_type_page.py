@@ -259,3 +259,92 @@ class ProgramTypePage(BasePage):
         except Exception as e:
             printf(f"Error verifying status exists: {e}")
             return False
+
+    # Additional methods for new step definitions
+
+    def switch_to_program_tab(self):
+        """Switch to Program tab."""
+        self.click(ProgramTypePageLocators.PROGRAM_TAB)
+        self.wait_for_loader()
+
+    def get_first_program_row_data(self):
+        """Get data from the first program row."""
+        try:
+            table_data = self.get_program_table_data()
+            if table_data:
+                headers = self.get_program_table_headers()
+                row_data = table_data[0]
+                return dict(zip(headers, row_data))
+            return {}
+        except Exception as e:
+            printf(f"Error getting first program row data: {e}")
+            return {}
+
+    def search_programs_by_field(self, field, value):
+        """Search programs by specific field."""
+        try:
+            # This would need field-specific locators
+            # For now, use general search
+            return self.search_programs(value)
+        except Exception as e:
+            printf(f"Error searching programs by field {field}: {e}")
+            return False
+
+    def click_program_action_button(self, button):
+        """Click action button for the first program in table."""
+        try:
+            if button.lower() == "edit":
+                self.click(ProgramTypePageLocators.PROGRAM_EDIT_BUTTON)
+            elif button.lower() == "view":
+                self.click(ProgramTypePageLocators.PROGRAM_VIEW_BUTTON)
+            elif button.lower() == "delete":
+                self.click(ProgramTypePageLocators.PROGRAM_DELETE_BUTTON)
+            return True
+        except Exception as e:
+            printf(f"Error clicking program {button} button: {e}")
+            return False
+
+    def select_program_records_per_page(self, count):
+        """Select number of program records per page."""
+        return self.select_programs_per_page(count)
+
+    def get_first_patient_program_status_row_data(self):
+        """Get data from the first patient program status row."""
+        try:
+            table_data = self.get_patient_program_status_table_data()
+            if table_data:
+                headers = self.get_patient_program_status_table_headers()
+                row_data = table_data[0]
+                return dict(zip(headers, row_data))
+            return {}
+        except Exception as e:
+            printf(f"Error getting first status row data: {e}")
+            return {}
+
+    def search_patient_program_statuses_by_field(self, field, value):
+        """Search patient program statuses by specific field."""
+        try:
+            # This would need field-specific locators
+            # For now, use general search
+            return self.search_patient_program_statuses(value)
+        except Exception as e:
+            printf(f"Error searching statuses by field {field}: {e}")
+            return False
+
+    def click_patient_program_status_action_button(self, button):
+        """Click action button for the first patient program status in table."""
+        try:
+            if button.lower() == "edit":
+                self.click(ProgramTypePageLocators.PATIENT_PROGRAM_STATUS_EDIT_BUTTON)
+            elif button.lower() == "view":
+                self.click(ProgramTypePageLocators.PATIENT_PROGRAM_STATUS_VIEW_BUTTON)
+            elif button.lower() == "delete":
+                self.click(ProgramTypePageLocators.PATIENT_PROGRAM_STATUS_DELETE_BUTTON)
+            return True
+        except Exception as e:
+            printf(f"Error clicking status {button} button: {e}")
+            return False
+
+    def select_status_records_per_page(self, count):
+        """Select number of status records per page."""
+        return self.select_statuses_per_page(count)

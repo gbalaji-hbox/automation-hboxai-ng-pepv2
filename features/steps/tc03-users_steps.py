@@ -4,7 +4,7 @@ from features.pages.users_page.users_page import UsersPage
 from utils.logger import printf
 
 
-@given(u'I am on the {tab_name} tab')
+@given(u'I am on the {tab_name} tab from Users')
 def step_impl(context, tab_name):
     context.user_page = UsersPage(context.driver)
     context.user_page.click_on_tab(tab_name)

@@ -6,7 +6,7 @@ Feature: tc04- User Group Management CRUD Operations
 
   Scenario Outline: User tab search Functionality
     Given I am on the Users page
-    And I am on the User Group tab
+    And I am on the User Group tab from Users
     When I fetch the first row data from the user groups table
     And I enter that value in the "<field>" search field and search
     Then the user groups table should filter results to show matching groups
@@ -20,7 +20,7 @@ Feature: tc04- User Group Management CRUD Operations
 
   Scenario Outline: Users Action Buttons in Table
     Given I am on the Users page
-    And I am on the User Group tab
+    And I am on the User Group tab from Users
     When I click on "<button>" button for a user group in the user groups table
     Then "<expected_result>" should happen
 
@@ -33,7 +33,7 @@ Feature: tc04- User Group Management CRUD Operations
 
   Scenario Outline: User Table Pagination - <records> Records per View
     Given I am on the Users page
-    And I am on the User Group tab
+    And I am on the User Group tab from Users
     When I select <records> records per page from pagination dropdown
     Then the user group table should display exactly <records> records per page
 
