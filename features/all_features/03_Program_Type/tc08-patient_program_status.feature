@@ -1,5 +1,5 @@
 @login_enroller_admin
-Feature: tc06 - Patient Program Status Management CRUD Operations
+Feature: tc08- Patient Program Status Management CRUD Operations
   As an enroller admin
   I want to manage patient program statuses
   So that I can create, read, update, delete patient program statuses and search/paginate

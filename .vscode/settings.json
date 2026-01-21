@@ -1,0 +1,54 @@
+{
+  "cucumberautocomplete.steps": [
+    "features/steps/*.py",
+    "features/**/steps/*.py"
+  ],
+  "cucumberautocomplete.syncfeatures": "features/all_features/**/*.feature",
+  "cucumberautocomplete.strictGherkinCompletion": true,
+  "cucumberautocomplete.strictGherkinValidation": true,
+  "cucumberautocomplete.smartSnippets": true,
+  "cucumberautocomplete.stepsInvariants": true,
+  "cucumberautocomplete.customParameters": [
+    {
+      "parameter": "(u'",
+      "value": "('"
+    },
+    {
+      "parameter": "(u\"",
+      "value": "(\""
+    },
+    {
+      "parameter": "/\\{[^\\}]+\\}/",
+      "value": "(.*)"
+    },
+    {
+      "parameter": "\\{[^}]+\\}",
+      "value": "(.*)"
+    }
+  ],
+  "cucumberautocomplete.pages": {
+    "login": "features/pages/login_page/*.py",
+    "dashboard": "features/pages/dashboard_page/*.py",
+    "users": "features/pages/users_page/*.py",
+    "common_pages": "features/pages/*.py"
+  },
+  "cucumberautocomplete.skipDocStringsFormat": true,
+  "cucumberautocomplete.formatConfOverride": {
+    "And": 3,
+    "But": "relative"
+  },
+  "cucumberautocomplete.onTypeFormat": true,
+  "editor.quickSuggestions": {
+    "comments": false,
+    "strings": true,
+    "other": true
+  },
+  "cucumberautocomplete.gherkinDefinitionPart": "(Given|When|Then)\\(",
+  "cucumberautocomplete.stepRegExSymbol": "'",
+  "cucumberautocomplete.pureTextSteps": true,
+  "cucumberautocomplete.stepTemplate": "{gherkinType}('{stepPattern}')\ndef step_impl(context{parameterList}):\n    # TODO: implement step\n    raise NotImplementedError('Step not implemented')"
+  ,
+  "gherkinPytestBdd.includePattern": "**/{*_steps.py,*steps.py,test_*.py,*_test.py,conftest.py}",
+  "gherkinPytestBdd.excludePattern": "{**/node_modules/**,**/venv/**,**/build/**}",
+  "gherkinPytestBdd.autoIndexOnStartup": true
+}

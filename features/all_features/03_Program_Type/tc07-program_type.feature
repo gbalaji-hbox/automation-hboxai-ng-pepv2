@@ -1,10 +1,9 @@
 @login_enroller_admin
-Feature: tc05 - Program Type Management CRUD Operations
+Feature: tc07- Program Type Management CRUD Operations
   As an enroller admin
   I want to manage program types
   So that I can create, read, update, delete program types and search/paginate
 
-  @only
   Scenario Outline: Program tab search Functionality
     Given I am on the "Program Type" page
     And I am on the Program tab from Program Type

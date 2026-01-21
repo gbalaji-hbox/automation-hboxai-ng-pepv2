@@ -54,6 +54,21 @@ class UsersPageLocators:
     NEXT_PAGE_BUTTON = (By.XPATH, "//a[@aria-label='Go to next page']")
     PREVIOUS_PAGE_BUTTON = (By.XPATH, "//a[@aria-label='Go to next page']")
     SECOND_PAGE_BUTTON = (By.XPATH, "//a[text()='2']")
+    # Add New User form locators
+    ADD_NEW_USER_BUTTON = (By.XPATH, "//button[@id='users_page_add_btn']")
+    FIRST_NAME_INPUT = (By.XPATH, "(//label[normalize-space(text())='First Name *']/following::input)[1]")
+    LAST_NAME_INPUT = (By.XPATH, "(//label[normalize-space(text())='Last Name *']/following::input)[1]")
+    EMAIL_INPUT = (By.XPATH, "(//label[normalize-space(text())='Email Address *']/following::input)[1]")
+    PHONE_INPUT = (By.XPATH, "(//label[normalize-space(text())='Phone Number *']/following::input)[1]")
+    PASSWORD_INPUT = (By.XPATH, "(//label[normalize-space()='Password *']/following::input)[1]")
+    USER_TYPE_COMBOBOX = (By.XPATH, "(//label[normalize-space(text())='User Type *']/following::button[@role='combobox'])[1]")
+    FROM_DATE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Select from date']")
+    END_DATE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Select end date']")
+    SAVE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Save']")
+    CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    SUCCESS_NOTIFICATION = (By.XPATH, "//div[normalize-space(text())='User Created']")
+    DELETE_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
+    VALIDATION_ERROR = (By.XPATH, "//div[contains(@class,'error') or contains(@class,'invalid')]")
 
 class UserGroupPageLocators:
     """Locators for the user groups page elements."""
