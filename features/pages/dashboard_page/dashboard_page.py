@@ -236,6 +236,18 @@ class DashboardPage(BasePage):
         """Assert all non-skipped navigation attempts passed."""
         failed = [name for name, res in navigation_results.items() if res.get("status") == "failed"]
         if failed:
+            printf("Navigation assertion failed. Detailed failure reasons:")
+            for name in failed:
+                res = navigation_results[name]
+                printf(f"  - {name}:")
+                if "error" in res:
+                    printf(f"    Error: {res['error']}")
+                if "current_url" in res and "expected_url" in res:
+                    printf(f"    URL - Expected: {res['expected_url']}, Actual: {res['current_url']}")
+                if "actual_title" in res and "expected_title" in res:
+                    printf(f"    Title - Expected: '{res['expected_title']}', Actual: '{res['actual_title']}'")
+                if "url_passed" in res and "title_passed" in res:
+                    printf(f"    URL passed: {res['url_passed']}, Title passed: {res['title_passed']}")
             raise AssertionError(f"Navigation failed for menu options: {', '.join(failed)}")
 
     def assert_links_functional(self, navigation_results):
@@ -272,6 +284,7 @@ class DashboardPage(BasePage):
             "SMS": "SMS | Admin",
             "Call History": "Call History | Admin",
             "Patients": "Patients | Admin",
+            "Add Patient": "Add Patient | Admin",
         }
         return title_map.get(menu_text, f"{menu_text} | Admin")
 
