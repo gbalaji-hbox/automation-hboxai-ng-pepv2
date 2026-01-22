@@ -102,6 +102,34 @@ class UserGroupPageLocators:
     PREVIOUS_PAGE_BUTTON = (By.XPATH, "//a[@aria-label='Go to next page']")
     SECOND_PAGE_BUTTON = (By.XPATH, "//a[text()='2']")
 
+    # Add New User Group locators
+    ADD_NEW_USER_GROUP_BUTTON = (By.XPATH, "//button[@id='users_page_add_btn']")
+    GROUP_NAME_INPUT = (By.XPATH, "//input[@id='user_group_form_name_input']")
+    ADD_USERS_BUTTON = (By.XPATH, "//button[@id='user_group_form_add_users_btn']")
+
+    # Add Users Dialog locators
+    ADD_USERS_DIALOG = (By.XPATH, "//div[@id='user_group_add_users_dialog']")
+    ADD_USERS_SEARCH_INPUT = (By.XPATH, "//input[@id='user_group_modal_search_input']")
+    ADD_USERS_FILTER_DROPDOWN = (By.XPATH, "//button[@id='user_group_modal_filter_select']")
+    ADD_USER_FILTER_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+    ADD_USER_SELECTION_CHECKBOX = (By.XPATH, "//h4/following::div//input[@data-lov-name='input']")
+    ADD_USERS_ADD_BUTTON = (By.XPATH, "//button[@id='user_group_modal_add_btn']")
+    ADD_USERS_CANCEL_BUTTON = (By.XPATH, "//button[@id='user_group_modal_cancel_btn']")
+    ADD_USERS_CLOSE_BUTTON = (By.XPATH, "//div[@id='user_group_add_users_dialog']/button[contains(.,'Close')]")
+    USER_CHECKBOX = lambda user_name: (By.XPATH, f"//span[contains(text(),'{user_name}')]/preceding::input[@type='checkbox'][1]")
+
+    # Form buttons
+    SAVE_BUTTON = (By.XPATH, "//button[@id='user_group_form_submit_btn']")
+    CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+
+    # Notifications
+    USER_GROUP_CREATED_SUCCESS = (By.XPATH, "//div[normalize-space(text())='User Group Created']")
+    USER_GROUP_UPDATED_SUCCESS = (By.XPATH, "//div[normalize-space(text())='User group updated successfully']")
+    USER_GROUP_DELETED_SUCCESS = (By.XPATH, "//div[normalize-space(text())='User group deleted successfully']")
+
+    # Delete confirm
+    DELETE_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
+
 
 class ProgramTypePageLocators:
     """Locators for the Program Type & Patient Program Status page elements."""

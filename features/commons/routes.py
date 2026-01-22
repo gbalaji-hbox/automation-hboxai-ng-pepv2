@@ -22,6 +22,7 @@ class Routes:
     # Route paths
     LOGIN = "/"
     DASHBOARD = "/admin/dashboard"
+    USERS_PAGE = "/admin/users"
     EDIT_USER = "/admin/users/edit/"
     EDIT_GROUP = "/admin/users/groups/edit/"
     PROGRAM_TYPE = "/admin/program-type"
