@@ -285,10 +285,10 @@ class UsersPage(BasePage):
     def update_user_last_name(self, new_last_name):
         """Update last name in edit form."""
         try:
-            last_name = self.get_attribute(UsersPageLocators.LAST_NAME_INPUT, "value")
-            new_last_name = last_name +" "+ new_last_name
+            new_last_name = " "+ new_last_name
             self.send_keys(UsersPageLocators.LAST_NAME_INPUT, new_last_name)
-            printf(f"Updated last name to {new_last_name}.")
+            last_name = self.get_attribute(UsersPageLocators.LAST_NAME_INPUT, "value")
+            printf(f"Updated last name to {last_name}.")
         except NoSuchElementException as e:
             printf(f"Error updating last name: {e}")
             raise
