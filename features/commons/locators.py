@@ -131,12 +131,12 @@ class UserGroupPageLocators:
     DELETE_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
 
 
-class ProgramTypePageLocators:
+class ProgramPageLocators:
     """Locators for the Program Type & Patient Program Status page elements."""
-    PAGE_TITLE = (By.XPATH, "//h1[normalize-space(text())='Program Type & Patient Program Status']")
 
     # Tab navigation
-    PROGRAM_TAB = (By.XPATH, "//button[normalize-space(text())='Program']")
+    PROGRAM_TAB = (By.XPATH, "//button[@id='program_type_tab_program']")
+    CLEAR_SEARCH_BUTTON = (By.XPATH, "//button[@id='program_type_clear_btn']")
     PATIENT_PROGRAM_STATUS_TAB = (By.XPATH, "//button[normalize-space(text())='Patient Program Status']")
 
     # Add buttons
@@ -146,6 +146,8 @@ class ProgramTypePageLocators:
     # Program tab elements - based on actual page structure
     PROGRAM_TABLE_HEADERS = (By.XPATH, "//table//thead//th")
     PROGRAM_TABLE_ROWS = (By.XPATH, "//table//tbody//tr")
+    PROGRAM_SEARCH_TYPE_DROPDOWN = (By.XPATH, "//input[@placeholder='Enter program name']/preceding::button[@role='combobox'][1]")
+    PROGRAM_SEARCH_TYPE_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
     PROGRAM_SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Enter program name']")
     PROGRAM_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space(text())='Search']")
     PROGRAM_CLEAR_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space(text())='Clear']")
