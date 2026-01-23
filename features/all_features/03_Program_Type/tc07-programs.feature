@@ -30,7 +30,6 @@ Feature: tc07 - Programs management and operations
       | Edit         | Edit program page loads                    |
       | Delete       | Program delete confirmation dialog appears |
 
-  @only
   Scenario Outline: Programs Table Pagination - <records> Records per View
     Given I am on the Program Type page
     And I am on the Program tab from program type

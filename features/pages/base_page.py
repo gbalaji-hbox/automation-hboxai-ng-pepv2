@@ -101,6 +101,7 @@ class BasePage:
     LOADER_XPATH = (By.XPATH, "//div[@data-component-file='LoaderComponent.tsx' and @data-component-line='27']")
     VPE_LOADER_XPATH = (By.XPATH, "//p[contains(normalize-space(.), 'Loading patient')]")
     SPINNER_LOADER_XPATH = (By.XPATH, "//div[contains(@class, 'animate-spin')]")
+    LUCID_LOADER_XPATH = (By.XPATH, "//svg[contains(@class,'lucide-loader-circle') and contains(@class,'animate-spin')]")
     
     # All loader locators
     ALL_LOADER_LOCATORS = [LOADER_XPATH, VPE_LOADER_XPATH, SPINNER_LOADER_XPATH]

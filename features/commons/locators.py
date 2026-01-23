@@ -157,3 +157,23 @@ class ProgramPageLocators:
     PROGRAM_DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[text()='Are you sure?']/following-sibling::p")
     PROGRAM_DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
     PROGRAM_PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+
+class PatientProgramStatusPageLocators:
+    """Locators for the Patient Program Status page elements."""
+
+    # Tab navigation
+    PATIENT_PROGRAM_STATUS_TAB = (By.XPATH, "//button[@id='program_type_tab_patient_program_status']")
+
+    # Patient Program Status tab elements
+    PATIENT_PROGRAM_STATUS_TABLE = (By.XPATH, "//table[@id='table-admin-program-status']")
+    PATIENT_PROGRAM_STATUS_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-program-status']/tbody/tr")
+    DROPDOWN_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+    PATIENT_PROGRAM_STATUS_SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Search by Status Name']")
+    PATIENT_PROGRAM_STATUS_HISTORY_BUTTON = (By.XPATH, "//table[@id='table-admin-program-status']/tbody/tr/td[last()]//button[contains(@id,'history')][1]")
+    PATIENT_PROGRAM_STATUS_EDIT_BUTTON = (By.XPATH, "//table[@id='table-admin-program-status']/tbody/tr/td[last()]//button[contains(@id,'edit')][1]")
+    PATIENT_PROGRAM_STATUS_DELETE_BUTTON = (By.XPATH, "//table[@id='table-admin-program-status']/tbody/tr/td[last()]//button[contains(@id,'delete')][1]")
+    PATIENT_PROGRAM_STATUS_OPERATION_HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
+    PATIENT_PROGRAM_STATUS_OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
+    PATIENT_PROGRAM_STATUS_DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[text()='Are you sure?']/following-sibling::p")
+    PATIENT_PROGRAM_STATUS_DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    PATIENT_PROGRAM_STATUS_PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")

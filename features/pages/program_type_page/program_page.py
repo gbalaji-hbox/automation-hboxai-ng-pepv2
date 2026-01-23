@@ -2,7 +2,7 @@ from time import sleep
 
 from selenium.common import NoSuchElementException
 
-from features.commons.locators import ProgramPageLocators
+from features.commons.locators import ProgramPageLocators, PatientProgramStatusPageLocators
 from features.commons.routes import Routes
 from features.pages.base_page import BasePage
 from utils.logger import printf
@@ -19,7 +19,7 @@ class ProgramPage(BasePage):
         if tab_name == 'Program':
             locator = ProgramPageLocators.PROGRAM_TAB
         else:
-            locator = ProgramPageLocators.PATIENT_PROGRAM_STATUS_TAB
+            locator = PatientProgramStatusPageLocators.PATIENT_PROGRAM_STATUS_TAB
 
         try:
             if self.is_element_visible(ProgramPageLocators.CLEAR_SEARCH_BUTTON, timeout=2):
@@ -32,6 +32,9 @@ class ProgramPage(BasePage):
                 return
             tab_ele.click()
             self.wait_for_loader()
+            if not tab_name == 'Program':
+                self.clear_field(PatientProgramStatusPageLocators.PATIENT_PROGRAM_STATUS_SEARCH_INPUT)
+                sleep(1)
         except NoSuchElementException:
             printf(f"Tab with name '{tab_name}' not found on Users Page.")
             raise
@@ -75,7 +78,7 @@ class ProgramPage(BasePage):
         if tab_name == 'Program':
             table_locator = ProgramPageLocators.PROGRAM_TABLE_ROWS
         else:
-            table_locator = ProgramPageLocators.PROGRAM_TABLE_ROWS
+            table_locator = PatientProgramStatusPageLocators.PATIENT_PROGRAM_STATUS_TABLE
 
         return verify_search_results_in_table(
             self,
@@ -133,9 +136,9 @@ class ProgramPage(BasePage):
             raise
 
     def verify_program_records_per_page(self, records):
-        self.wait_for_loader()
         try:
             self.wait_for_loader()
+            self.wait_for_dom_stability_full()
             actual_count = self.get_number_of_table_rows(ProgramPageLocators.PROGRAM_TABLE_ROWS)
             printf(f"Expected rows per page: {records}, Actual rows displayed: {actual_count}")
             return row_count_check(records, actual_count)

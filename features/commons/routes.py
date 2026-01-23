@@ -27,6 +27,7 @@ class Routes:
     EDIT_GROUP = "/admin/users/groups/edit/"
     PROGRAM_TYPE = "/admin/program-type"
     PROGRAM_EDIT = "/admin/program-type/edit/"
+    PATIENT_PROGRAM_STATUS_EDIT = "/admin/patient-program-status/edit/"
 
 
     @staticmethod
