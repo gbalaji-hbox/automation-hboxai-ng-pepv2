@@ -261,7 +261,7 @@ class UsersPage(BasePage):
             printf("Cancel button not found.")
             raise
 
-    def check_notification(self, message):
+    def check_user_notification(self, message):
         """Check if notification appears."""
         try:
             self.is_element_visible(UsersPageLocators.USER_CREATE_SUCCESS, timeout=5)
@@ -285,10 +285,10 @@ class UsersPage(BasePage):
     def update_user_last_name(self, new_last_name):
         """Update last name in edit form."""
         try:
-            last_name = self.get_attribute(UsersPageLocators.LAST_NAME_INPUT, "value")
-            new_last_name = last_name +" "+ new_last_name
+            new_last_name = " "+ new_last_name
             self.send_keys(UsersPageLocators.LAST_NAME_INPUT, new_last_name)
-            printf(f"Updated last name to {new_last_name}.")
+            last_name = self.get_attribute(UsersPageLocators.LAST_NAME_INPUT, "value")
+            printf(f"Updated last name to {last_name}.")
         except NoSuchElementException as e:
             printf(f"Error updating last name: {e}")
             raise
@@ -456,3 +456,8 @@ class UsersPage(BasePage):
         except Exception as e:
             printf(f"Error deleting user: {e}")
             return False
+
+    def is_returned_to_users_page(self):
+        """Check if navigated back to the Users page."""
+        self.wait_for_dom_stability()
+        return self.check_url_contains(Routes.USERS_PAGE, partial=False)
