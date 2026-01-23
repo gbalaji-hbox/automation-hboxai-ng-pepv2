@@ -177,6 +177,9 @@ class PatientProgramStatusPageLocators:
     # Tab navigation
     PATIENT_PROGRAM_STATUS_TAB = (By.XPATH, "//button[@id='program_type_tab_patient_program_status']")
 
+    # Add buttons
+    ADD_NEW_PATIENT_PROGRAM_STATUS_BUTTON = (By.XPATH, "//button[normalize-space(text())='Add New Patient Program Status']")
+
     # Patient Program Status tab elements
     PATIENT_PROGRAM_STATUS_TABLE = (By.XPATH, "//table[@id='table-admin-program-status']")
     PATIENT_PROGRAM_STATUS_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-program-status']/tbody/tr")
@@ -190,3 +193,15 @@ class PatientProgramStatusPageLocators:
     PATIENT_PROGRAM_STATUS_DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[text()='Are you sure?']/following-sibling::p")
     PATIENT_PROGRAM_STATUS_DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
     PATIENT_PROGRAM_STATUS_PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+
+    # Patient Program Status create/edit form locators
+    PATIENT_PROGRAM_STATUS_NAME_INPUT = (By.XPATH, "//label[text()='Status Name *']/following-sibling::input")
+    PATIENT_PROGRAM_STATUS_SAVE_BUTTON = (By.XPATH, "//button[normalize-space()='Save Status']")
+    PATIENT_PROGRAM_STATUS_UPDATE_BUTTON = (By.XPATH, "//button[normalize-space()='Update Status']")
+    PATIENT_PROGRAM_STATUS_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space()='Cancel']")
+    PATIENT_PROGRAM_STATUS_DELETE_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
+
+    # Patient Program Status notification locators
+    PATIENT_PROGRAM_STATUS_CREATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Program status created successfully')]")
+    PATIENT_PROGRAM_STATUS_UPDATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Program status updated successfully')]")
+    PATIENT_PROGRAM_STATUS_DELETED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Program status deleted successfully')]")
