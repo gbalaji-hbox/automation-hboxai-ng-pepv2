@@ -137,36 +137,23 @@ class ProgramPageLocators:
     # Tab navigation
     PROGRAM_TAB = (By.XPATH, "//button[@id='program_type_tab_program']")
     CLEAR_SEARCH_BUTTON = (By.XPATH, "//button[@id='program_type_clear_btn']")
-    PATIENT_PROGRAM_STATUS_TAB = (By.XPATH, "//button[normalize-space(text())='Patient Program Status']")
 
     # Add buttons
     ADD_NEW_PROGRAM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Add New Program']")
-    ADD_NEW_PATIENT_PROGRAM_STATUS_BUTTON = (By.XPATH, "//button[normalize-space(text())='Add New Patient Program Status']")
 
     # Program tab elements - based on actual page structure
-    PROGRAM_TABLE_HEADERS = (By.XPATH, "//table//thead//th")
-    PROGRAM_TABLE_ROWS = (By.XPATH, "//table//tbody//tr")
-    PROGRAM_SEARCH_TYPE_DROPDOWN = (By.XPATH, "//input[@placeholder='Enter program name']/preceding::button[@role='combobox'][1]")
-    PROGRAM_SEARCH_TYPE_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
-    PROGRAM_SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Enter program name']")
+    PROGRAM_TABLE = (By.XPATH, "//table[@id='table-admin-program-types']")
+    PROGRAM_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-program-types']/tbody/tr")
+    PROGRAM_SEARCH_DROPDOWN = (By.XPATH, "//button[@id='program_type_filter_select']")
+    DROPDOWN_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+    PROGRAM_SEARCH_DATE_PICKER_INPUT = (By.XPATH, "//button[@role='combobox']/following-sibling::button[1]")
+    PROGRAM_SEARCH_INPUT = (By.XPATH, "//input[@id='program_type_search_input']")
     PROGRAM_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space(text())='Search']")
-    PROGRAM_CLEAR_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space(text())='Clear']")
-    PROGRAM_ENTRIES_DROPDOWN = (By.XPATH, "//button[contains(@role, 'combobox')]//following::button[contains(@aria-label, 'rows per page')]")
-    PROGRAM_PAGINATION_INFO = (By.XPATH, "//p[contains(text(), 'Showing')]")
-
-    # Program action buttons (absolute paths for first row)
-    PROGRAM_EDIT_BUTTON = (By.XPATH, "//table//tbody//tr[1]//button[contains(@aria-label, 'Edit') or contains(text(), 'Edit')]")
-    PROGRAM_VIEW_BUTTON = (By.XPATH, "//table//tbody//tr[1]//button[contains(@aria-label, 'View') or contains(text(), 'View')]")
-    PROGRAM_DELETE_BUTTON = (By.XPATH, "//table//tbody//tr[1]//button[contains(@aria-label, 'Delete') or contains(text(), 'Delete')]")
-
-    # Patient Program Status tab elements
-    PATIENT_PROGRAM_STATUS_TABLE_HEADERS = (By.XPATH, "//table//thead//th")
-    PATIENT_PROGRAM_STATUS_TABLE_ROWS = (By.XPATH, "//table//tbody//tr")
-    PATIENT_PROGRAM_STATUS_SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Search by Status Name']")
-    PATIENT_PROGRAM_STATUS_ENTRIES_DROPDOWN = (By.XPATH, "//button[contains(@role, 'combobox')]//following::button[contains(@aria-label, 'rows per page')]")
-    PATIENT_PROGRAM_STATUS_PAGINATION_INFO = (By.XPATH, "//p[contains(text(), 'Showing')]")
-
-    # Status action buttons (absolute paths for first row)
-    PATIENT_PROGRAM_STATUS_EDIT_BUTTON = (By.XPATH, "//table//tbody//tr[1]//button[contains(@aria-label, 'Edit') or contains(text(), 'Edit')]")
-    PATIENT_PROGRAM_STATUS_VIEW_BUTTON = (By.XPATH, "//table//tbody//tr[1]//button[contains(@aria-label, 'View') or contains(text(), 'View')]")
-    PATIENT_PROGRAM_STATUS_DELETE_BUTTON = (By.XPATH, "//table//tbody//tr[1]//button[contains(@aria-label, 'Delete') or contains(text(), 'Delete')]")
+    PROGRAM_HISTORY_BUTTON = (By.XPATH, "//table[@id='table-admin-program-types']/tbody/tr/td[last()]//button[contains(@id,'history')][1]")
+    PROGRAM_EDIT_BUTTON = (By.XPATH, "//table[@id='table-admin-program-types']/tbody/tr/td[last()]//button[contains(@id,'edit')][1]")
+    PROGRAM_DELETE_BUTTON = (By.XPATH, "//table[@id='table-admin-program-types']/tbody/tr/td[last()]//button[contains(@id,'delete')][1]")
+    PROGRAM_OPERATION_HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
+    PROGRAM_OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
+    PROGRAM_DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[text()='Are you sure?']/following-sibling::p")
+    PROGRAM_DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    PROGRAM_PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
