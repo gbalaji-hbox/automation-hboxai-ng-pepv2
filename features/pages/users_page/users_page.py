@@ -2,12 +2,14 @@ from time import sleep
 
 from faker.proxy import Faker
 from selenium.common import NoSuchElementException
+from selenium.webdriver import Keys
+from selenium.webdriver.common.by import By
 
 from features.commons.locators import UsersPageLocators, UserGroupPageLocators
 from features.commons.routes import Routes
 from features.pages.base_page import BasePage
 from utils.logger import printf
-from utils.utils import extract_table_row_as_dict, verify_search_results_in_table, row_count_check
+from utils.utils import extract_table_row_as_dict, verify_search_results_in_table, row_count_check, get_current_date
 
 
 class UsersPage(BasePage):
@@ -163,9 +165,15 @@ class UsersPage(BasePage):
             printf("Add New User button not found.")
             raise
 
-    def fill_create_user_form(self, first_name, last_name, email, phone, password, user_type="ES"):
-        """Fill the create user form with provided data."""
+    def fill_create_user_form(self):
+        """Fill the create user form with valid generated data."""
         try:
+            first_name = f"Automation-{self.faker.first_name()}"
+            last_name = self.faker.last_name()
+            email = f"{first_name.lower()}.{last_name.lower()}@hbox.ai"
+            phone = self.faker.numerify(text="##########")
+            password = "Password123"
+            user_type = "ES"
             self.send_keys(UsersPageLocators.FIRST_NAME_INPUT, first_name)
             self.send_keys(UsersPageLocators.LAST_NAME_INPUT, last_name)
             self.send_keys(UsersPageLocators.EMAIL_INPUT, email)
@@ -173,7 +181,16 @@ class UsersPage(BasePage):
             self.send_keys(UsersPageLocators.PASSWORD_INPUT, password)
             self.select_user_type(user_type)
             self.select_dates()
+            self.select_times()
             printf(f"Filled create user form for {first_name} {last_name}.")
+            return {
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email,
+                "phone": phone,
+                "password": password,
+                "user_type": user_type
+            }
         except NoSuchElementException as e:
             printf(f"Error filling create user form: {e}")
             raise
@@ -181,11 +198,7 @@ class UsersPage(BasePage):
     def select_user_type(self, user_type):
         """Select user type from combobox."""
         try:
-            self.click(UsersPageLocators.USER_TYPE_COMBOBOX)
-            self.wait_for_dom_stability()
-            # Assume the option is //div[@role='option']/span[normalize-space(text())=user_type]
-            option_locator = (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{user_type}']")
-            self.click(option_locator)
+            self.custom_select_by_locator(UsersPageLocators.USER_TYPE_COMBOBOX, UsersPageLocators.SEARCH_TYPE_OPTION(user_type))
             printf(f"Selected user type: {user_type}")
         except NoSuchElementException as e:
             printf(f"Error selecting user type: {e}")
@@ -194,23 +207,45 @@ class UsersPage(BasePage):
     def select_dates(self):
         """Select from and end dates."""
         try:
+            start_date = get_current_date(date_format="%d-%m-%Y")
+            end_date = get_current_date(date_format="%d-%m-%Y", days_offset=1)
             self.click(UsersPageLocators.FROM_DATE_BUTTON)
-            self.wait_for_dom_stability()
-            # Select today's date, assume 21st
-            self.click((By.XPATH, "//button[@name='day' and text()='21']"))  # Adjust if needed
+            sleep(1)
+            self.select_calender_date(start_date)
+            sleep(1)
             self.click(UsersPageLocators.END_DATE_BUTTON)
-            self.wait_for_dom_stability()
-            self.click((By.XPATH, "//button[@name='day' and text()='31']"))  # Last day
-            printf("Selected dates.")
+            sleep(1)
+            self.select_calender_date(end_date)
+            sleep(1)
+            self.click(UsersPageLocators.END_DATE_BUTTON)
+            printf(f"Selected dates: From {start_date} To {end_date}.")
         except NoSuchElementException as e:
             printf(f"Error selecting dates: {e}")
+            raise
+
+    def select_times(self):
+        """Select from and end times."""
+        try:
+            self.click(UsersPageLocators.SCHEDULE_DAY_CHECKBOX)
+            sleep(1)
+            self.select_by_visible_text(UsersPageLocators.START_TIME_HOUR_SELECT,"12")
+            self.select_by_visible_text(UsersPageLocators.START_TIME_MINUTE_SELECT,"00")
+            self.select_by_visible_text(UsersPageLocators.START_TIME_AM_PM_SELECT,"AM")
+            self.select_by_visible_text(UsersPageLocators.END_TIME_HOUR_SELECT,"11")
+            self.select_by_visible_text(UsersPageLocators.END_TIME_MINUTE_SELECT,"45")
+            self.select_by_visible_text(UsersPageLocators.END_TIME_AM_PM_SELECT,"PM")
+            sleep(1)
+            self.click(UsersPageLocators.COPY_TO_ALL_DAYS_BUTTON)
+            sleep(1)
+            printf("Selected times and copied to all days.")
+        except NoSuchElementException as e:
+            printf(f"Error selecting times: {e}")
             raise
 
     def submit_user_form(self):
         """Click Save button."""
         try:
             self.click(UsersPageLocators.SAVE_BUTTON)
-            self.wait_for_loader()
             printf("Submitted user form.")
         except NoSuchElementException:
             printf("Save button not found.")
@@ -229,16 +264,17 @@ class UsersPage(BasePage):
     def check_notification(self, message):
         """Check if notification appears."""
         try:
-            self.is_element_visible((By.XPATH, f"//div[normalize-space(text())='{message}']"), timeout=5)
+            self.is_element_visible(UsersPageLocators.USER_CREATE_SUCCESS, timeout=5)
             printf(f"Notification '{message}' appeared.")
             return True
-        except:
+        except NoSuchElementException:
             printf(f"Notification '{message}' not found.")
             return False
 
     def find_and_edit_user(self, email):
         """Find user by email and click edit."""
         try:
+            self.wait_for_loader()
             self.perform_search_by_field("Email", email)
             self.click(UsersPageLocators.EDIT_BUTTON)
             printf(f"Found and clicked edit for user {email}.")
@@ -249,22 +285,32 @@ class UsersPage(BasePage):
     def update_user_last_name(self, new_last_name):
         """Update last name in edit form."""
         try:
+            last_name = self.get_attribute(UsersPageLocators.LAST_NAME_INPUT, "value")
+            new_last_name = last_name +" "+ new_last_name
             self.send_keys(UsersPageLocators.LAST_NAME_INPUT, new_last_name)
             printf(f"Updated last name to {new_last_name}.")
         except NoSuchElementException as e:
             printf(f"Error updating last name: {e}")
             raise
 
-    def find_and_delete_user(self, email, confirm=True):
+    def find_and_delete_user(self, email):
         """Find user by email and delete."""
         try:
+            self.wait_for_loader()
             self.perform_search_by_field("Email", email)
             self.click(UsersPageLocators.DELETE_BUTTON)
-            if confirm:
-                self.click(UsersPageLocators.DELETE_CONFIRM_BUTTON)
-            printf(f"Deleted user {email}.")
+            printf(f"Deleting user {email}.")
         except NoSuchElementException as e:
             printf(f"Error deleting user {email}: {e}")
+            raise
+
+    def confirm_user_delete(self):
+        """Confirm user deletion in dialog."""
+        try:
+            self.click(UsersPageLocators.DELETE_CONFIRM_BUTTON)
+            printf("Confirmed user deletion.")
+        except NoSuchElementException as e:
+            printf(f"Error confirming user deletion: {e}")
             raise
 
     def check_validation_errors(self):
@@ -281,13 +327,132 @@ class UsersPage(BasePage):
             printf("Error checking validation errors.")
             return False
 
-    def delete_users_with_email_containing(self, substring):
-        """Delete all users whose email contains the substring."""
+    def get_field_locator(self, field_name):
+        """Get locator for a field by name."""
+        mappings = {
+            "first name": UsersPageLocators.FIRST_NAME_INPUT,
+            "last name": UsersPageLocators.LAST_NAME_INPUT,
+            "email": UsersPageLocators.EMAIL_INPUT,
+            "phone number": UsersPageLocators.PHONE_INPUT,
+            "password": UsersPageLocators.PASSWORD_INPUT,
+        }
+        return mappings[field_name.lower()]
+
+    def get_expected_message(self, field_name):
+        """Get expected validation error message for a field."""
+        messages = {
+            "first name": "First name is required",
+            "last name": "Last name is required",
+            "email": "Please enter a valid email address",
+            "phone number": "Phone number must be at least 10 digits",
+            "password": "Password must be at least 6 characters",
+        }
+        return messages[field_name.lower()]
+
+    def enter_text_in_field(self, field_name, text):
+        """Enter text in a specific field."""
         try:
-            # This would require iterating through table rows, checking emails, and deleting.
-            # For simplicity, assume searching and deleting one by one if needed.
-            printf(f"Deleting users with email containing '{substring}' - implementation needed.")
-            # Not implemented fully, as it requires more logic.
-        except Exception as e:
-            printf(f"Error deleting users: {e}")
+            locator = self.get_field_locator(field_name)
+            self.send_keys(locator, text)
+            printf(f"Entered '{text}' in {field_name} field.")
+        except NoSuchElementException:
+            printf(f"{field_name} field not found.")
             raise
+
+    def clear_field(self, field_name):
+        """Clear a specific field."""
+        try:
+            locator = self.get_field_locator(field_name)
+            self.send_key_down(locator, "BACKSPACE")
+            self.send_key_down(locator, "TAB")
+            printf(f"Cleared {field_name} field.")
+        except NoSuchElementException:
+            printf(f"{field_name} field not found.")
+            raise
+
+    def check_validation_error_for_field(self, field_name, expected_message):
+        """Check if validation error message appears for a field."""
+        try:
+            if self.is_element_visible(UsersPageLocators.VALIDATION_ERROR(expected_message), timeout=5):
+                printf(f"Validation error '{expected_message}' appeared for {field_name}.")
+                return True
+            else:
+                printf(f"Validation error '{expected_message}' not found for {field_name}.")
+                return False
+        except Exception:
+            printf(f"Error checking validation error for {field_name}.")
+            return False
+
+    def delete_users_with_email_containing(self, keyword):
+        """Delete all users whose email contains the keyword."""
+        deleted_count = 0
+        for iteration in range(1, 11):
+            printf(f"Iteration {iteration}: Searching for users containing '{keyword}' in email")
+            rows = self._perform_search_and_get_user_rows(keyword)
+            if rows is None:
+                break
+            if self._delete_first_matching_user_by_email(rows, keyword):
+                deleted_count += 1
+                printf(f" (#{deleted_count})")
+            else:
+                printf(f"No user with email containing '{keyword}' found in current results - stopping")
+                break
+        if iteration == 10:
+            printf("Reached maximum iterations (10) - stopping to prevent infinite loop")
+        return deleted_count
+
+    def _perform_search_and_get_user_rows(self, keyword):
+        """Perform search by email containing keyword and return valid rows if users are found, else None."""
+        # Clear any open modal if present
+
+        if self.is_element_visible(UsersPageLocators.DELETE_DIALOG, timeout=2):
+            self.click(UsersPageLocators.DELETE_DIALOG_CANCEL_BUTTON)
+            sleep(1)
+
+        # Perform search by email field with the keyword (assuming search supports partial match)
+        self.perform_search_by_field("Email", keyword)
+
+        # Check if "No users found" message or similar
+        try:
+            # Assuming no data is indicated by no rows or specific message
+            self.wait_for_loader()
+            no_data_element = self.is_element_visible(UsersPageLocators.USERS_TABLE_ROWS, timeout=2)
+            if not no_data_element:
+                printf(f"No users found containing '{keyword}' in email - cleanup complete")
+                return None
+        except Exception as e:
+            printf(f"Error checking for no data element: {e}")
+            return None
+
+        rows = self.find_elements(UsersPageLocators.USERS_TABLE_ROWS)
+        if not rows:
+            printf("No table rows found - cleanup complete")
+            return None
+
+        first_row_text = rows[0].text.strip()
+        if "No users found" in first_row_text or first_row_text == "":
+            printf(f"No users found containing '{keyword}' in email - cleanup complete")
+            return None
+
+        return rows
+
+    def _delete_first_matching_user_by_email(self, rows, keyword):
+        """Delete the first user in rows whose email contains the keyword. Return True if deleted."""
+        try:
+            for row in rows:
+                # Assume email is in column 3 (td[3])
+                email_cell = row.find_element(By.XPATH, ".//td[2]")
+                email = email_cell.text.strip()
+                if keyword.lower() in email.lower():
+                    # Find delete button in column 6
+                    delete_button = row.find_element(By.XPATH, ".//td[6]//button[contains(@id,'delete')]")
+                    delete_button.click()
+                    sleep(1)
+                    self.click(UsersPageLocators.DELETE_CONFIRM_BUTTON)
+                    printf(f"Successfully deleted user '{email}'")
+                    sleep(2)
+                    return True
+            return False
+        except Exception as e:
+            printf(f"Error deleting user: {e}")
+            return False
