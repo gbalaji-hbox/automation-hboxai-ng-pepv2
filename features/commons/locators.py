@@ -158,6 +158,19 @@ class ProgramPageLocators:
     PROGRAM_DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
     PROGRAM_PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
 
+    # Program create/edit form locators
+    PROGRAM_NAME_INPUT = (By.XPATH, "//input[@id='program_type_form_name_input']")
+    PROGRAM_STATUS_SELECT_DROPDOWN = (By.XPATH, "//button[@id='program_type_form_status_select_btn']")
+    PROGRAM_STATUS_OPTIONS = (By.XPATH, "//div[@role='listbox']//div[@role='option']")
+    PROGRAM_SAVE_BUTTON = (By.XPATH, "//button[@id='program_type_form_submit_btn']")
+    PROGRAM_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    PROGRAM_DELETE_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
+
+    # Notification locators
+    PROGRAM_CREATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Program type created successfully')]")
+    PROGRAM_UPDATED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Program type updated successfully.']")
+    PROGRAM_DELETED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Program type deleted successfully')]")
+
 class PatientProgramStatusPageLocators:
     """Locators for the Patient Program Status page elements."""
 
