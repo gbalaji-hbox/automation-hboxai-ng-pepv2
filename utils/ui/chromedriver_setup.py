@@ -1,5 +1,8 @@
 import os
 import platform
+import re
+import shutil
+import subprocess
 import requests
 import zipfile
 
@@ -8,7 +11,7 @@ from utils.ui.config_reader import get_browser_config
 
 
 def download_chromedriver():
-    """Downloads ChromeDriver if not present in the driver's directory."""
+    """Downloads a ChromeDriver version that matches the installed Chrome major version."""
     drivers_dir = "drivers"
     if not os.path.exists(drivers_dir):
         os.makedirs(drivers_dir)
@@ -21,14 +24,43 @@ def download_chromedriver():
         return None
 
     chromedriver_filename = "chromedriver.exe" if platform.system() == "Windows" else "chromedriver"
-    chromedriver_dirname = "chromedriver-win64" if platform.system() == "Windows" else "chromedriver-linux64"
+    chromedriver_dirname = get_chromedriver_dirname()
+    if not chromedriver_dirname:
+        printf(f"Unsupported OS for ChromeDriver download: {platform.system()}")
+        return None
+
     chromedriver_path = os.path.join(drivers_dir, chromedriver_dirname, chromedriver_filename)
 
-    if os.path.exists(chromedriver_path):
-        printf("ChromeDriver already exists.")
-        return chromedriver_path
+    installed_chrome_version = get_installed_chrome_version()
+    installed_chrome_major = get_major_version(installed_chrome_version)
 
-    chromedriver_version = get_chromedriver_version()
+    if installed_chrome_version:
+        printf(f"Installed Chrome version detected: {installed_chrome_version}")
+    else:
+        printf("Could not detect installed Chrome version. Falling back to stable ChromeDriver.")
+
+    if os.path.exists(chromedriver_path):
+        existing_driver_version = get_existing_chromedriver_version(chromedriver_path)
+        existing_driver_major = get_major_version(existing_driver_version)
+
+        if installed_chrome_major and existing_driver_major == installed_chrome_major:
+            printf(
+                f"Existing ChromeDriver version {existing_driver_version} matches installed Chrome major "
+                f"{installed_chrome_major}. Reusing it."
+            )
+            return chromedriver_path
+
+        printf(
+            "Existing ChromeDriver does not match installed Chrome major version. "
+            "Downloading a compatible driver."
+        )
+        remove_existing_chromedriver(drivers_dir, chromedriver_dirname, chromedriver_path)
+
+    chromedriver_version = get_chromedriver_version(installed_chrome_major)
+    if not chromedriver_version:
+        printf("Could not determine ChromeDriver version.")
+        return None
+
     printf("Downloading ChromeDriver...")
     chromedriver_url = get_chromedriver_url(chromedriver_version)
     if not chromedriver_url:
@@ -80,26 +112,151 @@ def download_chromedriver():
         return None
 
 
-def get_chromedriver_version():
+def get_chromedriver_version(chrome_major=None):
+    """Gets latest ChromeDriver version for a Chrome major version, with stable fallback."""
     try:
-        url = "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE"
-        response = requests.get(url)
-        response.raise_for_status()
-        chromedriver_version = response.text.strip()
-        printf(f"ChromeDriver version found: {chromedriver_version}")
+        if chrome_major:
+            version_url = f"https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{chrome_major}"
+            response = requests.get(version_url, timeout=30)
+            if response.ok and response.text.strip():
+                chromedriver_version = response.text.strip()
+                printf(
+                    f"ChromeDriver version found for Chrome major {chrome_major}: {chromedriver_version}"
+                )
+                return chromedriver_version
+
+            printf(
+                f"No exact ChromeDriver release found for Chrome major {chrome_major}. "
+                "Falling back to stable release."
+            )
+
+        stable_url = "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_STABLE"
+        stable_response = requests.get(stable_url, timeout=30)
+        stable_response.raise_for_status()
+        chromedriver_version = stable_response.text.strip()
+        printf(f"Stable ChromeDriver version found: {chromedriver_version}")
         return chromedriver_version
     except requests.exceptions.RequestException as e:
         printf(f"Error getting ChromeDriver version: {e}")
         return None
 
 
+def get_installed_chrome_version():
+    """Detects installed Chrome version across OSes."""
+    os_name = platform.system()
+
+    if os_name == "Windows":
+        registry_paths = [
+            r"HKLM\SOFTWARE\Google\Chrome\BLBeacon",
+            r"HKCU\SOFTWARE\Google\Chrome\BLBeacon",
+            r"HKLM\SOFTWARE\WOW6432Node\Google\Chrome\BLBeacon",
+        ]
+
+        for reg_path in registry_paths:
+            try:
+                result = subprocess.run(
+                    ["reg", "query", reg_path, "/v", "version"],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                if result.returncode == 0:
+                    match = re.search(r"version\s+REG_SZ\s+([\d.]+)", result.stdout, re.IGNORECASE)
+                    if match:
+                        return match.group(1)
+            except Exception as e:
+                printf(f"Error reading Chrome version from registry path {reg_path}: {e}")
+
+    commands = [
+        ["google-chrome", "--version"],
+        ["chrome", "--version"],
+        ["chromium", "--version"],
+        ["chromium-browser", "--version"],
+        ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "--version"],
+    ]
+
+    for cmd in commands:
+        version = run_version_command(cmd)
+        if version:
+            return version
+
+    return None
+
+
+def run_version_command(command):
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+        output = (result.stdout or "") + " " + (result.stderr or "")
+        match = re.search(r"(\d+\.\d+\.\d+\.\d+)", output)
+        if match:
+            return match.group(1)
+    except Exception:
+        return None
+    return None
+
+
+def get_major_version(version):
+    if not version:
+        return None
+    parts = version.split(".")
+    return parts[0] if parts else None
+
+
+def get_existing_chromedriver_version(chromedriver_path):
+    """Reads the current downloaded ChromeDriver version by executing binary."""
+    if not os.path.exists(chromedriver_path):
+        return None
+
+    try:
+        result = subprocess.run([chromedriver_path, "--version"], capture_output=True, text=True, check=False)
+        output = (result.stdout or "") + " " + (result.stderr or "")
+        match = re.search(r"(\d+\.\d+\.\d+\.\d+)", output)
+        if match:
+            return match.group(1)
+    except Exception as e:
+        printf(f"Could not read existing ChromeDriver version: {e}")
+    return None
+
+
+def remove_existing_chromedriver(drivers_dir, chromedriver_dirname, chromedriver_path):
+    """Removes previously downloaded chromedriver files to avoid stale binary usage."""
+    try:
+        extracted_dir = os.path.join(drivers_dir, chromedriver_dirname)
+        if os.path.isdir(extracted_dir):
+            shutil.rmtree(extracted_dir, ignore_errors=True)
+        if os.path.isfile(chromedriver_path):
+            os.remove(chromedriver_path)
+    except Exception as e:
+        printf(f"Warning: failed to remove old ChromeDriver files cleanly: {e}")
+
+
+def get_chromedriver_dirname():
+    os_name = platform.system()
+    machine = platform.machine().lower()
+
+    if os_name == "Windows":
+        return "chromedriver-win64"
+    if os_name == "Linux":
+        return "chromedriver-linux64"
+    if os_name == "Darwin":
+        if "arm" in machine or "aarch" in machine:
+            return "chromedriver-mac-arm64"
+        return "chromedriver-mac-x64"
+    return None
+
+
 def get_chromedriver_url(chromedriver_version):
     """Gets the ChromeDriver download URL."""
     os_name = platform.system()
+    machine = platform.machine().lower()
+
     if os_name == "Windows":
         chromedriver_filename = "win64/chromedriver-win64.zip"
     elif os_name == "Darwin":
-        chromedriver_filename = "mac-x64/chromedriver-mac-x64.zip"
+        if "arm" in machine or "aarch" in machine:
+            chromedriver_filename = "mac-arm64/chromedriver-mac-arm64.zip"
+        else:
+            chromedriver_filename = "mac-x64/chromedriver-mac-x64.zip"
     elif os_name == "Linux":
         chromedriver_filename = "linux64/chromedriver-linux64.zip"
     else:
