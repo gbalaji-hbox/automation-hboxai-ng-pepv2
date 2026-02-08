@@ -4,25 +4,18 @@ from features.pages.patient_groups_page.patient_groups_page import PatientGroups
 from utils.logger import printf
 
 
-@given(u'I am on the Patient Groups page')
-def step_impl(context):
-    from features.pages.dashboard_page.dashboard_page import DashboardPage
-    dashboard = DashboardPage(context.driver)
-    dashboard.navigate_to_dashboard("Patient Groups")
-    context.patient_groups_page = PatientGroupsPage(context.driver)
-
-
 @when(u'I fetch the first row data from the patient groups table')
 def step_impl(context):
+    context.patient_groups_page = PatientGroupsPage(context)
     context.first_row_data = context.patient_groups_page.get_first_row_data()
 
 
-@when(u'I enter that value in the "{field}" search field and search')
-def step_impl(context, field):
+@when(u'I enter that value in the group search field and search')
+def step_impl(context):
     if not hasattr(context, 'first_row_data') or not context.first_row_data:
         context.first_row_data = context.patient_groups_page.get_first_row_data()
 
-    context.search_criteria = field
+    context.search_criteria = field = "Group Name"
     if field == 'Group Name':
         data_field = 'Group Name'
     else:
@@ -36,7 +29,7 @@ def step_impl(context, field):
         raise AssertionError(f"Failed to perform search for field: {field}")
 
 
-@then(u'the Patient Groups table should filter results to show matching groups')
+@then(u'the Patient Groups table should show the results matching the search criteria')
 def step_impl(context):
     printf(f"verifying search results for patient groups table")
     if not hasattr(context, 'search_criteria') or not hasattr(context, 'search_value'):

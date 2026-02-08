@@ -4,11 +4,12 @@ Feature: tc11 - Patient Groups management and operations
   I want to manage and operate patient groups
   So that I can ensure proper patient group administration
 
+  @only
   Scenario: Patient Groups search functionality
     Given I am on the Patient Groups page
     When I fetch the first row data from the patient groups table
-    And I enter that value in the "Group Name" search field and search
-    Then the Patient Groups table should filter results to show matching groups
+    And I enter that value in the group search field and search
+    Then the Patient Groups table should show the results matching the search criteria
 
   Scenario Outline: Patient Groups Action Buttons in Table
     Given I am on the Patient Groups page
