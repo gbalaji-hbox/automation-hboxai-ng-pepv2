@@ -174,3 +174,24 @@ class PatientGroupsPage(BasePage):
         except Exception as e:
             printf(f"Failed to verify navigation to create page '{page}': {e}")
             return False
+
+    def click_archived_groups(self):
+        """Click on the 'Archived Groups' button."""
+        try:
+            self.click(PatientGroupsPageLocators.ARCHIVED_GROUPS_BUTTON)
+            self.wait_for_loader()
+            return True
+        except Exception as e:
+            printf(f"Failed to click 'Archived Groups' button: {e}")
+            return False
+
+    def verify_navigation_to_archived_groups_page(self):
+        """Verify that navigation to the Archived Patient Groups page occurred."""
+        try:
+            result = self.check_url_contains(Routes.ARCHIVED_PATIENT_GROUPS, partial=False)
+            sleep(1)
+            self.click(PatientGroupsPageLocators.BREADCRUMBS_BACK_BUTTON)
+            return result
+        except Exception as e:
+            printf(f"Failed to verify navigation to Archived Patient Groups page: {e}")
+            return False

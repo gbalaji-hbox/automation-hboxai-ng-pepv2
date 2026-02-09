@@ -104,3 +104,15 @@ def step_impl(context, option):
 def step_impl(context, page):
     assert context.patient_groups_page.verify_navigation_to_create_page(
         page), f"Did not navigate to {page} page as expected"
+
+
+@when(u'I click on "Archived Groups" button')
+def step_impl(context):
+    context.patient_groups_page = PatientGroupsPage(context.driver)
+    context.patient_groups_page.click_archived_groups()
+
+
+@then(u'I should be navigated to the Archived Patient Groups page')
+def step_impl(context):
+    assert context.patient_groups_page.verify_navigation_to_archived_groups_page(), \
+        "Did not navigate to Archived Patient Groups page as expected"
