@@ -234,3 +234,52 @@ class PatientGroupsPageLocators:
     CREATE_BY_FILTERS_OPTION = (By.XPATH, "//div[@role='menuitem'][normalize-space(text())='Create New Group By Filters']")
     CREATE_BY_EXCEL_OPTION = (By.XPATH, "//div[@role='menuitem'][normalize-space(text())='Create New Group By Excel']")
     BREADCRUMBS_BACK_BUTTON = (By.XPATH, "//button[contains(normalize-space(),'Patient Group')]")
+
+    # Create By Filters locators
+    CREATE_BY_FILTERS_CLINIC_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Select Clinic *']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_CLINIC_OPTION = lambda clinic: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{clinic}']")
+    CREATE_BY_FILTERS_FACILITY_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Select Facility Name']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_FACILITY_OPTION = lambda facility: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{facility}']")
+    CREATE_BY_FILTERS_PROVIDER_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Select Provider']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_PROVIDER_OPTION = lambda provider: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{provider}']")
+    CREATE_BY_FILTERS_PRIMARY_DX_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Primary Dx']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_SECONDARY_DX_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Secondary Dx']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_PRIMARY_INSURANCE_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Primary Insurance']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_SECONDARY_INSURANCE_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Secondary Insurance']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_PROGRAM_ELIGIBILITY_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Program Eligibility']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_ZIP_CODE_INPUT = (By.XPATH, "//label[normalize-space(text())='Zip Code']/following-sibling::input")
+    CREATE_BY_FILTERS_LAST_VISITED_FROM = (By.XPATH, "//label[contains(text(),'Last Visited Date Range')]/following::input[1]")
+    CREATE_BY_FILTERS_LAST_VISITED_TO = (By.XPATH, "//label[contains(text(),'Last Visited Date Range')]/following::input[2]")
+    CREATE_BY_FILTERS_PROGRAM_STATUS_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Program Status']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_NO_OF_ATTEMPTS_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='No. of Attempts']/following-sibling::button[@role='combobox']")
+    CREATE_BY_FILTERS_CLEAR_BUTTON = (By.XPATH, "//button[normalize-space(text())='Clear']")
+    CREATE_BY_FILTERS_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    CREATE_BY_FILTERS_APPLY_BUTTON = (By.XPATH, "//button[normalize-space(text())='Apply']")
+
+    # Patient selection table for filters
+    PATIENT_SELECTION_TABLE = (By.XPATH, "//table[contains(@class,'patient-selection')]")
+    PATIENT_SELECTION_ROWS = (By.XPATH, "//table[contains(@class,'patient-selection')]/tbody/tr")
+    PATIENT_EMR_COLUMN = (By.XPATH, "//table[contains(@class,'patient-selection')]/thead/tr/th[normalize-space(text())='Patient EMR']")
+    PATIENT_SELECT_CHECKBOX = lambda row_index: (By.XPATH, f"//table[contains(@class,'patient-selection')]/tbody/tr[{row_index}]/td[1]//input[@type='checkbox']")
+    PATIENT_EMR_VALUE = lambda row_index: (By.XPATH, f"//table[contains(@class,'patient-selection')]/tbody/tr[{row_index}]/td[2]")
+
+    # Create Group button
+    CREATE_GROUP_BUTTON = (By.XPATH, "//button[normalize-space(text())='Create Group']")
+
+    # Name Patient Group dialog
+    GROUP_NAME_DIALOG = (By.XPATH, "//div[@role='dialog']//h2[normalize-space(text())='Name Patient Group']")
+    GROUP_NAME_INPUT = (By.XPATH, "//label[normalize-space(text())='Group Name *']/following-sibling::input")
+    GROUP_NOTE_TEXTAREA = (By.XPATH, "//label[normalize-space(text())='Note']/following-sibling::textarea")
+    GROUP_NAME_SAVE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Save']")
+    GROUP_NAME_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+
+    # Create By EMRs locators
+    CREATE_BY_EMRS_CLINIC_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Select Clinic *']/following-sibling::button[@role='combobox']")
+    CREATE_BY_EMRS_CLINIC_OPTION = lambda clinic: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{clinic}']")
+    CREATE_BY_EMRS_TEXTBOX = (By.XPATH, "//textarea[@placeholder='Enter EMR IDs separated by commas. Ex: 101, 323SA, A1B2C3']")
+    CREATE_BY_EMRS_PASTE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Paste EMRs']")
+    CREATE_BY_EMRS_APPLY_BUTTON = (By.XPATH, "//button[normalize-space(text())='Apply']")
+    CREATE_BY_EMRS_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+
+    # Success notification
+    GROUP_CREATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patient group created successfully')]")

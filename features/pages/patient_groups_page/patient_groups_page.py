@@ -195,3 +195,103 @@ class PatientGroupsPage(BasePage):
         except Exception as e:
             printf(f"Failed to verify navigation to Archived Patient Groups page: {e}")
             return False
+
+    def apply_filters_for_patient_group(self, clinic=None, facility=None, provider=None):
+        """Apply filters for creating patient group by filters."""
+        try:
+            if clinic:
+                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_CLINIC_DROPDOWN)
+                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_CLINIC_OPTION(clinic))
+                self.wait_for_loader()
+
+            if facility:
+                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_FACILITY_DROPDOWN)
+                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_FACILITY_OPTION(facility))
+                self.wait_for_loader()
+
+            if provider:
+                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_PROVIDER_DROPDOWN)
+                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_PROVIDER_OPTION(provider))
+                self.wait_for_loader()
+
+            self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_APPLY_BUTTON)
+            self.wait_for_loader()
+            return True
+        except Exception as e:
+            printf(f"Failed to apply filters: {e}")
+            return False
+
+    def select_patients_from_table(self, count=2):
+        """Select the first 'count' patients from the patient selection table."""
+        try:
+            for i in range(1, count + 1):
+                self.click(PatientGroupsPageLocators.PATIENT_SELECT_CHECKBOX(i))
+            return True
+        except Exception as e:
+            printf(f"Failed to select patients: {e}")
+            return False
+
+    def extract_emr_ids_from_selected_patients(self, count=2):
+        """Extract EMR IDs from the first 'count' selected patients."""
+        emr_ids = []
+        try:
+            for i in range(1, count + 1):
+                emr_element = self.get_element(PatientGroupsPageLocators.PATIENT_EMR_VALUE(i))
+                emr_id = emr_element.text.strip()
+                emr_ids.append(emr_id)
+            printf(f"Extracted EMR IDs: {emr_ids}")
+            return emr_ids
+        except Exception as e:
+            printf(f"Failed to extract EMR IDs: {e}")
+            return []
+
+    def click_create_group_button(self):
+        """Click the Create Group button."""
+        try:
+            self.click(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
+            self.wait_for_dom_stability()
+            return True
+        except Exception as e:
+            printf(f"Failed to click Create Group button: {e}")
+            return False
+
+    def name_and_save_patient_group(self, group_name, note=None):
+        """Enter group name and save the patient group."""
+        try:
+            self.send_keys(PatientGroupsPageLocators.GROUP_NAME_INPUT, group_name)
+            if note:
+                self.send_keys(PatientGroupsPageLocators.GROUP_NOTE_TEXTAREA, note)
+            self.click(PatientGroupsPageLocators.GROUP_NAME_SAVE_BUTTON)
+            self.wait_for_loader()
+            return True
+        except Exception as e:
+            printf(f"Failed to name and save patient group: {e}")
+            return False
+
+    def create_patient_group_by_emrs(self, clinic, emr_ids):
+        """Create patient group by EMRs."""
+        try:
+            # Select clinic
+            self.click(PatientGroupsPageLocators.CREATE_BY_EMRS_CLINIC_DROPDOWN)
+            self.click(PatientGroupsPageLocators.CREATE_BY_EMRS_CLINIC_OPTION(clinic))
+            self.wait_for_loader()
+
+            # Enter EMR IDs
+            emr_string = ", ".join(emr_ids)
+            self.send_keys(PatientGroupsPageLocators.CREATE_BY_EMRS_TEXTBOX, emr_string)
+
+            # Apply
+            self.click(PatientGroupsPageLocators.CREATE_BY_EMRS_APPLY_BUTTON)
+            self.wait_for_loader()
+            return True
+        except Exception as e:
+            printf(f"Failed to create patient group by EMRs: {e}")
+            return False
+
+    def verify_group_created_successfully(self):
+        """Verify that the patient group was created successfully."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.GROUP_CREATED_NOTIFICATION)
+        except Exception as e:
+            printf(f"Failed to verify group creation: {e}")
+            return False
