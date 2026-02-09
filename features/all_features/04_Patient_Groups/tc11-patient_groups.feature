@@ -46,7 +46,6 @@ Feature: tc11 - Patient Groups management and operations
       | Create New Group By Filters | Create Group By Filters |
       | Create New Group By Excel   | Create Group By Excel   |
 
-  @only
   Scenario: Verify Archived Patient Groups Page Navigation
     Given I am on the Patient Groups page
     When I click on "Archived Groups" button
