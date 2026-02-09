@@ -28,6 +28,13 @@ class Routes:
     PROGRAM_TYPE = "/admin/program-type"
     PROGRAM_EDIT = "/admin/program-type/edit/"
     PATIENT_PROGRAM_STATUS_EDIT = "/admin/patient-program-status/edit/"
+    PATIENT_GROUPS = "/admin/patient-groups"
+    EDIT_PATIENT_GROUP = "/admin/patient-groups/edit/"
+    DUPLICATE_PATIENT_GROUP = "/admin/patient-groups/duplicate/"
+    ARCHIVED_PATIENT_GROUPS = "/admin/patient-groups/archived"
+    CREATE_NEW_PATIENT_GROUP_BY_EMRS = "/admin/patient-groups/create-by-emrs"
+    CREATE_NEW_PATIENT_GROUP_BY_FILTERS = "/admin/patient-groups/create-by-filters"
+    CREATE_NEW_PATIENT_GROUP_BY_EXCEL = "/admin/patient-groups/create-by-excel"
 
 
     @staticmethod
