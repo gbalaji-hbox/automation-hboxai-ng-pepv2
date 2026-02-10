@@ -50,7 +50,7 @@ Personas:
 # Memory MCP Strategy (Qdrant YAML)
 
 memory_qdrant_strategy:
-  workspace_id_source: "Use the current workspace absolute path as project_name for all tool calls."
+  workspace_id_source: "Scan for a project metadata file (pyproject.toml, setup.py, etc.), extract the project name field, and use that as the project name. If not found, default to the workspace folder name as project_name for all tool calls."
 
   initialization:
     thinking_preamble: "Check if Qdrant is accessible and memory collections exist."

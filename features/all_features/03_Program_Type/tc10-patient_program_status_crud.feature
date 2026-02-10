@@ -31,7 +31,7 @@ Feature: tc10 - Patient Program Status CRUD operations
     And I click "Cancel" button on the patient program status form
     Then modal closes without creating patient program status
 
-  @regression @allure.label.severity:critical @only
+  @regression @allure.label.severity:critical
   Scenario: Master Cleanup - Delete all remaining test data
     Given I am on the Program Type page
     And I am on the Patient Program Status tab from program type

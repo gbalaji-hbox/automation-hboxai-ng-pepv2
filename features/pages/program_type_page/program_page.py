@@ -82,7 +82,7 @@ class ProgramPage(BasePage):
         if tab_name == 'Program':
             table_locator = ProgramPageLocators.PROGRAM_TABLE_ROWS
         else:
-            table_locator = PatientProgramStatusPageLocators.PATIENT_PROGRAM_STATUS_TABLE
+            table_locator = PatientProgramStatusPageLocators.PATIENT_PROGRAM_STATUS_TABLE_ROWS
 
         return verify_search_results_in_table(
             self,
