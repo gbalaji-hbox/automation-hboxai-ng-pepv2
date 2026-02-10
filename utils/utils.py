@@ -2,7 +2,7 @@ from selenium.webdriver import ActionChains
 
 from utils.logger import printf
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
 from selenium.webdriver.common.by import By
@@ -50,11 +50,18 @@ def get_fixed_start_date(years=1, date_format='%d-%m-%Y'):
     return past_date
 
 
-def get_current_date(date_format='%d-%m-%Y'):
+def get_current_date(date_format='%d-%m-%Y', days_offset=0):
     """
-    Returns today's date as a string.
+    Returns today's date as a string, with optional offset for past or future dates.
+
+    Args:
+        date_format (str): Format for the output date string. Default is '%d-%m-%Y'.
+        days_offset (int): Number of days to offset from today. Positive for future, negative for past. Default is 0.
+
+    Returns:
+        str: Formatted date string.
     """
-    return datetime.now().strftime(date_format)
+    return (datetime.now() + timedelta(days=days_offset)).strftime(date_format)
 
 
 def convert_dob_ddmmyyyy_to_yyyymmdd(dob_str: str) -> str:

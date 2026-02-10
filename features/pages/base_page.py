@@ -101,6 +101,7 @@ class BasePage:
     LOADER_XPATH = (By.XPATH, "//div[@data-component-file='LoaderComponent.tsx' and @data-component-line='27']")
     VPE_LOADER_XPATH = (By.XPATH, "//p[contains(normalize-space(.), 'Loading patient')]")
     SPINNER_LOADER_XPATH = (By.XPATH, "//div[contains(@class, 'animate-spin')]")
+    LUCID_LOADER_XPATH = (By.XPATH, "//svg[contains(@class,'lucide-loader-circle') and contains(@class,'animate-spin')]")
     
     # All loader locators
     ALL_LOADER_LOCATORS = [LOADER_XPATH, VPE_LOADER_XPATH, SPINNER_LOADER_XPATH]
@@ -759,9 +760,27 @@ class BasePage:
         """
         Select a date in the calendar popup.
         Assumes the calendar is already open.
-        date_str format: dd/mm/yyyy
+        date_str format: dd/mm/yyyy or dd-mm-yyyy
         """
-        date = datetime.strptime(date_str, "%d/%m/%Y")
+        # Try multiple date formats dynamically
+        date_formats = [
+        "%m-%d-%y",  # 03-04-54
+        "%m-%d-%Y",  # 03-04-1954
+        "%d-%m-%Y",  # 04-03-1954
+        "%Y-%m-%d",  # 1954-03-04
+        "%d/%m/%Y",  # 04/03/1954
+        "%Y/%m/%d",  # 1954/03/04
+        "%m/%d/%Y",  # 03/04/1954 (US style)
+        ]
+        date = None
+        for fmt in date_formats:
+            try:
+                date = datetime.strptime(date_str, fmt)
+                break
+            except ValueError:
+                continue
+        if date is None:
+            raise ValueError(f"time data '{date_str}' does not match any expected format {date_formats}")
         day = date.day
         month = date.month
         year = date.year

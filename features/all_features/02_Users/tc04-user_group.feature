@@ -21,7 +21,7 @@ Feature: tc04- User Group Management CRUD Operations
   Scenario Outline: Users Action Buttons in Table
     Given I am on the Users page
     And I am on the User Group tab from Users
-    When I click on "<button>" button for a user group in the user groups table
+    When I click on "<button>" button for a User Group in the user groups table
     Then "<expected_result>" should happen
 
     Examples:
