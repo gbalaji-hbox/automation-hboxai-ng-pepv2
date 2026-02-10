@@ -202,6 +202,7 @@ class PatientGroupsPage(BasePage):
         """Apply filters for creating patient group by filters."""
         try:
             self.wait_for_loader()
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1))
             if clinic:
                 self.click(PatientGroupsPageLocators.FILTER_BUTTON)
                 self.wait_for_dom_stability()
@@ -222,7 +223,13 @@ class PatientGroupsPage(BasePage):
     def select_patients_from_table(self, count=2):
         """Select the first 'count' patients from the patient selection table."""
         try:
+            count = int(count)
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1), timeout=10)
+            self.is_element_visible(PatientGroupsPageLocators.FILTERED_COUNT, timeout=10)
+            sleep(1)
+            self.wait_for_dom_stability()
             for i in range(1, count + 1):
+                printf(f"clicking row {i}")
                 self.click(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(i))
             return True
         except Exception as e:
@@ -258,6 +265,8 @@ class PatientGroupsPage(BasePage):
     def click_create_group_button(self):
         """Click the Create Group button."""
         try:
+            self.scroll_to_visible_element(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
+            self.wait_for_dom_stability()
             self.click(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
             self.wait_for_dom_stability()
             return True

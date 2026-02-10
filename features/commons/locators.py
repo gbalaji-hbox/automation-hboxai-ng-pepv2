@@ -245,6 +245,7 @@ class PatientGroupsPageLocators:
     FILTERS_CLINIC_DROPDOWN = (By.XPATH, "//h2[normalize-space(text())='Select Clinics and Providers']/following::button[@role='combobox'][1]")
     FILTER_DROPDOWN_SEARCH_OPTION = lambda clinic: (By.XPATH, f"//div[@role='option' and normalize-space(text())='{clinic}']")
 
+    FILTERED_COUNT = (By.XPATH, "//div[contains(normalize-space(),'Filtered count')]")
     PATIENTS_TABLE = (By.XPATH, "//table[@id='table-admin-patient-list']")
     PATIENTS_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-patient-list']/tbody/tr")
     PATIENT_TABLE_ROW_CHECKBOX = lambda row_index: (By.XPATH, f"//table[@id='table-admin-patient-list']/tbody/tr[{row_index}]/td[1]/button[@role='checkbox']")
@@ -252,7 +253,7 @@ class PatientGroupsPageLocators:
     CREATE_BY_FILTERS_APPLY_BUTTON = (By.XPATH, "//button[normalize-space(text())='Apply']")
 
     # Create Group button
-    CREATE_GROUP_BUTTON = (By.XPATH, "//button[normalize-space(text())='Create Group']")
+    CREATE_GROUP_BUTTON = (By.XPATH, "//button[normalize-space()='Create Group']")
     GROUP_NAME = (By.XPATH, "//h1")
 
     # Name Patient Group dialog
