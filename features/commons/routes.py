@@ -35,6 +35,7 @@ class Routes:
     CREATE_NEW_PATIENT_GROUP_BY_EMRS = "/admin/patient-groups/create-by-emrs"
     CREATE_NEW_PATIENT_GROUP_BY_FILTERS = "/admin/patient-groups/create-by-filters"
     CREATE_NEW_PATIENT_GROUP_BY_EXCEL = "/admin/patient-groups/create-by-excel"
+    ADD_PATIENTS_TO_GROUP = "/add-patients"
 
 
     @staticmethod

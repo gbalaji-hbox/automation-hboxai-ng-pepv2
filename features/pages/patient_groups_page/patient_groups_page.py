@@ -124,6 +124,8 @@ class PatientGroupsPage(BasePage):
     def click_create_new_group(self):
         """Click on the 'Create New Group' button."""
         try:
+            self.wait_for_loader()
+            self.is_element_visible(PatientGroupsPageLocators.HISTORY_BUTTON)
             self.click(PatientGroupsPageLocators.CREATE_NEW_GROUP_BUTTON)
             self.wait_for_dom_stability()
             return True
@@ -210,16 +212,6 @@ class PatientGroupsPage(BasePage):
                 self.click(PatientGroupsPageLocators.FILTER_DROPDOWN_SEARCH_OPTION(clinic))
                 self.wait_for_dom_stability()
 
-            if facility:
-                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_FACILITY_DROPDOWN)
-                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_FACILITY_OPTION(facility))
-                self.wait_for_loader()
-
-            if provider:
-                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_PROVIDER_DROPDOWN)
-                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_PROVIDER_OPTION(provider))
-                self.wait_for_loader()
-
             self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_APPLY_BUTTON)
             self.wait_for_loader()
             return True
@@ -231,7 +223,7 @@ class PatientGroupsPage(BasePage):
         """Select the first 'count' patients from the patient selection table."""
         try:
             for i in range(1, count + 1):
-                self.click(PatientGroupsPageLocators.PATIENT_SELECT_CHECKBOX(i))
+                self.click(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(i))
             return True
         except Exception as e:
             printf(f"Failed to select patients: {e}")
@@ -318,4 +310,213 @@ class PatientGroupsPage(BasePage):
             return self.is_element_visible(PatientGroupsPageLocators.GROUP_CREATED_NOTIFICATION)
         except Exception as e:
             printf(f"Failed to verify group creation: {e}")
+            return False
+
+    def find_group_and_click_edit(self, group_name):
+        """Find the created patient group in the list and click edit."""
+        try:
+            self.wait_for_dom_stability_full()
+            self.perform_search_by_field("Group Name", group_name)
+            sleep(1)
+            self.wait_for_dom_stability()
+            self.click_action_button("Edit")
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1), timeout=10)
+            return True
+        except Exception as e:
+            printf(f"Failed to find group '{group_name}' and click edit: {e}")
+            return False
+
+    def update_group_name(self):
+        """Update the patient group name."""
+        try:
+            self.click(PatientGroupsPageLocators.GROUP_NAME_EDIT_BUTTON)
+            self.wait_for_dom_stability()
+            new_group_name = f"{self.get_attribute(PatientGroupsPageLocators.GROUP_NAME_EDIT_FIELD, "value")} - Edited"
+            self.send_keys(PatientGroupsPageLocators.GROUP_NAME_EDIT_FIELD, new_group_name)
+            sleep(1)
+            self.click(PatientGroupsPageLocators.GROUP_NAME_EDIT_SAVE_BUTTON)
+            return new_group_name
+        except Exception as e:
+            printf(f"Failed to update group name: {e}")
+            return False
+
+    def verify_group_name_updated_successfully(self):
+        """Verify that the patient group name was updated successfully."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.GROUP_NAME_UPDATED_NOTIFICATION)
+        except Exception as e:
+            printf(f"Failed to verify group name update: {e}")
+            return False
+
+    def click_add_patients_button(self):
+        """Click the add patients button for the edited patient group."""
+        try:
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1), timeout=10)
+            self.click(PatientGroupsPageLocators.GROUP_ADD_PATIENTS_BUTTON)
+            self.wait_for_dom_stability()
+            self.check_url_contains(Routes.ADD_PATIENTS_TO_GROUP, partial=False)
+            return True
+        except Exception as e:
+            printf(f"Failed to click add patients button: {e}")
+            return False
+
+    def select_patients(self):
+        """Select patients to add to the group."""
+        try:
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1), timeout=10)
+            self.click(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1))
+            return True
+        except Exception as e:
+            printf(f"Failed to select patients: {e}")
+            return False
+
+    def click_add_selected_button(self):
+        """Click the add selected button to add patients to the group."""
+        try:
+            self.click(PatientGroupsPageLocators.GROUP_ADD_SELECTED_BUTTON)
+            return True
+        except Exception as e:
+            printf(f"Failed to click add selected button: {e}")
+            return False
+
+    def verify_patients_added_successfully(self):
+        """Verify that the patients were added to the patient group successfully."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.GROUP_PATIENT_ADDED_NOTIFICATION)
+        except Exception as e:
+            printf(f"Failed to verify patients added: {e}")
+            return False
+
+    def click_remove_patients_button(self):
+        """Click the remove patients button for the edited patient group."""
+        try:
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1), timeout=10)
+            self.click(PatientGroupsPageLocators.GROUP_REMOVE_PATIENTS_BUTTON)
+            self.wait_for_dom_stability()
+            return True
+        except Exception as e:
+            printf(f"Failed to click remove patients button: {e}")
+            return False
+
+    def select_patient_to_remove(self):
+        """Select the first patient in the table to be removed."""
+        try:
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1), timeout=10)
+            self.click(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1))
+            return True
+        except Exception as e:
+            printf(f"Failed to select patient to remove: {e}")
+            return False
+
+    def click_remove_selected_button(self):
+        """Click the remove selected button to remove patients from the group."""
+        try:
+            self.click(PatientGroupsPageLocators.GROUP_REMOVE_SELECTED_BUTTON)
+            return True
+        except Exception as e:
+            printf(f"Failed to click remove selected button: {e}")
+            return False
+
+    def verify_patients_removed_successfully(self):
+        """Verify that the patients were removed from the patient group successfully."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.GROUP_PATIENT_REMOVED_NOTIFICATION)
+        except Exception as e:
+            printf(f"Failed to verify patients removed: {e}")
+            return False
+
+    def return_to_patient_groups_list(self):
+        """Return to the patient groups list page."""
+        try:
+            self.click(PatientGroupsPageLocators.EDIT_BACK_BUTTON)
+            self.wait_for_loader()
+            return True
+        except Exception as e:
+            printf(f"Failed to return to patient groups list: {e}")
+            return False
+
+    def click_delete_patients_button(self, updated_group_name):
+        """Click the delete button for the edited patient group."""
+        try:
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1), timeout=10)
+            self.perform_search_by_field("Group Name", updated_group_name)
+            sleep(1)
+            self.wait_for_dom_stability()
+            self.click_action_button("Delete")
+            self.is_element_visible(PatientGroupsPageLocators.DELETE_DIALOG)
+            return True
+        except Exception as e:
+            printf(f"Failed to click delete button: {e}")
+            return False
+
+    def confirm_delete_patient_group_button(self):
+        """Click the confirm delete button to delete the patient group."""
+        try:
+            self.click(PatientGroupsPageLocators.DELETE_DIALOG_DELETE_BUTTON)
+            return True
+        except Exception as e:
+            printf(f"Failed to click confirm delete button: {e}")
+            return False
+
+    def verify_the_group_deleted_successfully(self):
+        """Verify that the patient group was deleted successfully."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.GROUP_DELETED_NOTIFICATION)
+        except Exception as e:
+            printf(f"Failed to verify patient group deletion: {e}")
+            return False
+
+    def delete_all_automation_patient_groups(self, keyword):
+        """Delete all patient groups containing 'Automation' in their name."""
+        deleted_count = 0
+        self.is_element_visible(PatientGroupsPageLocators.HISTORY_BUTTON)
+        for iteration in range(1, 11):
+            printf(f"Iteration {iteration}: Searching for patient groups containing '{keyword}' in name")
+            rows = self._perform_search_and_get_patient_group_rows(keyword)
+            if rows is None:
+                break
+            if self._delete_first_matching_patient_group_by_name(rows, keyword):
+                deleted_count += 1
+                printf(f" (#{deleted_count})")
+            else:
+                printf(f"No Patient group with name containing '{keyword}' found in current results - stopping")
+                break
+        if iteration == 10:
+            printf("Reached maximum iterations (10) - stopping to prevent infinite loop")
+        return deleted_count
+
+    def _perform_search_and_get_patient_group_rows(self, keyword):
+        """Perform search for patient groups containing keyword and return table rows."""
+        try:
+            if self.get_attribute(PatientGroupsPageLocators.SEARCH_INPUT, "value"):
+                printf("Clearing existing search input before performing new search")
+                self.clear_field(PatientGroupsPageLocators.SEARCH_INPUT)
+                self.click(PatientGroupsPageLocators.SEARCH_BUTTON)
+                sleep(1)
+
+            self.perform_search_by_field("Group Name", keyword)
+            self.wait_for_loader()
+            rows = self.find_elements(PatientGroupsPageLocators.PATIENT_GROUPS_TABLE_ROWS)
+            return rows
+        except Exception as e:
+            printf(f"Failed to perform search and get rows for '{keyword}': {e}")
+            return None
+
+    def _delete_first_matching_patient_group_by_name(self, rows, keyword):
+        """Delete the first patient group in the rows that contains the keyword in its name."""
+        try:
+            for row in rows:
+                name_cell = row.find_element(By.XPATH, ".//td[1]")
+                name = name_cell.text.strip()
+                if keyword in name:
+                    delete_button = row.find_element(By.XPATH, ".//td[4]//button[contains(@id,'delete')]")
+                    delete_button.click()
+                    sleep(1)
+                    self.click(PatientGroupsPageLocators.DELETE_DIALOG_DELETE_BUTTON)
+                    printf(f"Successfully deleted user group '{name}'")
+                    self.is_element_visible(PatientGroupsPageLocators.GROUP_DELETED_NOTIFICATION)
+                    return True
+            return False  # No matching group found in current rows
+        except Exception as e:
+            printf(f"Failed to delete first matching patient group: {e}")
             return False
