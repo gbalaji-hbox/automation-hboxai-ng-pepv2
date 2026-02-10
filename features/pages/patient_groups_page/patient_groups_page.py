@@ -199,10 +199,16 @@ class PatientGroupsPage(BasePage):
     def apply_filters_for_patient_group(self, clinic=None, facility=None, provider=None):
         """Apply filters for creating patient group by filters."""
         try:
+            self.wait_for_loader()
             if clinic:
-                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_CLINIC_DROPDOWN)
-                self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_CLINIC_OPTION(clinic))
-                self.wait_for_loader()
+                self.click(PatientGroupsPageLocators.FILTER_BUTTON)
+                self.wait_for_dom_stability()
+                self.click(PatientGroupsPageLocators.FILTERS_CLINIC_DROPDOWN)
+                self.wait_for_dom_stability()
+                self.send_keys(PatientGroupsPageLocators.FILTER_DROPDOWN_SEARCH_INPUT, clinic)
+                self.wait_for_dom_stability()
+                self.click(PatientGroupsPageLocators.FILTER_DROPDOWN_SEARCH_OPTION(clinic))
+                self.wait_for_dom_stability()
 
             if facility:
                 self.click(PatientGroupsPageLocators.CREATE_BY_FILTERS_FACILITY_DROPDOWN)
@@ -235,8 +241,10 @@ class PatientGroupsPage(BasePage):
         """Extract EMR IDs from the first 'count' selected patients."""
         emr_ids = []
         try:
+            self.is_element_visible(PatientGroupsPageLocators.FILTER_APPLIED_NOTIFICATION)
+            sleep(5)
             for i in range(1, count + 1):
-                emr_element = self.get_element(PatientGroupsPageLocators.PATIENT_EMR_VALUE(i))
+                emr_element = self.find_element(PatientGroupsPageLocators.PATIENT_TABLE_ROW_EMR(i))
                 emr_id = emr_element.text.strip()
                 emr_ids.append(emr_id)
             printf(f"Extracted EMR IDs: {emr_ids}")
@@ -244,6 +252,16 @@ class PatientGroupsPage(BasePage):
         except Exception as e:
             printf(f"Failed to extract EMR IDs: {e}")
             return []
+
+    def return_to_patient_groups_page(self):
+        """Return to the Patient Groups page."""
+        try:
+            self.click(PatientGroupsPageLocators.BREADCRUMBS_BACK_BUTTON)
+            self.wait_for_loader()
+            return True
+        except Exception as e:
+            printf(f"Failed to return to Patient Groups page: {e}")
+            return False
 
     def click_create_group_button(self):
         """Click the Create Group button."""
@@ -255,15 +273,18 @@ class PatientGroupsPage(BasePage):
             printf(f"Failed to click Create Group button: {e}")
             return False
 
-    def name_and_save_patient_group(self, group_name, note=None):
+    def enter_group_name_and_note(self):
         """Enter group name and save the patient group."""
         try:
+            group_name = f"Automation Group {self.faker.unique.random_int(1000, 9999)}"
+            note = f"Note for {group_name} created by automation test. \
+            \nThis group was created to verify the functionality of creating patient groups by filters."
+            self.click_create_group_button()
             self.send_keys(PatientGroupsPageLocators.GROUP_NAME_INPUT, group_name)
             if note:
                 self.send_keys(PatientGroupsPageLocators.GROUP_NOTE_TEXTAREA, note)
             self.click(PatientGroupsPageLocators.GROUP_NAME_SAVE_BUTTON)
-            self.wait_for_loader()
-            return True
+            return group_name
         except Exception as e:
             printf(f"Failed to name and save patient group: {e}")
             return False
@@ -273,8 +294,11 @@ class PatientGroupsPage(BasePage):
         try:
             # Select clinic
             self.click(PatientGroupsPageLocators.CREATE_BY_EMRS_CLINIC_DROPDOWN)
+            self.wait_for_dom_stability()
+            self.send_keys(PatientGroupsPageLocators.FILTER_DROPDOWN_SEARCH_INPUT, clinic)
+            self.wait_for_dom_stability()
             self.click(PatientGroupsPageLocators.CREATE_BY_EMRS_CLINIC_OPTION(clinic))
-            self.wait_for_loader()
+            self.wait_for_dom_stability()
 
             # Enter EMR IDs
             emr_string = ", ".join(emr_ids)
@@ -282,7 +306,7 @@ class PatientGroupsPage(BasePage):
 
             # Apply
             self.click(PatientGroupsPageLocators.CREATE_BY_EMRS_APPLY_BUTTON)
-            self.wait_for_loader()
+            self.is_element_visible(PatientGroupsPageLocators.EMR_SEARCH_COMPLETED_NOTIFICATION)
             return True
         except Exception as e:
             printf(f"Failed to create patient group by EMRs: {e}")
