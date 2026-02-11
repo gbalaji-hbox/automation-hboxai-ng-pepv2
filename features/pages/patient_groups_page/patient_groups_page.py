@@ -1,3 +1,4 @@
+import os
 from time import sleep
 
 from faker.proxy import Faker
@@ -224,13 +225,11 @@ class PatientGroupsPage(BasePage):
         """Select the first 'count' patients from the patient selection table."""
         try:
             count = int(count)
-            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1), timeout=10)
-            self.is_element_visible(PatientGroupsPageLocators.FILTERED_COUNT, timeout=10)
+            self.is_element_visible(PatientGroupsPageLocators.SELECT_PATIENTS_INPUT, timeout=10)
             sleep(1)
             self.wait_for_dom_stability()
-            for i in range(1, count + 1):
-                printf(f"clicking row {i}")
-                self.click(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(i))
+            self.send_keys(PatientGroupsPageLocators.SELECT_PATIENTS_INPUT, count)
+            self.is_element_visible(PatientGroupsPageLocators.PATIENTS_SELECTED_NOTIFICATION)
             return True
         except Exception as e:
             printf(f"Failed to select patients: {e}")
@@ -265,8 +264,6 @@ class PatientGroupsPage(BasePage):
     def click_create_group_button(self):
         """Click the Create Group button."""
         try:
-            self.scroll_to_visible_element(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
-            self.wait_for_dom_stability()
             self.click(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
             self.wait_for_dom_stability()
             return True
@@ -528,4 +525,26 @@ class PatientGroupsPage(BasePage):
             return False  # No matching group found in current rows
         except Exception as e:
             printf(f"Failed to delete first matching patient group: {e}")
+            return False
+
+    def create_patient_group_by_excel_upload(self):
+        """Create patient group by excel upload."""
+        try:
+            group_name = f"Automation Group {self.faker.unique.random_int(1000, 9999)}"
+            self.send_keys(PatientGroupsPageLocators.GROUP_NAME_INPUT_EXCEL, group_name)
+            file_path = os.path.abspath("utils/dummy-patient-ids.xlsx")
+            self.file_upload_input(PatientGroupsPageLocators.GROUP_EXCEL_UPLOAD_INPUT, file_path)
+            self.wait_for_dom_stability()
+            self.click(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
+            return group_name
+        except Exception as e:
+            printf(f"Failed to create patient group by excel upload: {e}")
+            return False
+
+    def verify_patient_group_created_by_excel_upload(self):
+        """Verify that the patient group created by excel upload was created successfully."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.EXCEL_GROUP_CREATED_NOTIFICATION)
+        except Exception as e:
+            printf(f"Failed to verify patient group creation by excel upload: {e}")
             return False

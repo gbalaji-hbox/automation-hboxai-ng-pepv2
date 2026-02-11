@@ -4,7 +4,7 @@ Feature: tc13 - Patient Groups creation by filters
   I want to create patient groups using different methods
   So that I can efficiently manage patient populations
 
-  @only
+
   Scenario: Create patient group by filters and extract EMR IDs
     Given I am on the Patient Groups page
     When I click on "Create New Group" button

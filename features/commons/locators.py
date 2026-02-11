@@ -246,6 +246,7 @@ class PatientGroupsPageLocators:
     FILTER_DROPDOWN_SEARCH_OPTION = lambda clinic: (By.XPATH, f"//div[@role='option' and normalize-space(text())='{clinic}']")
 
     FILTERED_COUNT = (By.XPATH, "//div[contains(normalize-space(),'Filtered count')]")
+    SELECT_PATIENTS_INPUT = (By.XPATH, "//input[@placeholder='Enter number']")
     PATIENTS_TABLE = (By.XPATH, "//table[@id='table-admin-patient-list']")
     PATIENTS_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-patient-list']/tbody/tr")
     PATIENT_TABLE_ROW_CHECKBOX = lambda row_index: (By.XPATH, f"//table[@id='table-admin-patient-list']/tbody/tr[{row_index}]/td[1]/button[@role='checkbox']")
@@ -253,13 +254,14 @@ class PatientGroupsPageLocators:
     CREATE_BY_FILTERS_APPLY_BUTTON = (By.XPATH, "//button[normalize-space(text())='Apply']")
 
     # Create Group button
-    CREATE_GROUP_BUTTON = (By.XPATH, "//button[normalize-space()='Create Group']")
+    CREATE_GROUP_BUTTON = (By.XPATH, "//button[normalize-space(text())='Create Group']")
     GROUP_NAME = (By.XPATH, "//h1")
 
     # Name Patient Group dialog
     GROUP_NAME_DIALOG = (By.XPATH, "//div[@role='dialog']//h2[normalize-space(text())='Name Patient Group']")
     GROUP_NAME_DIALOG_CLOSE_BUTTON = (By.XPATH, "//div[@role='dialog']//button[contains(.,'Close')]")
     GROUP_NAME_INPUT = (By.XPATH, "//input[@placeholder='Enter Group Name']")
+    GROUP_NAME_INPUT_EXCEL = (By.XPATH, "(//label[contains(.,'Group Name *')]/following::input)[1]")
     GROUP_NOTE_TEXTAREA = (By.XPATH, "//label[normalize-space(text())='Note']/following::textarea")
     GROUP_NAME_SAVE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Save']")
     GROUP_NAME_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
@@ -279,11 +281,15 @@ class PatientGroupsPageLocators:
     CREATE_BY_EMRS_APPLY_BUTTON = (By.XPATH, "//button[normalize-space(text())='Apply']")
     CREATE_BY_EMRS_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
 
+    GROUP_EXCEL_UPLOAD_INPUT = (By.XPATH, "//input[@type='file']")
+
     # Success notification
     FILTER_APPLIED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Filters Applied')]")
     EMR_SEARCH_COMPLETED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Search Complete')]")
     GROUP_CREATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Group Created Successfully')]")
+    EXCEL_GROUP_CREATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patient Group Created')]")
     GROUP_NAME_UPDATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Group name updated successfully.')]")
     GROUP_PATIENT_REMOVED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patients removed')]")
     GROUP_PATIENT_ADDED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patients added')]")
     GROUP_DELETED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patient Group Deleted')]")
+    PATIENTS_SELECTED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patients Selected')]")
