@@ -42,7 +42,6 @@ Feature: tc13 - Patient Groups creation by filters
     When I click create group button on duplicate page
     Then the duplicate patient group should be created successfully
 
-  @only
   Scenario: Archive and unarchive patient group
     Given I am on the Patient Groups page
     When I find a patient group and click archive

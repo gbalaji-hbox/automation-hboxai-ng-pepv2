@@ -328,8 +328,3 @@ class PatientGroupsPageLocators:
     DUPLICATE_FROM_LABEL = (By.XPATH, "//p[contains(text(),'Duplicating from:')]")
     DUPLICATE_NEW_GROUP_NAME_INPUT = (By.XPATH, "//input[@placeholder='Enter new group name']")
     DUPLICATE_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
-    DUPLICATE_SEARCH_NAME_INPUT = (By.XPATH, "//input[@placeholder='Search by name']")
-    DUPLICATE_SEARCH_PHONE_INPUT = (By.XPATH, "//input[@placeholder='Search by Phone Number']")
-    DUPLICATE_SEARCH_EMR_INPUT = (By.XPATH, "//input[@placeholder='Search by EMR']")
-    DUPLICATE_FILTER_BUTTON = (By.XPATH, "//button[normalize-space(text())='Filter']")
-    DUPLICATE_PATIENTS_HEADING = (By.XPATH, "//h3[contains(text(),'Patients in')]")

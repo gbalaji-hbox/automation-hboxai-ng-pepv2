@@ -495,12 +495,9 @@ class PatientGroupsPage(BasePage):
     def _perform_search_and_get_patient_group_rows(self, keyword):
         """Perform search for patient groups containing keyword and return table rows."""
         try:
-            if self.get_attribute(PatientGroupsPageLocators.SEARCH_INPUT, "value"):
+            if not self.get_attribute(PatientGroupsPageLocators.SEARCH_INPUT, "value") == "":
                 printf("Clearing existing search input before performing new search")
-                self.clear_field(PatientGroupsPageLocators.SEARCH_INPUT)
-                self.click(PatientGroupsPageLocators.SEARCH_BUTTON)
-                sleep(1)
-
+                self.refresh_page()
             self.perform_search_by_field("Group Name", keyword)
             self.wait_for_loader()
             rows = self.find_elements(PatientGroupsPageLocators.PATIENT_GROUPS_TABLE_ROWS)
@@ -555,7 +552,11 @@ class PatientGroupsPage(BasePage):
     def click_duplicate_button(self):
         """Click the Duplicate button for the first patient group in the list."""
         try:
+            if not self.get_attribute(PatientGroupsPageLocators.SEARCH_INPUT, "value") == "":
+                self.refresh_page()
             self.wait_for_loader()
+            self.wait_for_dom_stability()
+            sleep(1)
             self.click(PatientGroupsPageLocators.DUPLICATE_BUTTON)
             self.wait_for_dom_stability()
             return True
@@ -593,7 +594,11 @@ class PatientGroupsPage(BasePage):
             self.wait_for_loader()
             self.is_clickable(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
             sleep(3)
-            return self.get_attribute(PatientGroupsPageLocators.DUPLICATE_NEW_GROUP_NAME_INPUT, "value")
+            default_name = self.get_attribute(PatientGroupsPageLocators.DUPLICATE_NEW_GROUP_NAME_INPUT, "value")
+            new_name = f"Automation {default_name}"
+            self.send_keys(PatientGroupsPageLocators.DUPLICATE_NEW_GROUP_NAME_INPUT, new_name)
+            sleep(1)
+            return new_name
         except Exception as e:
             printf(f"Failed to get default duplicate group name: {e}")
             return None
