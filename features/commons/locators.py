@@ -228,7 +228,12 @@ class PatientGroupsPageLocators:
     DELETE_DIALOG_DELETE_BUTTON = (By.XPATH, "//button[normalize-space()='Delete']")
     ARCHIVE_DIALOG = (By.XPATH, "//div[@role='alertdialog']//h2[contains(text(), 'Archive')]")
     ARCHIVE_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    ARCHIVE_DIALOG_ARCHIVE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Archive']")
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+
+    # Status locators
+    ACTIVE_STATUS = (By.XPATH, "//td[normalize-space(text())='Active']")
+    ARCHIVED_STATUS = (By.XPATH, "//td[normalize-space(text())='Archived']")
     CREATE_NEW_GROUP_BUTTON = (By.XPATH, "//button[normalize-space()='Create New Group']")
     ARCHIVED_GROUPS_BUTTON = (By.XPATH, "//button[normalize-space()='Archived Groups']")
     CREATE_BY_EMRS_OPTION = (By.XPATH, "//div[@role='menuitem'][normalize-space(text())='Create New Group By EMRs']")
@@ -293,3 +298,38 @@ class PatientGroupsPageLocators:
     GROUP_PATIENT_ADDED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patients added')]")
     GROUP_DELETED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patient Group Deleted')]")
     PATIENTS_SELECTED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patients Selected')]")
+    GROUP_DUPLICATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Success')]")
+    GROUP_ARCHIVED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patient Group Archived')]")
+    GROUP_UNARCHIVED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Success')]")
+
+    # Archive Dialog locators
+    ARCHIVE_DIALOG_TITLE = (By.XPATH, "//h2[normalize-space(text())='Archive Patient Group']")
+    ARCHIVE_DIALOG_MESSAGE = (By.XPATH, "//p[contains(text(),'archive this patient group')]")
+
+    # Unarchive Dialog locators
+    UNARCHIVE_DIALOG_TITLE = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']")
+    UNARCHIVE_DIALOG_CANCEL_BUTTON = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following::button[normalize-space(text())='Cancel']")
+    UNARCHIVE_DIALOG_UNARCHIVE_BUTTON = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following::button[normalize-space(text())='Unarchive']")
+
+    # Archived Groups Page locators
+    ARCHIVED_GROUPS_PAGE_HEADING = (By.XPATH, "//h1[normalize-space(text())='Archived Patient Groups']")
+    BACK_TO_PATIENT_GROUPS_BUTTON = (By.XPATH, "//button[normalize-space(text())='Back to Patient Groups']")
+    UNARCHIVE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Unarchive']")
+    ARCHIVED_GROUP_TABLE = (By.XPATH, "//table[@id='table-admin-archived-patient-groups']")
+    ARCHIVED_GROUP_ROWS = (By.XPATH, "//table[@id='table-admin-archived-patient-groups']/tbody/tr")
+    ARCHIVED_GROUP_ID = (By.XPATH, ".//td[1]")
+    ARCHIVED_GROUP_NAME = (By.XPATH, ".//td[2]")
+    ARCHIVED_GROUP_PATIENT_COUNT = (By.XPATH, ".//td[3]")
+    ARCHIVED_GROUP_STATUS = (By.XPATH, ".//td[4]")
+    ARCHIVED_GROUP_ACTIONS = (By.XPATH, ".//td[5]//button")
+
+    # Duplicate Page locators
+    DUPLICATE_PAGE_HEADING = (By.XPATH, "//h1[normalize-space(text())='Duplicate Patient Group']")
+    DUPLICATE_FROM_LABEL = (By.XPATH, "//p[contains(text(),'Duplicating from:')]")
+    DUPLICATE_NEW_GROUP_NAME_INPUT = (By.XPATH, "//input[@placeholder='Enter new group name']")
+    DUPLICATE_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    DUPLICATE_SEARCH_NAME_INPUT = (By.XPATH, "//input[@placeholder='Search by name']")
+    DUPLICATE_SEARCH_PHONE_INPUT = (By.XPATH, "//input[@placeholder='Search by Phone Number']")
+    DUPLICATE_SEARCH_EMR_INPUT = (By.XPATH, "//input[@placeholder='Search by EMR']")
+    DUPLICATE_FILTER_BUTTON = (By.XPATH, "//button[normalize-space(text())='Filter']")
+    DUPLICATE_PATIENTS_HEADING = (By.XPATH, "//h3[contains(text(),'Patients in')]")

@@ -34,6 +34,29 @@ Feature: tc13 - Patient Groups creation by filters
     And I confirm the patient group delete in the dialog
     Then the patient group should be deleted successfully
 
+  Scenario: Create duplicate patient group
+    Given I am on the Patient Groups page
+    When I find a patient group and click duplicate
+    Then the duplicate page should open with correct heading
+    And the default group name should contain "(Copy)"
+    When I click create group button on duplicate page
+    Then the duplicate patient group should be created successfully
+
+  @only
+  Scenario: Archive and unarchive patient group
+    Given I am on the Patient Groups page
+    When I find a patient group and click archive
+    Then the archive confirmation dialog should appear
+    When I confirm the archive action
+    Then the patient group should be archived successfully
+    When I click on Archived Groups button
+    Then the archived groups page should open
+    And the archived group should appear in the list
+    When I click the unarchive button for the archived group
+    Then the unarchive confirmation dialog should appear
+    When I confirm the unarchive action
+    Then the patient group should be restored to active status
+
   Scenario: Master Cleanup - Delete all remaining test Patient Groups
     Given I am on the Patient Groups page
     When I delete all patient groups containing "Automation" in their name
