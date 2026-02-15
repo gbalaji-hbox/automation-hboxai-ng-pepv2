@@ -210,6 +210,7 @@ class PatientProgramStatusPageLocators:
 class WorkflowPageLocators:
     """Locators for Workflow tab under Workflow & Tasks page."""
     WORKFLOW_TAB = (By.XPATH, "//button[@role='tab' and normalize-space()='Workflow']")
+    CREATE_NEW_WORKFLOW_BUTTON = (By.XPATH, "//button[normalize-space()='Create New Workflow']")
     WORKFLOW_TABLE = (By.XPATH, "//table[@id='table-admin-workflows']")
     WORKFLOW_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-workflows']/tbody/tr")
     WORKFLOW_SEARCH_DROPDOWN = (By.XPATH, "//button[@role='combobox'][.//span[normalize-space()='Workflow Name'] or normalize-space()='Workflow Name']")
@@ -226,7 +227,34 @@ class WorkflowPageLocators:
     OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
     DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following-sibling::p")
     DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+
+    WORKFLOW_NAME_INPUT = (By.XPATH, "//label[normalize-space()='Workflow Name']/following::input[@name='workflowName']")
+    APPLICABLE_PROGRAMS_DROPDOWN = (By.XPATH, "//label[normalize-space()='Applicable Programs']/following::button[@role='combobox'][1]")
+    DROPDOWN_FIRST_OPTION = (By.XPATH, "//div[@role='listbox']//div[@role='option'][1]")
+
+    TRIGGER_WORKFLOW_DROPDOWN = (By.XPATH, "//table[.//th[normalize-space()='Workflow']]//tbody/tr[1]/td[1]//button[@role='combobox'][1]")
+    TRIGGER_STATUS_DROPDOWN = (By.XPATH, "//table[.//th[normalize-space()='Workflow']]//tbody/tr[1]/td[2]//button[@role='combobox'][1]")
+    TRIGGER_ROW_DELETE_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Workflow']]//tbody/tr[1]/td[last()]//button")
+    ADD_TRIGGER_BUTTON = (By.XPATH, "//button[normalize-space()='Add Trigger']")
+    SECOND_TRIGGER_ROW_DELETE_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Workflow']]//tbody/tr[2]/td[last()]//button")
+
+    ATTEMPT_TASK_DROPDOWN = (By.XPATH, "//table[.//th[normalize-space()='Attempt No.']]//tbody/tr[1]/td[2]//button[@role='combobox'][1]")
+    ATTEMPT_TASK_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option' and normalize-space(text())='{option_text}']")
+    ATTEMPT_WAITING_PERIOD_INPUT = (By.XPATH, "//table[.//th[normalize-space()='Attempt No.']]//tbody/tr[1]//input[@type='number' or @role='spinbutton']")
+    ADD_ATTEMPT_BUTTON = (By.XPATH, "//button[normalize-space()='Add Attempt']")
+    SECOND_ATTEMPT_DELETE_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Attempt No.']]//tbody/tr[2]/td[last()]//button")
+
+    USER_GROUP_DROPDOWN = (By.XPATH, "//label[contains(.,'User Group *')]/following::button[@role='combobox']")
+
+    CREATE_WORKFLOW_BUTTON = (By.XPATH, "//button[normalize-space()='Create Workflow']")
+    UPDATE_WORKFLOW_BUTTON = (By.XPATH, "//button[normalize-space()='Update Workflow']")
+    WORKFLOW_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+
+    WORKFLOW_CREATED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Workflow Created']")
+    WORKFLOW_UPDATED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Workflow Updated']")
+    WORKFLOW_DELETED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Success']")
 
 
 class WorkflowStatusPageLocators:
