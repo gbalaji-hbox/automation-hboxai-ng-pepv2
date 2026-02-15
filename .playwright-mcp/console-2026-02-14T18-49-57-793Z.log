@@ -1,0 +1,4 @@
+[      16ms] [ERROR] The Content Security Policy directive 'frame-ancestors' is ignored when delivered via a <meta> element. @ https://ngpepv2.hbox.lo/:7
+[  185972ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://dev-api.hbox.lo/auth/signin:0
+[  185973ms] [ERROR] Login failed: User authentication failed.
+Email or password is incorrect @ https://ngpepv2.hbox.lo/assets/index-CjLd7gdT.js:459

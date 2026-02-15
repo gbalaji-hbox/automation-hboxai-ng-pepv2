@@ -275,6 +275,15 @@ class BasePage:
             suppress_timeout=False,
         )
 
+    def file_upload_input(self, locator, file_path):
+        """Upload a file by sending the file path to an <input type='file'> element."""
+        return self._retry_action(
+            action=lambda loc: self.find_element(loc).send_keys(file_path),
+            locator=locator,
+            wait_condition=ec.presence_of_element_located,
+            suppress_timeout=False,
+        )
+
     def _flatten_keys(self, keys):
         if len(keys) == 1 and isinstance(keys[0], (list, tuple)):
             return tuple(keys[0])
