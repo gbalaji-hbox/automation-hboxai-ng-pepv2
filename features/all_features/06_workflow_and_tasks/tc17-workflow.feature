@@ -4,7 +4,6 @@ Feature: tc17 - Workflow management and operations
   I want to manage and operate workflows
   So that I can ensure proper workflow administration
 
-  @only
   Scenario Outline: Workflow tab search functionality
     Given I am on the Workflow & Tasks page
     And I am on the Workflow tab from workflow tasks

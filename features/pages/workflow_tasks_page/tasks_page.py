@@ -1,3 +1,5 @@
+from time import sleep
+
 from selenium.common import NoSuchElementException
 
 from features.commons.locators import TasksPageLocators
@@ -10,6 +12,10 @@ from utils.utils import extract_table_row_as_dict, verify_search_results_in_tabl
 class TasksPage(BasePage):
 
     def navigate_to_tab(self):
+        if not self.get_attribute(TasksPageLocators.TASKS_SEARCH_INPUT, "value") == "":
+            self.click(TasksPageLocators.TASK_CLEAR_BUTTON)
+            self.wait_for_loader(timeout=10)
+
         self.click(TasksPageLocators.TASKS_TAB)
         self.wait_for_loader()
 
@@ -21,6 +27,8 @@ class TasksPage(BasePage):
         try:
             printf(f"Performing tasks search for field '{field}' with value '{value}'")
             self.send_keys(TasksPageLocators.TASKS_SEARCH_INPUT, value)
+            sleep(1)
+            self.click(TasksPageLocators.TASKS_SEARCH_BUTTON)
             self.wait_for_loader()
             return True
         except NoSuchElementException as e:

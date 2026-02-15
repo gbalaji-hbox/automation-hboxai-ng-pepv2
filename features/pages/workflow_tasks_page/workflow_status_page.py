@@ -1,3 +1,5 @@
+from time import sleep
+
 from selenium.common import NoSuchElementException
 
 from features.commons.locators import WorkflowStatusPageLocators
@@ -10,6 +12,10 @@ from utils.utils import extract_table_row_as_dict, verify_search_results_in_tabl
 class WorkflowStatusPage(BasePage):
 
     def navigate_to_tab(self):
+        if not self.get_attribute(WorkflowStatusPageLocators.WORKFLOW_STATUS_SEARCH_INPUT, "value") == "":
+            self.click(WorkflowStatusPageLocators.WORKFLOW_STATUS_CLEAR_BUTTON)
+            self.wait_for_loader()
+
         self.click(WorkflowStatusPageLocators.WORKFLOW_STATUS_TAB)
         self.wait_for_loader()
 
@@ -21,6 +27,8 @@ class WorkflowStatusPage(BasePage):
         try:
             printf(f"Performing workflow status search for field '{field}' with value '{value}'")
             self.send_keys(WorkflowStatusPageLocators.WORKFLOW_STATUS_SEARCH_INPUT, value)
+            sleep(1)
+            self.click(WorkflowStatusPageLocators.WORKFLOW_STATUS_SEARCH_BUTTON)
             self.wait_for_loader()
             return True
         except NoSuchElementException as e:

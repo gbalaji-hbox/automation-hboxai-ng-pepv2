@@ -10,6 +10,10 @@ from utils.utils import extract_table_row_as_dict, verify_search_results_in_tabl
 class WorkflowPage(BasePage):
 
     def navigate_to_tab(self):
+        if not self.get_attribute(WorkflowPageLocators.WORKFLOW_SEARCH_INPUT, "value") == "":
+            self.refresh_page()
+            self.wait_for_loader(timeout=10)
+
         self.click(WorkflowPageLocators.WORKFLOW_TAB)
         self.wait_for_loader()
 
@@ -22,8 +26,14 @@ class WorkflowPage(BasePage):
             printf(f"Performing workflow search for field '{field}' with value '{value}'")
             self.click(WorkflowPageLocators.WORKFLOW_SEARCH_DROPDOWN)
             self.click(WorkflowPageLocators.DROPDOWN_OPTION(field))
-            self.send_keys(WorkflowPageLocators.WORKFLOW_SEARCH_INPUT, value)
-            self.click(WorkflowPageLocators.WORKFLOW_SEARCH_BUTTON)
+            if field == "Assigned User Group":
+                self.custom_select_by_locator(
+                    WorkflowPageLocators.WORKFLOW_ASSIGNED_GROUP_DROPDOWN,
+                    WorkflowPageLocators.WORKFLOW_ASSIGNED_GROUP_OPTION(value)
+                )
+            else:
+                self.send_keys(WorkflowPageLocators.WORKFLOW_SEARCH_INPUT, value)
+                self.click(WorkflowPageLocators.WORKFLOW_SEARCH_BUTTON)
             self.wait_for_loader()
             return True
         except NoSuchElementException as e:
