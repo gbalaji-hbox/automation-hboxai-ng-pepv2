@@ -32,7 +32,7 @@ Feature: tc20 - Workflow CRUD operations
     And I click "Cancel" button on the workflow form
     Then modal closes without creating workflow
 
-  @regression @allure.label.severity:critical @only
+  @regression @allure.label.severity:critical
   Scenario: Master Cleanup - Delete all remaining test data
     Given I am on the Workflow & Tasks page
     And I am on the Workflow tab from workflow tasks

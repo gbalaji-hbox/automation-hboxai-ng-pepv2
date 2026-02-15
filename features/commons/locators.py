@@ -260,39 +260,73 @@ class WorkflowPageLocators:
 class WorkflowStatusPageLocators:
     """Locators for Workflow Status tab under Workflow & Tasks page."""
     WORKFLOW_STATUS_TAB = (By.XPATH, "//button[@role='tab' and normalize-space()='Workflow Status']")
-    WORKFLOW_STATUS_TABLE = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]")
-    WORKFLOW_STATUS_TABLE_ROWS = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]/tbody/tr")
+    ADD_NEW_WORKFLOW_STATUS_BUTTON = (By.XPATH, "//button[normalize-space()='Add New Workflow Status']")
+    WORKFLOW_STATUS_TABLE = (By.XPATH, "//table[@id='table-admin-workflow-statuses']")
+    WORKFLOW_STATUS_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-workflow-statuses']/tbody/tr")
     WORKFLOW_STATUS_SEARCH_INPUT = (By.XPATH, "//button[normalize-space()='Search']/preceding-sibling::input")
     WORKFLOW_STATUS_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
     WORKFLOW_STATUS_CLEAR_BUTTON = (By.XPATH, "//button[normalize-space()='Clear']")
-    WORKFLOW_STATUS_HISTORY_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
-    WORKFLOW_STATUS_EDIT_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
-    WORKFLOW_STATUS_DELETE_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
+    WORKFLOW_STATUS_HISTORY_BUTTON = (By.XPATH, "//table[@id='table-admin-workflow-statuses']/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
+    WORKFLOW_STATUS_EDIT_BUTTON = (By.XPATH, "//table[@id='table-admin-workflow-statuses']/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
+    WORKFLOW_STATUS_DELETE_BUTTON = (By.XPATH, "//table[@id='table-admin-workflow-statuses']/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
     OPERATION_HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
     OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
     DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following-sibling::p")
     DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
     DROPDOWN_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+    WORKFLOW_STATUS_NAME_INPUT = (By.XPATH, "//input[@placeholder='Enter workflow status name']")
+    WORKFLOW_STATUS_SAVE_BUTTON = (By.XPATH, "//button[normalize-space()='Save']")
+    WORKFLOW_STATUS_UPDATE_BUTTON = (By.XPATH, "//button[normalize-space()='Update']")
+    WORKFLOW_STATUS_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space()='Cancel']")
+    WORKFLOW_STATUS_EDIT_BUTTON_BY_NAME = lambda name: (
+        By.XPATH,
+        f"//table[.//th[normalize-space()='Workflow Status Name']]//tr[td[1][normalize-space()='{name}']]//button[contains(@id,'edit')][1]",
+    )
+    WORKFLOW_STATUS_DELETE_BUTTON_BY_NAME = lambda name: (
+        By.XPATH,
+        f"//table[.//th[normalize-space()='Workflow Status Name']]//tr[td[1][normalize-space()='{name}']]//button[contains(@id,'delete')][1]",
+    )
+    WORKFLOW_STATUS_CREATED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Workflow Status Added']")
+    WORKFLOW_STATUS_UPDATED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Workflow Status Updated']")
+    WORKFLOW_STATUS_DELETED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Workflow Status Deleted']")
 
 
 class TasksPageLocators:
     """Locators for Tasks tab under Workflow & Tasks page."""
     TASKS_TAB = (By.XPATH, "//button[@role='tab' and normalize-space()='Tasks']")
-    TASKS_TABLE = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]")
-    TASKS_TABLE_ROWS = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]/tbody/tr")
+    ADD_NEW_TASK_BUTTON = (By.XPATH, "//button[normalize-space()='Add New Task']")
+    TASKS_TABLE = (By.XPATH, "//table[@id='table-admin-workflow-tasks']")
+    TASKS_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-workflow-tasks']/tbody/tr")
     TASKS_SEARCH_INPUT = (By.XPATH, "//button[normalize-space()='Search']/preceding-sibling::input")
     TASKS_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
     TASK_CLEAR_BUTTON = (By.XPATH, "//button[normalize-space()='Clear']")
-    TASKS_HISTORY_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
-    TASKS_EDIT_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
-    TASKS_DELETE_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
+    TASKS_HISTORY_BUTTON = (By.XPATH, "//table[@id='table-admin-workflow-tasks']/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
+    TASKS_EDIT_BUTTON = (By.XPATH, "//table[@id='table-admin-workflow-tasks']/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
+    TASKS_DELETE_BUTTON = (By.XPATH, "//table[@id='table-admin-workflow-tasks']/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
     OPERATION_HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
     OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
-    DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following-sibling::p")
+    DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']")
     DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
     DROPDOWN_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+    TASK_NAME_INPUT = (By.XPATH, "//input[@id='task_form_name_input']")
+    TASK_SAVE_BUTTON = (By.XPATH, "//button[normalize-space()='Save']")
+    TASK_UPDATE_BUTTON = (By.XPATH, "//button[normalize-space()='Update']")
+    TASK_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space()='Cancel']")
+    TASK_EDIT_BUTTON_BY_NAME = lambda name: (
+        By.XPATH,
+        f"//table[.//th[normalize-space()='Task Name']]//tr[td[1][normalize-space()='{name}']]//button[contains(@id,'edit')][1]",
+    )
+    TASK_DELETE_BUTTON_BY_NAME = lambda name: (
+        By.XPATH,
+        f"//table[.//th[normalize-space()='Task Name']]//tr[td[1][normalize-space()='{name}']]//button[contains(@id,'delete')][1]",
+    )
+    TASK_CREATED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Task Added']")
+    TASK_UPDATED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Task Updated']")
+    TASK_DELETED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Task Deleted']")
 
 
 class PatientGroupsPageLocators:
