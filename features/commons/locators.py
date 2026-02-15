@@ -207,6 +207,66 @@ class PatientProgramStatusPageLocators:
     PATIENT_PROGRAM_STATUS_DELETED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Program status deleted successfully')]")
 
 
+class WorkflowPageLocators:
+    """Locators for Workflow tab under Workflow & Tasks page."""
+    WORKFLOW_TAB = (By.XPATH, "//button[@role='tab' and normalize-space()='Workflow']")
+    WORKFLOW_TABLE = (By.XPATH, "//table[@id='table-admin-workflows']")
+    WORKFLOW_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-workflows']/tbody/tr")
+    WORKFLOW_SEARCH_DROPDOWN = (By.XPATH, "//button[@role='combobox'][.//span[normalize-space()='Workflow Name'] or normalize-space()='Workflow Name']")
+    DROPDOWN_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+    WORKFLOW_SEARCH_INPUT = (By.XPATH, "//button[normalize-space()='Search']/preceding-sibling::input")
+    WORKFLOW_ASSIGNED_GROUP_DROPDOWN = (By.XPATH, "//button[normalize-space()='Select user groups...']")
+    WORKFLOW_ASSIGNED_GROUP_SEARCH_INPUT = (By.XPATH, "//button[normalize-space()='Select user groups...']/following::input[@placeholder='Search user groups...']")
+    WORKFLOW_ASSIGNED_GROUP_OPTION = lambda group_name: (By.XPATH, f"//div[@role='option']/following::span[normalize-space(text())='{group_name}']")
+    WORKFLOW_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
+    WORKFLOW_HISTORY_BUTTON = (By.XPATH, "//table[@id='table-admin-workflows']/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
+    WORKFLOW_EDIT_BUTTON = (By.XPATH, "//table[@id='table-admin-workflows']/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
+    WORKFLOW_DELETE_BUTTON = (By.XPATH, "//table[@id='table-admin-workflows']/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
+    OPERATION_HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
+    OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
+    DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following-sibling::p")
+    DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+
+
+class WorkflowStatusPageLocators:
+    """Locators for Workflow Status tab under Workflow & Tasks page."""
+    WORKFLOW_STATUS_TAB = (By.XPATH, "//button[@role='tab' and normalize-space()='Workflow Status']")
+    WORKFLOW_STATUS_TABLE = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]")
+    WORKFLOW_STATUS_TABLE_ROWS = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]/tbody/tr")
+    WORKFLOW_STATUS_SEARCH_INPUT = (By.XPATH, "//button[normalize-space()='Search']/preceding-sibling::input")
+    WORKFLOW_STATUS_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
+    WORKFLOW_STATUS_CLEAR_BUTTON = (By.XPATH, "//button[normalize-space()='Clear']")
+    WORKFLOW_STATUS_HISTORY_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
+    WORKFLOW_STATUS_EDIT_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
+    WORKFLOW_STATUS_DELETE_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Workflow Status Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
+    OPERATION_HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
+    OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
+    DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following-sibling::p")
+    DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+    DROPDOWN_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+
+
+class TasksPageLocators:
+    """Locators for Tasks tab under Workflow & Tasks page."""
+    TASKS_TAB = (By.XPATH, "//button[@role='tab' and normalize-space()='Tasks']")
+    TASKS_TABLE = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]")
+    TASKS_TABLE_ROWS = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]/tbody/tr")
+    TASKS_SEARCH_INPUT = (By.XPATH, "//button[normalize-space()='Search']/preceding-sibling::input")
+    TASKS_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
+    TASK_CLEAR_BUTTON = (By.XPATH, "//button[normalize-space()='Clear']")
+    TASKS_HISTORY_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
+    TASKS_EDIT_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
+    TASKS_DELETE_BUTTON = (By.XPATH, "//table[.//th[normalize-space()='Task Name']]/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
+    OPERATION_HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
+    OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
+    DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following-sibling::p")
+    DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+    DROPDOWN_OPTION = lambda option_text: (By.XPATH, f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+
+
 class PatientGroupsPageLocators:
     """Locators for the patient groups page elements."""
     SEARCH_TYPE_DROPDOWN = (By.XPATH, "(//button[@role='combobox'])[1]")
@@ -228,7 +288,12 @@ class PatientGroupsPageLocators:
     DELETE_DIALOG_DELETE_BUTTON = (By.XPATH, "//button[normalize-space()='Delete']")
     ARCHIVE_DIALOG = (By.XPATH, "//div[@role='alertdialog']//h2[contains(text(), 'Archive')]")
     ARCHIVE_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    ARCHIVE_DIALOG_ARCHIVE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Archive']")
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+
+    # Status locators
+    ACTIVE_STATUS = (By.XPATH, "//td[normalize-space(text())='Active']")
+    ARCHIVED_STATUS = (By.XPATH, "//td[normalize-space(text())='Archived']")
     CREATE_NEW_GROUP_BUTTON = (By.XPATH, "//button[normalize-space()='Create New Group']")
     ARCHIVED_GROUPS_BUTTON = (By.XPATH, "//button[normalize-space()='Archived Groups']")
     CREATE_BY_EMRS_OPTION = (By.XPATH, "//div[@role='menuitem'][normalize-space(text())='Create New Group By EMRs']")
@@ -245,6 +310,8 @@ class PatientGroupsPageLocators:
     FILTERS_CLINIC_DROPDOWN = (By.XPATH, "//h2[normalize-space(text())='Select Clinics and Providers']/following::button[@role='combobox'][1]")
     FILTER_DROPDOWN_SEARCH_OPTION = lambda clinic: (By.XPATH, f"//div[@role='option' and normalize-space(text())='{clinic}']")
 
+    FILTERED_COUNT = (By.XPATH, "//div[contains(normalize-space(),'Filtered count')]")
+    SELECT_PATIENTS_INPUT = (By.XPATH, "//input[@placeholder='Enter number']")
     PATIENTS_TABLE = (By.XPATH, "//table[@id='table-admin-patient-list']")
     PATIENTS_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-patient-list']/tbody/tr")
     PATIENT_TABLE_ROW_CHECKBOX = lambda row_index: (By.XPATH, f"//table[@id='table-admin-patient-list']/tbody/tr[{row_index}]/td[1]/button[@role='checkbox']")
@@ -259,6 +326,7 @@ class PatientGroupsPageLocators:
     GROUP_NAME_DIALOG = (By.XPATH, "//div[@role='dialog']//h2[normalize-space(text())='Name Patient Group']")
     GROUP_NAME_DIALOG_CLOSE_BUTTON = (By.XPATH, "//div[@role='dialog']//button[contains(.,'Close')]")
     GROUP_NAME_INPUT = (By.XPATH, "//input[@placeholder='Enter Group Name']")
+    GROUP_NAME_INPUT_EXCEL = (By.XPATH, "(//label[contains(.,'Group Name *')]/following::input)[1]")
     GROUP_NOTE_TEXTAREA = (By.XPATH, "//label[normalize-space(text())='Note']/following::textarea")
     GROUP_NAME_SAVE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Save']")
     GROUP_NAME_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
@@ -278,11 +346,45 @@ class PatientGroupsPageLocators:
     CREATE_BY_EMRS_APPLY_BUTTON = (By.XPATH, "//button[normalize-space(text())='Apply']")
     CREATE_BY_EMRS_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
 
+    GROUP_EXCEL_UPLOAD_INPUT = (By.XPATH, "//input[@type='file']")
+
     # Success notification
     FILTER_APPLIED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Filters Applied')]")
     EMR_SEARCH_COMPLETED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Search Complete')]")
     GROUP_CREATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Group Created Successfully')]")
+    EXCEL_GROUP_CREATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patient Group Created')]")
     GROUP_NAME_UPDATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Group name updated successfully.')]")
     GROUP_PATIENT_REMOVED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patients removed')]")
     GROUP_PATIENT_ADDED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patients added')]")
     GROUP_DELETED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patient Group Deleted')]")
+    PATIENTS_SELECTED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patients Selected')]")
+    GROUP_DUPLICATED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Success')]")
+    GROUP_ARCHIVED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Patient Group Archived')]")
+    GROUP_UNARCHIVED_NOTIFICATION = (By.XPATH, "//div[contains(text(),'Success')]")
+
+    # Archive Dialog locators
+    ARCHIVE_DIALOG_TITLE = (By.XPATH, "//h2[normalize-space(text())='Archive Patient Group']")
+    ARCHIVE_DIALOG_MESSAGE = (By.XPATH, "//p[contains(text(),'archive this patient group')]")
+
+    # Unarchive Dialog locators
+    UNARCHIVE_DIALOG_TITLE = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']")
+    UNARCHIVE_DIALOG_CANCEL_BUTTON = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following::button[normalize-space(text())='Cancel']")
+    UNARCHIVE_DIALOG_UNARCHIVE_BUTTON = (By.XPATH, "//h2[normalize-space(text())='Are you sure?']/following::button[normalize-space(text())='Unarchive']")
+
+    # Archived Groups Page locators
+    ARCHIVED_GROUPS_PAGE_HEADING = (By.XPATH, "//h1[normalize-space(text())='Archived Patient Groups']")
+    BACK_TO_PATIENT_GROUPS_BUTTON = (By.XPATH, "//button[normalize-space(text())='Back to Patient Groups']")
+    UNARCHIVE_BUTTON = (By.XPATH, "//button[normalize-space(text())='Unarchive']")
+    ARCHIVED_GROUP_TABLE = (By.XPATH, "//table[@id='table-admin-archived-patient-groups']")
+    ARCHIVED_GROUP_ROWS = (By.XPATH, "//table[@id='table-admin-archived-patient-groups']/tbody/tr")
+    ARCHIVED_GROUP_ID = (By.XPATH, ".//td[1]")
+    ARCHIVED_GROUP_NAME = (By.XPATH, ".//td[2]")
+    ARCHIVED_GROUP_PATIENT_COUNT = (By.XPATH, ".//td[3]")
+    ARCHIVED_GROUP_STATUS = (By.XPATH, ".//td[4]")
+    ARCHIVED_GROUP_ACTIONS = (By.XPATH, ".//td[5]//button")
+
+    # Duplicate Page locators
+    DUPLICATE_PAGE_HEADING = (By.XPATH, "//h1[normalize-space(text())='Duplicate Patient Group']")
+    DUPLICATE_FROM_LABEL = (By.XPATH, "//p[contains(text(),'Duplicating from:')]")
+    DUPLICATE_NEW_GROUP_NAME_INPUT = (By.XPATH, "//input[@placeholder='Enter new group name']")
+    DUPLICATE_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")

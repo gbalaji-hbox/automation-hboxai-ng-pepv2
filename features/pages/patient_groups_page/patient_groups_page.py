@@ -1,3 +1,4 @@
+import os
 from time import sleep
 
 from faker.proxy import Faker
@@ -83,11 +84,12 @@ class PatientGroupsPage(BasePage):
         self.click(PatientGroupsPageLocators.DELETE_DIALOG_CANCEL_BUTTON)
         return result
 
-    def verify_archive_dialog_opens(self):
+    def verify_archive_dialog_opens(self, cancel_after_verify=True):
         """Verify that the archive confirmation dialog is open."""
         result = self.is_element_visible(PatientGroupsPageLocators.ARCHIVE_DIALOG)
         sleep(1)
-        self.click(PatientGroupsPageLocators.ARCHIVE_DIALOG_CANCEL_BUTTON)
+        if cancel_after_verify:
+            self.click(PatientGroupsPageLocators.ARCHIVE_DIALOG_CANCEL_BUTTON)
         return result
 
     def is_navigated_to_duplicate_page(self):
@@ -202,6 +204,7 @@ class PatientGroupsPage(BasePage):
         """Apply filters for creating patient group by filters."""
         try:
             self.wait_for_loader()
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1))
             if clinic:
                 self.click(PatientGroupsPageLocators.FILTER_BUTTON)
                 self.wait_for_dom_stability()
@@ -222,8 +225,12 @@ class PatientGroupsPage(BasePage):
     def select_patients_from_table(self, count=2):
         """Select the first 'count' patients from the patient selection table."""
         try:
-            for i in range(1, count + 1):
-                self.click(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(i))
+            count = int(count)
+            self.is_element_visible(PatientGroupsPageLocators.SELECT_PATIENTS_INPUT, timeout=10)
+            sleep(1)
+            self.wait_for_dom_stability()
+            self.send_keys(PatientGroupsPageLocators.SELECT_PATIENTS_INPUT, count)
+            self.is_element_visible(PatientGroupsPageLocators.PATIENTS_SELECTED_NOTIFICATION)
             return True
         except Exception as e:
             printf(f"Failed to select patients: {e}")
@@ -488,12 +495,9 @@ class PatientGroupsPage(BasePage):
     def _perform_search_and_get_patient_group_rows(self, keyword):
         """Perform search for patient groups containing keyword and return table rows."""
         try:
-            if self.get_attribute(PatientGroupsPageLocators.SEARCH_INPUT, "value"):
+            if not self.get_attribute(PatientGroupsPageLocators.SEARCH_INPUT, "value") == "":
                 printf("Clearing existing search input before performing new search")
-                self.clear_field(PatientGroupsPageLocators.SEARCH_INPUT)
-                self.click(PatientGroupsPageLocators.SEARCH_BUTTON)
-                sleep(1)
-
+                self.refresh_page()
             self.perform_search_by_field("Group Name", keyword)
             self.wait_for_loader()
             rows = self.find_elements(PatientGroupsPageLocators.PATIENT_GROUPS_TABLE_ROWS)
@@ -519,4 +523,207 @@ class PatientGroupsPage(BasePage):
             return False  # No matching group found in current rows
         except Exception as e:
             printf(f"Failed to delete first matching patient group: {e}")
+            return False
+
+    def create_patient_group_by_excel_upload(self):
+        """Create patient group by excel upload."""
+        try:
+            group_name = f"Automation Group {self.faker.unique.random_int(1000, 9999)}"
+            self.send_keys(PatientGroupsPageLocators.GROUP_NAME_INPUT_EXCEL, group_name)
+            file_path = os.path.abspath("utils/dummy-patient-ids.xlsx")
+            self.file_upload_input(PatientGroupsPageLocators.GROUP_EXCEL_UPLOAD_INPUT, file_path)
+            self.wait_for_dom_stability()
+            self.click(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
+            return group_name
+        except Exception as e:
+            printf(f"Failed to create patient group by excel upload: {e}")
+            return False
+
+    def verify_patient_group_created_by_excel_upload(self):
+        """Verify that the patient group created by excel upload was created successfully."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.EXCEL_GROUP_CREATED_NOTIFICATION)
+        except Exception as e:
+            printf(f"Failed to verify patient group creation by excel upload: {e}")
+            return False
+
+    # ==================== Duplicate Group Methods ====================
+
+    def click_duplicate_button(self):
+        """Click the Duplicate button for the first patient group in the list."""
+        try:
+            if not self.get_attribute(PatientGroupsPageLocators.SEARCH_INPUT, "value") == "":
+                self.refresh_page()
+            self.wait_for_loader()
+            self.wait_for_dom_stability()
+            sleep(1)
+            self.click(PatientGroupsPageLocators.DUPLICATE_BUTTON)
+            self.wait_for_dom_stability()
+            return True
+        except Exception as e:
+            printf(f"Failed to click Duplicate button: {e}")
+            return False
+
+    def verify_duplicate_page_opened(self):
+        """Verify that the Duplicate Patient Group page is loaded."""
+        try:
+            return self.check_url_contains(Routes.DUPLICATE_PATIENT_GROUP, partial=False)
+        except Exception as e:
+            printf(f"Failed to verify duplicate page: {e}")
+            return False
+
+    def verify_duplicate_page_heading(self):
+        """Verify that the duplicate page has the correct heading."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.DUPLICATE_PAGE_HEADING)
+        except Exception as e:
+            printf(f"Failed to verify duplicate page heading: {e}")
+            return False
+
+    def verify_duplicate_from_label(self):
+        """Verify that the duplicate page shows the 'Duplicating from' label."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.DUPLICATE_FROM_LABEL)
+        except Exception as e:
+            printf(f"Failed to verify duplicating from label: {e}")
+            return False
+
+    def get_default_duplicate_group_name(self):
+        """Get the default group name pre-filled in the duplicate page."""
+        try:
+            self.wait_for_loader()
+            self.is_clickable(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
+            sleep(3)
+            default_name = self.get_attribute(PatientGroupsPageLocators.DUPLICATE_NEW_GROUP_NAME_INPUT, "value")
+            new_name = f"Automation {default_name}"
+            self.send_keys(PatientGroupsPageLocators.DUPLICATE_NEW_GROUP_NAME_INPUT, new_name)
+            sleep(1)
+            return new_name
+        except Exception as e:
+            printf(f"Failed to get default duplicate group name: {e}")
+            return None
+
+    def click_create_group_on_duplicate_page(self):
+        """Click the Create Group button on the duplicate page."""
+        try:
+            self.is_element_visible(PatientGroupsPageLocators.PATIENT_TABLE_ROW_CHECKBOX(1), timeout=10)
+            sleep(1)
+            self.click(PatientGroupsPageLocators.CREATE_GROUP_BUTTON)
+            printf("create group button on duplicate page clicked successfully")
+            return True
+        except Exception as e:
+            printf(f"Failed to click Create Group button on duplicate page: {e}")
+            return False
+
+    def verify_duplicate_group_created(self):
+        """Verify that the duplicate group was created successfully."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.GROUP_DUPLICATED_NOTIFICATION)
+        except Exception as e:
+            printf(f"Failed to verify duplicate group creation: {e}")
+            return False
+
+    # ==================== Archive Group Methods ====================
+
+    def click_archive_button(self):
+        """Click the Archive button for the first patient group in the list."""
+        try:
+            self.wait_for_loader()
+            first_row_data = extract_table_row_as_dict(self, PatientGroupsPageLocators.PATIENT_GROUPS_TABLE)
+            self.click(PatientGroupsPageLocators.ARCHIVE_BUTTON)
+            self.wait_for_dom_stability()
+            return first_row_data
+        except Exception as e:
+            printf(f"Failed to click Archive button: {e}")
+            return False
+
+    def confirm_archive(self):
+        """Click the Archive button to confirm archiving."""
+        try:
+            self.click(PatientGroupsPageLocators.ARCHIVE_DIALOG_ARCHIVE_BUTTON)
+            self.wait_for_loader()
+            return True
+        except Exception as e:
+            printf(f"Failed to confirm archive: {e}")
+            return False
+
+    def is_archived_success_message_displayed(self):
+        """Verify that the archived success message is displayed."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.GROUP_ARCHIVED_NOTIFICATION)
+        except Exception as e:
+            printf(f"Failed to verify archived success message: {e}")
+            return False
+
+    def verify_group_archived(self, group_name):
+        """Verify that the group is now archived (status shows Archived)."""
+        try:
+            return verify_search_results_in_table(
+                self,
+                group_name,
+                PatientGroupsPageLocators.ARCHIVED_GROUP_ROWS,
+                "Group Name"
+            )
+        except Exception as e:
+            printf(f"Failed to verify group is archived: {e}")
+            return False
+
+    def navigate_to_archived_groups(self):
+        """Navigate to the Archived Groups page."""
+        try:
+            self.click(PatientGroupsPageLocators.ARCHIVED_GROUPS_BUTTON)
+            self.wait_for_loader()
+            return True
+        except Exception as e:
+            printf(f"Failed to navigate to archived groups: {e}")
+            return False
+
+    def verify_archived_groups_page(self):
+        """Verify that the Archived Groups page is loaded."""
+        try:
+            return self.check_url_contains(Routes.ARCHIVED_PATIENT_GROUPS, partial=False)
+        except Exception as e:
+            printf(f"Failed to verify archived groups page: {e}")
+            return False
+
+    def click_unarchive_button(self):
+        """Click the Unarchive button for the archived group."""
+        try:
+            self.click(PatientGroupsPageLocators.UNARCHIVE_BUTTON)
+            self.wait_for_dom_stability()
+            return True
+        except Exception as e:
+            printf(f"Failed to click Unarchive button: {e}")
+            return False
+
+    def verify_unarchive_dialog_opens(self):
+        """Verify that the unarchive confirmation dialog is open."""
+        try:
+            return self.is_element_visible(PatientGroupsPageLocators.UNARCHIVE_DIALOG_TITLE)
+        except Exception as e:
+            printf(f"Failed to verify unarchive dialog: {e}")
+            return False
+
+    def confirm_unarchive(self):
+        """Click the Unarchive button to confirm unarchiving."""
+        try:
+            self.click(PatientGroupsPageLocators.UNARCHIVE_DIALOG_UNARCHIVE_BUTTON)
+            self.wait_for_loader()
+            self.is_element_visible(PatientGroupsPageLocators.GROUP_UNARCHIVED_NOTIFICATION)
+            return True
+        except Exception as e:
+            printf(f"Failed to confirm unarchive: {e}")
+            return False
+
+    def verify_group_unarchived(self, group_name):
+        """Verify that the group is now active (status shows Active)."""
+        try:
+            return verify_search_results_in_table(
+                self,
+                group_name,
+                PatientGroupsPageLocators.PATIENT_GROUPS_TABLE_ROWS,
+                "Group Name"
+            )
+        except Exception as e:
+            printf(f"Failed to verify group is archived: {e}")
             return False
