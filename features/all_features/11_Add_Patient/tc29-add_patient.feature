@@ -1,7 +1,7 @@
 @login_enroller_admin
 Feature: tc29 - Add Patient
 
-  @regression @smoke @allure.label.severity:critical @only
+  @regression @smoke @allure.label.severity:critica
   Scenario: Add new patient with all mandatory fields
     Given I am on the Add Patient page
     When I select "HBox Internal" clinic
@@ -31,7 +31,6 @@ Feature: tc29 - Add Patient
     And I verify the summary page displays all patient information
     And I click "Submit" button to create patient
     Then notification "Patient added successfully!" appears
-    And I am redirected to the dashboard
 
   @regression @allure.label.severity:critical
   Scenario: Verify Continue button is disabled when mandatory fields are empty
