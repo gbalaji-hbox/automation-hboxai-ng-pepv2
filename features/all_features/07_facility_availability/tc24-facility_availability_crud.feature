@@ -19,7 +19,7 @@ Feature: tc24 - Facility Availability CRUD operations
 
     When I find the updated facility availability in the list and click delete
     And I confirm the facility availability delete in the dialog
-    Then notification "Facility availability delete failed" appears
+    Then notification "Facility availability deleted" appears
 
   @regression @allure.label.severity:critical
   Scenario: Cancel create operation

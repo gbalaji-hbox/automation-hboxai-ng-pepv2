@@ -32,8 +32,6 @@ class Routes:
     WORKFLOW_EDIT = "/admin/workflow/edit/"
     WORKFLOW_STATUS_EDIT = "/admin/workflow-status/edit/"
     TASK_EDIT = "/admin/tasks/edit/"
-    FACILITY_AVAILABILITY = "/admin/facility-availability"
-    FACILITY_AVAILABILITY_EDIT = "/admin/facility-availability/edit/"
     PATIENT_GROUPS = "/admin/patient-groups"
     EDIT_PATIENT_GROUP = "/admin/patient-groups/edit/"
     DUPLICATE_PATIENT_GROUP = "/admin/patient-groups/duplicate/"
@@ -42,6 +40,9 @@ class Routes:
     CREATE_NEW_PATIENT_GROUP_BY_FILTERS = "/admin/patient-groups/create-by-filters"
     CREATE_NEW_PATIENT_GROUP_BY_EXCEL = "/admin/patient-groups/create-by-excel"
     ADD_PATIENTS_TO_GROUP = "/add-patients"
+    FACILITY_AVAILABILITY = "/admin/facility-availability"
+    ADD_FACILITY_AVAILABILITY = "/admin/facility-availability/add"
+    FACILITY_AVAILABILITY_EDIT = "/admin/facility-availability/edit/"
 
 
     @staticmethod

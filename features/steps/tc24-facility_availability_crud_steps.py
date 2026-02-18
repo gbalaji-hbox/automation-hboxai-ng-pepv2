@@ -1,3 +1,5 @@
+from multiprocessing import context
+
 from behave import when, then
 
 from features.pages.facility_availability_page.facility_availability_page import FacilityAvailabilityPage
@@ -11,8 +13,6 @@ def step_impl(context):
 
 @when(u'I fill the create facility availability form with valid data')
 def step_impl(context):
-    if not hasattr(context, "facility_availability_page"):
-        context.facility_availability_page = FacilityAvailabilityPage(context.driver)
     context.facility_availability_data = context.facility_availability_page.fill_create_facility_availability_form()
 
 
@@ -61,9 +61,9 @@ def step_impl(context):
     context.facility_availability_page.confirm_facility_availability_delete()
 
 
-@then(u'notification "Facility availability delete failed" appears')
+@then(u'notification "Facility availability deleted" appears')
 def step_impl(context):
-    assert context.facility_availability_page.check_facility_availability_notification("delete failed"), \
+    assert context.facility_availability_page.check_facility_availability_notification("delete"), \
         "Facility availability delete failed notification not appeared"
 
 

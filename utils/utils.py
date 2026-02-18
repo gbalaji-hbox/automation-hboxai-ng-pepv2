@@ -50,18 +50,18 @@ def get_fixed_start_date(years=1, date_format='%d-%m-%Y'):
     return past_date
 
 
-def get_current_date(date_format='%d-%m-%Y', days_offset=0):
+def get_current_date(date_format='%d-%m-%Y', days_offset=0, years_offset=0):
     """
     Returns today's date as a string, with optional offset for past or future dates.
 
     Args:
         date_format (str): Format for the output date string. Default is '%d-%m-%Y'.
         days_offset (int): Number of days to offset from today. Positive for future, negative for past. Default is 0.
-
+        years_offset (int): Number of years to offset from today. Positive for future, negative for past. Default is 0.
     Returns:
         str: Formatted date string.
     """
-    return (datetime.now() + timedelta(days=days_offset)).strftime(date_format)
+    return (datetime.now() + timedelta(days=days_offset) + relativedelta(years=years_offset)).strftime(date_format)
 
 
 def convert_dob_ddmmyyyy_to_yyyymmdd(dob_str: str) -> str:

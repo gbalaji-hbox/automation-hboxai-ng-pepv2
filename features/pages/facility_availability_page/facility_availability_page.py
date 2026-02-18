@@ -1,14 +1,13 @@
-import random
 from datetime import datetime, timedelta
+from time import sleep
 
 from selenium.common import NoSuchElementException
-from selenium.webdriver.common.by import By
 
 from features.commons.locators import FacilityAvailabilityPageLocators
 from features.commons.routes import Routes
 from features.pages.base_page import BasePage
 from utils.logger import printf
-from utils.utils import extract_table_row_as_dict, verify_search_results_in_table, row_count_check
+from utils.utils import extract_table_row_as_dict, verify_search_results_in_table, row_count_check, get_current_date
 
 
 class FacilityAvailabilityPage(BasePage):
@@ -109,113 +108,145 @@ class FacilityAvailabilityPage(BasePage):
             return False
 
     def click_add_new_facility_availability(self):
-        add_button_locator = (By.XPATH, "//button[normalize-space()='Add New Facility Availability']")
-        self.click(add_button_locator)
-        self.is_clickable(FacilityAvailabilityPageLocators.SELECT_CLINIC_DROPDOWN)
-        self.wait_for_dom_stability()
+        try:
+            self.wait_for_loader()
+            self.is_element_visible(FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_PAGINATION, timeout=30)
+            self.click(FacilityAvailabilityPageLocators.ADD_NEW_FACILITY_AVAILABILITY_BUTTON)
+            self.check_url_contains(Routes.ADD_FACILITY_AVAILABILITY, partial=False)
+            self.wait_for_dom_stability()
+            return True
+        except NoSuchElementException as e:
+            printf(f"Error clicking 'Add Facility Availability' button: {e}")
+            return False
 
-    def fill_create_facility_availability_form(self):
-        clinic_name = "HBox Internal"
-        facility_name = "facility_02"
-        base_year = datetime.now().year + random.randint(3, 8)
-        start_date = datetime(base_year, 2, 1)
-        end_date = datetime(base_year + 1, 1, 31)
+    def fill_create_facility_availability_form(self, clinic_name = "HBox Internal",facility_name = "facility_02", timezone = "US/Pacific"):
+        """Fills the create facility availability form with provided or default data and returns the filled data as a dictionary."""
 
-        start_date_text = start_date.strftime("%m/%d/%Y")
-        end_date_text = end_date.strftime("%m/%d/%Y")
+        start_date = get_current_date(days_offset=0, years_offset=1)
+        end_date = get_current_date(days_offset=30, years_offset=1)
 
-        self.custom_select_by_locator(
-            FacilityAvailabilityPageLocators.SELECT_CLINIC_DROPDOWN,
-            FacilityAvailabilityPageLocators.DROPDOWN_OPTION(clinic_name),
-        )
-        self.custom_select_by_locator(
-            FacilityAvailabilityPageLocators.SELECT_FACILITY_DROPDOWN,
-            FacilityAvailabilityPageLocators.DROPDOWN_OPTION(facility_name),
-        )
+        try:
+            self.click(FacilityAvailabilityPageLocators.SELECT_CLINIC_DROPDOWN)
+            self.wait_for_dom_stability()
+            self.send_keys(FacilityAvailabilityPageLocators.SELECT_SEARCH_CLINIC_INPUT, clinic_name)
+            self.wait_for_dom_stability()
+            sleep(1)
+            self.click(FacilityAvailabilityPageLocators.FACILITY_DROPDOWN_OPTION(clinic_name))
+            self.wait_for_dom_stability()
+            sleep(1)
 
-        self.click(FacilityAvailabilityPageLocators.FROM_DATE_BUTTON)
-        self.select_calender_date(start_date_text)
-        self.click(FacilityAvailabilityPageLocators.TO_DATE_BUTTON)
-        self.select_calender_date(end_date_text)
+            self.click(FacilityAvailabilityPageLocators.SELECT_FACILITY_DROPDOWN)
+            self.wait_for_dom_stability()
+            self.click(FacilityAvailabilityPageLocators.DROPDOWN_OPTION(facility_name))
+            sleep(1)
 
-        monday_state = self.get_attribute(FacilityAvailabilityPageLocators.MONDAY_CHECKBOX, "aria-checked")
-        if str(monday_state).lower() != "true":
-            self.click(FacilityAvailabilityPageLocators.MONDAY_CHECKBOX)
+            self.click(FacilityAvailabilityPageLocators.FROM_DATE_BUTTON)
+            self.wait_for_dom_stability()
+            self.select_calender_date(start_date)
+            sleep(1)
+            self.click(FacilityAvailabilityPageLocators.TO_DATE_BUTTON)
+            self.wait_for_dom_stability()
+            self.select_calender_date(end_date)
+            sleep(1)
 
-        self.custom_select_by_locator(
-            FacilityAvailabilityPageLocators.MONDAY_START_HOUR_DROPDOWN,
-            FacilityAvailabilityPageLocators.DROPDOWN_OPTION("09"),
-        )
-        self.custom_select_by_locator(
-            FacilityAvailabilityPageLocators.MONDAY_START_MINUTE_DROPDOWN,
-            FacilityAvailabilityPageLocators.DROPDOWN_OPTION("00"),
-        )
-        self.custom_select_by_locator(
-            FacilityAvailabilityPageLocators.MONDAY_START_PERIOD_DROPDOWN,
-            FacilityAvailabilityPageLocators.DROPDOWN_OPTION("AM"),
-        )
-        self.custom_select_by_locator(
-            FacilityAvailabilityPageLocators.MONDAY_END_HOUR_DROPDOWN,
-            FacilityAvailabilityPageLocators.DROPDOWN_OPTION("05"),
-        )
-        self.custom_select_by_locator(
-            FacilityAvailabilityPageLocators.MONDAY_END_MINUTE_DROPDOWN,
-            FacilityAvailabilityPageLocators.DROPDOWN_OPTION("00"),
-        )
-        self.custom_select_by_locator(
-            FacilityAvailabilityPageLocators.MONDAY_END_PERIOD_DROPDOWN,
-            FacilityAvailabilityPageLocators.DROPDOWN_OPTION("PM"),
-        )
+            self.click(FacilityAvailabilityPageLocators.TIMEZONE_DROPDOWN)
+            self.wait_for_dom_stability()
+            self.click(FacilityAvailabilityPageLocators.DROPDOWN_OPTION(timezone))
+            self.wait_for_dom_stability()
 
-        return {
-            "clinic": clinic_name,
-            "facility": facility_name,
-            "start_date": start_date_text,
-            "end_date": end_date_text,
-        }
+            sleep(1)
+
+            self.select_schedule_slots()
+
+            return {
+                "clinic": clinic_name,
+                "facility": facility_name,
+                "start_date": start_date,
+                "end_date": end_date,
+                "timezone": timezone,
+            }
+        except Exception as e:
+            printf(f"Error filling create facility availability form: {e}")
+            return None
+
+    def select_schedule_slots(self):
+        """Selects schedule slots for the facility availability form."""
+        try:
+            self.click(FacilityAvailabilityPageLocators.SCHEDULE_DAY_CHECKBOX)
+            sleep(1)
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.START_TIME_HOUR_SELECT,"12")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.START_TIME_MINUTE_SELECT,"00")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.START_TIME_AM_PM_SELECT,"AM")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.END_TIME_HOUR_SELECT,"11")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.END_TIME_MINUTE_SELECT,"45")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.END_TIME_AM_PM_SELECT,"PM")
+            sleep(1)
+            self.click(FacilityAvailabilityPageLocators.COPY_TO_ALL_DAYS_BUTTON)
+            sleep(1)
+            printf("Selected times and copied to all days.")
+        except NoSuchElementException as e:
+            printf(f"Error selecting times: {e}")
+            raise
 
     def submit_create_facility_availability(self):
-        self.click(FacilityAvailabilityPageLocators.CREATE_FACILITY_AVAILABILITY_BUTTON)
+        try:
+            self.click(FacilityAvailabilityPageLocators.CREATE_FACILITY_AVAILABILITY_BUTTON)
+            return True
+        except NoSuchElementException as e:
+            printf(f"Error submitting create facility availability form: {e}")
+            return False
 
     def find_and_edit_facility_availability(self, facility_availability_data):
-        self.navigate_to_listing()
-        self.perform_facility_availability_search_by_field("Facility Name", facility_availability_data["facility"])
-        self.wait_for_loader()
-        self.click(
-            FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_EDIT_BUTTON_BY_VALUES(
-                facility_availability_data["clinic"],
-                facility_availability_data["facility"],
-                facility_availability_data["start_date"],
-                facility_availability_data["end_date"],
-            )
-        )
-        self.wait_for_dom_stability()
+        try:
+            self.navigate_to_listing()
+            self.perform_facility_availability_search_by_field("Facility Name", facility_availability_data["facility"])
+            self.wait_for_loader()
+            self.click(FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_EDIT_BUTTON)
+            self.wait_for_dom_stability()
+            return True
+        except NoSuchElementException as e:
+            printf(f"Error finding and clicking edit for facility availability: {e}")
+            return False
 
     def update_facility_availability_end_date(self, current_end_date):
-        old_end_date = datetime.strptime(current_end_date, "%m/%d/%Y")
-        updated_end_date = (old_end_date + timedelta(days=30)).strftime("%m/%d/%Y")
-        self.click(FacilityAvailabilityPageLocators.TO_DATE_BUTTON)
-        self.select_calender_date(updated_end_date)
-        return updated_end_date
+        try:
+            self.click(FacilityAvailabilityPageLocators.TO_DATE_BUTTON)
+            self.wait_for_dom_stability()
+            new_end_date = get_current_date(days_offset=60, years_offset=1)
+            self.select_calender_date(new_end_date)
+            return new_end_date
+        except NoSuchElementException as e:
+            printf(f"Error updating facility availability end date: {e}")
+            return current_end_date
 
     def submit_update_facility_availability(self):
-        self.click(FacilityAvailabilityPageLocators.UPDATE_FACILITY_AVAILABILITY_BUTTON)
+        try:
+            self.click(FacilityAvailabilityPageLocators.UPDATE_FACILITY_AVAILABILITY_BUTTON)
+            return True
+        except NoSuchElementException as e:
+            printf(f"Error submitting update facility availability form: {e}")
+            return False
 
     def find_and_delete_facility_availability(self, facility_availability_data):
-        self.navigate_to_listing()
-        self.perform_facility_availability_search_by_field("Facility Name", facility_availability_data["facility"])
-        self.wait_for_loader()
-        self.click(
-            FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_DELETE_BUTTON_BY_VALUES(
-                facility_availability_data["clinic"],
-                facility_availability_data["facility"],
-                facility_availability_data["start_date"],
-                facility_availability_data["end_date"],
-            )
-        )
+        try:
+            self.navigate_to_listing()
+            self.perform_facility_availability_search_by_field("Facility Name", facility_availability_data["facility"])
+            self.wait_for_loader()
+            self.click(FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_DELETE_BUTTON)
+            self.wait_for_dom_stability()
+            return True
+        except NoSuchElementException as e:
+            printf(f"Error finding and clicking delete for facility availability: {e}")
+            return False
 
     def confirm_facility_availability_delete(self):
-        self.click(FacilityAvailabilityPageLocators.DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON)
+        try:
+            self.click(FacilityAvailabilityPageLocators.DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON)
+            self.wait_for_dom_stability()
+            return True
+        except NoSuchElementException as e:
+            printf(f"Error confirming facility availability delete: {e}")
+            return False
 
     def cancel_facility_availability_form(self):
         self.click(FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_FORM_CANCEL_BUTTON)
@@ -227,8 +258,8 @@ class FacilityAvailabilityPage(BasePage):
             locator = FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_CREATED_NOTIFICATION
         elif "updated" in message:
             locator = FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_UPDATED_NOTIFICATION
-        elif "delete failed" in message:
-            locator = FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_DELETE_FAILED_NOTIFICATION
+        elif "delete" in message:
+            locator = FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_DELETE_NOTIFICATION
         else:
             return False
         return self.is_element_visible(locator, timeout=15)

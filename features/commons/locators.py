@@ -526,16 +526,22 @@ class TasksPageLocators:
 
 class FacilityAvailabilityPageLocators:
     """Locators for Facility Availability page elements."""
-    FACILITY_AVAILABILITY_TABLE = (By.XPATH,"//table[@id='table-admin-facility-availability']")
-    FACILITY_AVAILABILITY_TABLE_ROWS = (By.XPATH,"//table[@id='table-admin-facility-availability']/tbody/tr")
-    FACILITY_AVAILABILITY_SEARCH_DROPDOWN = (By.XPATH, "//button[normalize-space()='Search']/preceding::button[@role='combobox']")
+    FACILITY_AVAILABILITY_TABLE = (By.XPATH, "//table[@id='table-admin-facility-availability']")
+    FACILITY_AVAILABILITY_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-facility-availability']/tbody/tr")
+    FACILITY_AVAILABILITY_PAGINATION = (By.XPATH, "//nav[@aria-label='pagination']")
+    FACILITY_AVAILABILITY_SEARCH_DROPDOWN = (By.XPATH,
+                                             "//button[normalize-space()='Search']/preceding::button[@role='combobox']")
     FACILITY_AVAILABILITY_SEARCH_INPUT = (By.XPATH, "//button[normalize-space()='Search']/preceding-sibling::input")
     FACILITY_AVAILABILITY_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
     FACILITY_AVAILABILITY_CLEAR_BUTTON = (By.XPATH, "//button[normalize-space()='Clear']")
-    DROPDOWN_OPTION = lambda option_text: (By.XPATH,f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
-    FACILITY_AVAILABILITY_HISTORY_BUTTON = (By.XPATH,"//table[@id='table-admin-facility-availability']/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
-    FACILITY_AVAILABILITY_EDIT_BUTTON = (By.XPATH,"//table[@id='table-admin-facility-availability']/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
-    FACILITY_AVAILABILITY_DELETE_BUTTON = (By.XPATH,"//table[@id='table-admin-facility-availability']/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
+    DROPDOWN_OPTION = lambda option_text: (By.XPATH,
+                                           f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+    FACILITY_AVAILABILITY_HISTORY_BUTTON = (By.XPATH,
+                                            "//table[@id='table-admin-facility-availability']/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
+    FACILITY_AVAILABILITY_EDIT_BUTTON = (By.XPATH,
+                                         "//table[@id='table-admin-facility-availability']/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
+    FACILITY_AVAILABILITY_DELETE_BUTTON = (By.XPATH,
+                                           "//table[@id='table-admin-facility-availability']/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
     OPERATION_HISTORY_DIALOG = (By.XPATH, "//div[@id='operations_history_dialog']")
     OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
     DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//h2[normalize-space(text())='Delete Facility Availability']")
@@ -544,81 +550,36 @@ class FacilityAvailabilityPageLocators:
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
 
     # Create/Edit form locators
-    SELECT_CLINIC_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Select Clinic *']/following-sibling::button")
-    SELECT_FACILITY_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Select Facility Name *']/following-sibling::button[1]")
-    FROM_DATE_BUTTON = (By.XPATH, "//label[normalize-space(text())='From Date *']/following-sibling::button")
-    TO_DATE_BUTTON = (By.XPATH, "//label[normalize-space(text())='To Date *']/following-sibling::button")
+    ADD_NEW_FACILITY_AVAILABILITY_BUTTON = (By.XPATH,
+                                            "//button[normalize-space(text())='Add New Facility Availability']")
+    SELECT_CLINIC_DROPDOWN = (By.XPATH, "//label[@for='clinic']/following-sibling::button")
+    FACILITY_DROPDOWN_OPTION = lambda option: (By.XPATH,
+                                                 f"//div[@role='option' and normalize-space(text())='{option}']")
+    SELECT_SEARCH_CLINIC_INPUT = (By.XPATH, "//label[@for='clinic']/following::input[@placeholder='Search clinic...']")
+    SELECT_FACILITY_DROPDOWN = (By.XPATH, "//label[@for='facility']/following-sibling::button[1]")
+    FROM_DATE_BUTTON = (By.XPATH, "//label[contains(.,'From Date *')]/following-sibling::button[1]")
+    TO_DATE_BUTTON = (By.XPATH, "//label[contains(.,'To Date *')]/following-sibling::button")
+    TIMEZONE_DROPDOWN = (By.XPATH, "//label[text()='Timezone']/following-sibling::button")
 
-    MONDAY_CHECKBOX = (By.XPATH, "//span[normalize-space(text())='Monday']/preceding-sibling::button[@role='checkbox'][1]")
-    MONDAY_START_HOUR_DROPDOWN = (
-        By.XPATH,
-        "//span[normalize-space(text())='Monday']/ancestor::div[contains(@class,'space-y-3')]"
-        "//div[contains(@class,'flex items-center gap-2')][1]//button[@role='combobox'][1]",
-    )
-    MONDAY_START_MINUTE_DROPDOWN = (
-        By.XPATH,
-        "//span[normalize-space(text())='Monday']/ancestor::div[contains(@class,'space-y-3')]"
-        "//div[contains(@class,'flex items-center gap-2')][1]//button[@role='combobox'][2]",
-    )
-    MONDAY_START_PERIOD_DROPDOWN = (
-        By.XPATH,
-        "//span[normalize-space(text())='Monday']/ancestor::div[contains(@class,'space-y-3')]"
-        "//div[contains(@class,'flex items-center gap-2')][1]//button[@role='combobox'][3]",
-    )
-    MONDAY_END_HOUR_DROPDOWN = (
-        By.XPATH,
-        "//span[normalize-space(text())='Monday']/ancestor::div[contains(@class,'space-y-3')]"
-        "//div[contains(@class,'flex items-center gap-2')][1]//button[@role='combobox'][4]",
-    )
-    MONDAY_END_MINUTE_DROPDOWN = (
-        By.XPATH,
-        "//span[normalize-space(text())='Monday']/ancestor::div[contains(@class,'space-y-3')]"
-        "//div[contains(@class,'flex items-center gap-2')][1]//button[@role='combobox'][5]",
-    )
-    MONDAY_END_PERIOD_DROPDOWN = (
-        By.XPATH,
-        "//span[normalize-space(text())='Monday']/ancestor::div[contains(@class,'space-y-3')]"
-        "//div[contains(@class,'flex items-center gap-2')][1]//button[@role='combobox'][6]",
-    )
+    SCHEDULE_DAY_CHECKBOX = (By.XPATH,
+                             "//h3[normalize-space()='Facility Schedule']/following::input[@type='checkbox'][1]")
+    START_TIME_HOUR_SELECT = (By.XPATH, "//button[contains(@id,'from-hour')]/following::select[1]")
+    START_TIME_MINUTE_SELECT = (By.XPATH, "//button[contains(@id,'from-minute')]/following::select[1]")
+    START_TIME_AM_PM_SELECT = (By.XPATH, "//button[contains(@id,'from-period')]/following::select[1]")
+    END_TIME_HOUR_SELECT = (By.XPATH, "//button[contains(@id,'to-hour')]/following::select[1]")
+    END_TIME_MINUTE_SELECT = (By.XPATH, "//button[contains(@id,'to-minute')]/following::select[1]")
+    END_TIME_AM_PM_SELECT = (By.XPATH, "//button[contains(@id,'to-period')]/following::select[1]")
+
+    COPY_TO_ALL_DAYS_BUTTON = (By.XPATH, "//span[normalize-space()='Copy to All Days']")
 
     CREATE_FACILITY_AVAILABILITY_BUTTON = (By.XPATH, "//button[normalize-space(text())='Create Facility Availability']")
     UPDATE_FACILITY_AVAILABILITY_BUTTON = (By.XPATH, "//button[normalize-space(text())='Update Facility Availability']")
     FACILITY_AVAILABILITY_FORM_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
 
-    FACILITY_AVAILABILITY_CREATED_NOTIFICATION = (
-        By.XPATH,
-        "//div[contains(normalize-space(text()),'Facility availability created successfully with ID:')]",
-    )
-    FACILITY_AVAILABILITY_UPDATED_NOTIFICATION = (
-        By.XPATH,
-        "//div[contains(normalize-space(text()),'Facility availability updated successfully with ID:')]",
-    )
-    FACILITY_AVAILABILITY_DELETE_FAILED_NOTIFICATION = (
-        By.XPATH,
-        "//div[contains(normalize-space(text()),'Failed to delete facility availability')]",
-    )
-
-    FACILITY_AVAILABILITY_ROW_BY_VALUES = lambda clinic, facility, start_date, end_date: (
-        By.XPATH,
-        f"//table[.//th[normalize-space()='Clinic Name'] and .//th[normalize-space()='Facility Name']]"
-        f"/tbody/tr[td[1][normalize-space()='{clinic}']"
-        f" and td[2][normalize-space()='{facility}']"
-        f" and td[3][normalize-space()='{start_date}']"
-        f" and td[4][normalize-space()='{end_date}']]",
-    )
-    FACILITY_AVAILABILITY_EDIT_BUTTON_BY_VALUES = lambda clinic, facility, start_date, end_date: (
-        By.XPATH,
-        f"//table[.//th[normalize-space()='Clinic Name'] and .//th[normalize-space()='Facility Name']]"
-        f"/tbody/tr[td[1][normalize-space()='{clinic}']"
-        f" and td[2][normalize-space()='{facility}']"
-        f" and td[3][normalize-space()='{start_date}']"
-        f" and td[4][normalize-space()='{end_date}']]//button[contains(@id,'edit')][1]",
-    )
-    FACILITY_AVAILABILITY_DELETE_BUTTON_BY_VALUES = lambda clinic, facility, start_date, end_date: (
-        By.XPATH,
-        f"//table[.//th[normalize-space()='Clinic Name'] and .//th[normalize-space()='Facility Name']]"
-        f"/tbody/tr[td[1][normalize-space()='{clinic}']"
-        f" and td[2][normalize-space()='{facility}']"
-        f" and td[3][normalize-space()='{start_date}']"
-        f" and td[4][normalize-space()='{end_date}']]//button[contains(@id,'delete')][1]",
-    )
+    FACILITY_AVAILABILITY_CREATED_NOTIFICATION = (By.XPATH,
+                                                  "//div[contains(normalize-space(text()),'Facility availability created successfully')]")
+    FACILITY_AVAILABILITY_UPDATED_NOTIFICATION = (By.XPATH,
+                                                  "//div[contains(normalize-space(text()),'Facility availability updated successfully')]")
+    FACILITY_AVAILABILITY_DELETE_FAILED_NOTIFICATION = (By.XPATH,
+                                                        "//div[contains(normalize-space(text()),'Failed to delete facility availability')]")
+    FACILITY_AVAILABILITY_DELETE_NOTIFICATION = (By.XPATH,"//div[contains(normalize-space(text()),'Facility availability deleted successfully')]")

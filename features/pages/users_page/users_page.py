@@ -224,7 +224,7 @@ class UsersPage(BasePage):
             raise
 
     def select_times(self):
-        """Select from and end times."""
+        """Select from and end times for the slots"""
         try:
             self.click(UsersPageLocators.SCHEDULE_DAY_CHECKBOX)
             sleep(1)
