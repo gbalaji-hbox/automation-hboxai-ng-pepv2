@@ -583,3 +583,34 @@ class FacilityAvailabilityPageLocators:
     FACILITY_AVAILABILITY_DELETE_FAILED_NOTIFICATION = (By.XPATH,
                                                         "//div[contains(normalize-space(text()),'Failed to delete facility availability')]")
     FACILITY_AVAILABILITY_DELETE_NOTIFICATION = (By.XPATH,"//div[contains(normalize-space(text()),'Facility availability deleted successfully')]")
+
+class SearchPatientsPageLocators:
+    """Locators for the Search Patients (Global Search) page elements."""
+
+    # Search bar
+    SEARCH_TYPE_DROPDOWN = (By.XPATH, "//button[@id='search_form_searchby_select']")
+    SEARCH_TYPE_OPTION = lambda option_text: (By.XPATH,
+                                              f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+    SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Search']")
+    SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
+    RESET_BUTTON = (By.XPATH, "//button[@id='search_form_reload_btn']")
+    MONTH_SELECT_DROPDOWN = (By.XPATH, "//button[contains(.,'Month')]/following-sibling::select[1]")
+    DAY_SELECT_DROPDOWN = (By.XPATH, "//button[contains(.,'Day')]/following-sibling::select[1]")
+    YEAR_SELECT_DROPDOWN = (By.XPATH, "//button[contains(.,'Year')]/following-sibling::select[1]")
+
+    # Results table
+    PATIENTS_TABLE = (By.XPATH, "//table[@id='table-search-patients']")
+    PATIENTS_TABLE_ROWS = (By.XPATH, "//table[@id='table-search-patients']/tbody/tr")
+
+    # No results message
+    NO_RESULTS_MESSAGE = (By.XPATH, "//h3[normalize-space()='No patients found']")
+
+    # Row action button
+    VIEW_DETAILS_BUTTON = (By.XPATH,"//table[@id='table-search-patients']/tbody/tr[1]//button[contains(@id, 'view')]")
+
+    # Pagination
+    PAGE_LIMIT_DROPDOWN = (By.XPATH, "//select[@id='pagination_records_per_page_select']")
+    PAGINATION_NAV = (By.XPATH, "//nav[@aria-label='pagination']")
+
+    # Patient details page - back navigation
+    BACK_BUTTON = (By.XPATH, "(//button[contains(text(),'Back')])[1]")
