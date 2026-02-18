@@ -12,12 +12,12 @@ Feature: tc03- Users Management CRUD Operations
     Then the User table should filter results to show matching users
 
     Examples:
-      | field       |
-      | Email       |
-      | User Name   |
-      | User Type   |
-      | Update Date |
-      | Last Active |
+      | field         |
+      | Email Address |
+      | User Name     |
+      | User Type     |
+      | Update Date   |
+      | Last Active   |
 
   Scenario Outline: Users Action Buttons in Table
     Given I am on the Users page
