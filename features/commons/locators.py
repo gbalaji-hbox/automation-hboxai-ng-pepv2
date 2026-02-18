@@ -614,3 +614,87 @@ class SearchPatientsPageLocators:
 
     # Patient details page - back navigation
     BACK_BUTTON = (By.XPATH, "(//button[contains(text(),'Back')])[1]")
+
+
+class AddPatientPageLocators:
+    """Locators for the Add Patient page elements."""
+
+    # Step 1 - Patient Details - Clinic Selection
+    SELECT_CLINIC_DROPDOWN = (By.XPATH, "//button[@id='add_patient_clinic']")
+    SELECT_CLINIC_SEARCH_INPUT = (By.XPATH, "//button[@id='add_patient_clinic']/following::input[@role='combobox'][1]")
+    SELECT_CLINIC_OPTION = lambda clinic_name: (By.XPATH,
+                                                 f"//div[@role='option' and normalize-space(text())='{clinic_name}']")
+    SELECT_FACILITY_DROPDOWN = (By.XPATH, "//button[@id='add_patient_facility']")
+    SELECT_FACILITY_OPTION = lambda facility_name: (By.XPATH,
+                                                     f"//div[@role='option']//span[normalize-space(text())='{facility_name}']")
+    SELECT_PROVIDER_DROPDOWN = (By.XPATH, "//button[@id='add_patient_provider']")
+    SELECT_PROVIDER_OPTION = lambda provider_name: (By.XPATH,"//div[@role='option'][1]")
+
+    # Step 1 - Patient Details - Personal Information
+    FIRST_NAME_INPUT = (By.XPATH, "//input[@id='add_patient_first_name']")
+    LAST_NAME_INPUT = (By.XPATH, "//input[@id='add_patient_last_name']")
+    ALIAS_NAME_INPUT = (By.XPATH, "//input[@id='add_patient_alias_name']")
+    EMAIL_INPUT = (By.XPATH, "//input[@id='add_patient_email']")
+    PHONE_NUMBER_INPUT = (By.XPATH, "//input[@id='add_patient_phone_number']")
+    ALTERNATE_PHONE_INPUT = (By.XPATH, "//input[@id='add_patient_alternate_phone']")
+    BIRTH_DATE_INPUT = (By.XPATH, "//input[@id='add_patient_birth_date']")
+    GENDER_DROPDOWN = (By.XPATH, "//button[@id='add_patient_gender']")
+    GENDER_OPTION = lambda gender: (By.XPATH, f"//div[@role='option']//span[normalize-space(text())='{gender}']")
+    HEIGHT_FEET_DROPDOWN = (By.XPATH, "//button[@id='add_patient_height_feet']")
+    HEIGHT_INCHES_DROPDOWN = (By.XPATH, "//button[@id='add_patient_height_feet']")
+    HEIGHT_OPTION = lambda value: (By.XPATH, f"//div[@role='option']//span[normalize-space(text())='{value}']")
+
+    # Step 1 - Patient Details - Medical Records
+    EMR_ID_INPUT = (By.XPATH, "//input[@id='add_patient_emr_id']")
+    PRIMARY_INSURANCE_ID_INPUT = (By.XPATH, "//input[@id='add_patient_primary_insurance_id']")
+    PRIMARY_INSURANCE_PAYER_INPUT = (By.XPATH, "//input[@id='add_patient_primary_insurance_payer']")
+    SECONDARY_INSURANCE_ID_INPUT = (By.XPATH, "//input[@id='add_patient_secondary_insurance_id']")
+    SECONDARY_INSURANCE_PAYER_INPUT = (By.XPATH, "//input[@id='add_patient_secondary_insurance_payer']")
+    INSURANCE_PLAN_INPUT = (By.XPATH, "//input[@id='add_patient_insurance_plan']")
+
+    # Step 1 - Patient Details - Program Eligibility
+    CCM_ELIGIBLE_CHECKBOX = (By.XPATH, "//button[@id='add_patient_ccm_eligible']")
+    RPM_ELIGIBLE_CHECKBOX = (By.XPATH, "//button[@id='add_patient_rpm_eligible']")
+    PCM_ELIGIBLE_CHECKBOX = (By.XPATH, "//button[@id='add_patient_pcm_eligible']")
+
+    # Step 1 - Patient Details - Communication Preference
+    LANGUAGE_PREFERENCE_DROPDOWN = (By.XPATH, "//button[@id='add_patient_language']")
+    LANGUAGE_PREFERENCE_OPTION = lambda language: (By.XPATH,
+                                                   f"//div[@role='option']//span[normalize-space(text())='{language}']")
+
+    # Step 1 - Patient Details - Emergency Contact
+    EMERGENCY_FIRST_NAME_INPUT = (By.XPATH, "//input[@id='add_patient_emergency_first_name']")
+    EMERGENCY_LAST_NAME_INPUT = (By.XPATH, "//input[@id='add_patient_emergency_last_name']")
+    EMERGENCY_PHONE_INPUT = (By.XPATH, "//input[@id='add_patient_emergency_phone']")
+
+    # Step 1 - Navigation
+    CONTINUE_BUTTON = (By.XPATH, "//button[normalize-space()='Continue']")
+
+    # Step 2 - Address
+    ADDRESS_LINE_1_INPUT = (By.XPATH, "//input[@id='add_patient_address_line1']")
+    ADDRESS_LINE_2_INPUT = (By.XPATH, "//input[@id='add_patient_address_line2']")
+    CITY_INPUT = (By.XPATH, "//input[@id='add_patient_city']")
+    STATE_INPUT = (By.XPATH, "//input[@id='add_patient_state']")
+    ZIP_CODE_INPUT = (By.XPATH, "//input[@id='add_patient_zip_code']")
+    COUNTRY_DROPDOWN = (By.XPATH, "//button[@id='add_patient_country']")
+    COUNTRY_DROPDOWN_OPTION = lambda country: (By.XPATH,f"//div[@role='option']//span[normalize-space(text())='{country}']")
+
+    # Step 2 - Navigation
+    PREVIOUS_BUTTON = (By.XPATH, "//button[normalize-space()='Previous']")
+    
+    # Step 3 - Summary
+    SUMMARY_HEADING = (By.XPATH, "//h2[normalize-space()='Review Patient Information']")
+    PERSONAL_INFO_SECTION = (By.XPATH, "//h3[contains(text(),'Personal Information')]")
+    MEDICAL_RECORDS_SECTION = (By.XPATH, "//h3[contains(text(),'Medical Records')]")
+    EMERGENCY_CONTACT_SECTION = (By.XPATH, "//h3[contains(text(),'Emergency Contact Information')]")
+    ADDRESS_SECTION = (By.XPATH, "//h3[normalize-space()='Address']")
+    
+    # Step 3 - Navigation
+    SUBMIT_BUTTON = (By.XPATH, "//button[normalize-space()='Submit']")
+
+    # Success notification
+    PATIENT_ADDED_SUCCESS_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Patient added successfully!']")
+
+    # Validation errors
+    VALIDATION_ERROR = lambda field_name: (By.XPATH,
+                                            f"//label[normalize-space()='{field_name}']/following::p[contains(@class, 'text-red-500')][1]")
