@@ -157,13 +157,13 @@ class AddPatientPage(BasePage):
         try:
             self.click(AddPatientPageLocators.HEIGHT_FEET_DROPDOWN)
             sleep(0.3)
-            feet_option = AddPatientPageLocators.HEIGHT_OPTION(feet)
-            self.click(feet_option)
+            self.click(AddPatientPageLocators.HEIGHT_OPTION(feet))
+            sleep(0.3)
             
             self.click(AddPatientPageLocators.HEIGHT_INCHES_DROPDOWN)
             sleep(0.3)
-            inches_option = AddPatientPageLocators.HEIGHT_OPTION(inches)
-            self.click(inches_option)
+            self.click(AddPatientPageLocators.HEIGHT_OPTION(inches))
+            sleep(0.3)
             printf(f"Selected height: {feet}'{inches}\"")
         except Exception as e:
             printf(f"Error selecting height: {e}")
@@ -318,7 +318,8 @@ class AddPatientPage(BasePage):
         """Check if currently on the Summary step."""
         try:
             return self.is_element_visible(AddPatientPageLocators.SUMMARY_HEADING, timeout=5)
-        except Exception:
+        except Exception as e:
+            printf(f"Error checking if on Summary page: {e}")
             return False
 
     def verify_summary_displays_patient_info(self):
@@ -364,13 +365,6 @@ class AddPatientPage(BasePage):
         try:
             # Check for elements that are only visible on Step 1
             return self.is_element_visible(AddPatientPageLocators.SELECT_CLINIC_DROPDOWN, timeout=5)
-        except Exception:
-            return False
-
-    def is_redirected_to_dashboard(self):
-        """Check if redirected to the dashboard after patient creation."""
-        try:
-            return self.check_url_contains(Routes.DASHBOARD, partial=True)
         except Exception as e:
-            printf(f"Error checking dashboard redirect: {e}")
+            printf(f"Error checking if on Patient Details step: {e}")
             return False
