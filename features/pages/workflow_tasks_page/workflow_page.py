@@ -133,35 +133,132 @@ class WorkflowPage(BasePage):
         except NoSuchElementException as e:
             printf(f"Failed selecting first option for dropdown {dropdown_locator}: {e}")
             return None
-
-    def fill_create_workflow_form(self):
+            
+    def _select_dropdown_option_by_text(self, dropdown_locator, option_text, option2 = False):
+        """Select a specific dropdown option by its text value.
+        
+        Args:
+            dropdown_locator: The locator for the dropdown button.
+            option_text: The text of the option to select.
+            
+        Returns:
+            The text of the selected option or None if not found.
+        """
         try:
-            workflow_name = f"Automation Workflow {self.faker.word().capitalize()}"
+            self.click(dropdown_locator)
+            sleep(1)
+            self.wait_for_dom_stability()
+            if option2:
+                option_locator = WorkflowPageLocators.APPLICABLE_PROGRAM_OPTION(option_text)
+            else:
+                option_locator = WorkflowPageLocators.DROPDOWN_OPTION(option_text)
+
+            self.click(option_locator)
+            sleep(1)
+            self.wait_for_dom_stability()
+            if self.is_element_visible(WorkflowPageLocators.DROPDOWN_FIRST_OPTION):
+                printf("First option still visible after selection, attempting to click dropdown again to close it")
+                self.click(dropdown_locator)
+                sleep(1)
+            printf(f"Selected dropdown option: {option_text}")
+            return option_text
+        except NoSuchElementException as e:
+            printf(f"Failed selecting dropdown option '{option_text}': {e}")
+            return None
+
+    def fill_create_workflow_form(self, program_name=None, workflow_name=None, trigger_workflow=None, trigger_status=None, user_group_name=None, task_name="Call", waiting_period=0):
+        """Fill the create workflow form with optional specific values.
+        
+        Args:
+            program_name: Optional specific program name (e.g., 'CCM'). If None, selects first.
+            workflow_name: Optional workflow name. If None, generates automation name.
+            trigger_workflow: Optional trigger workflow name. If None, selects first or removes trigger.
+            trigger_status: Optional trigger status name. If None, selects first or removes trigger.
+            user_group_name: Optional user group name. If None, selects first.
+            task_name: Task name (default: 'Call').
+            waiting_period: Waiting period in days (default: 0).
+            
+        Returns:
+            dict: Workflow information including all settings.
+        """
+        try:
+            if workflow_name is None:
+                workflow_name = f"Automation Workflow {self.faker.word().capitalize()}"
             self.send_keys(WorkflowPageLocators.WORKFLOW_NAME_INPUT, workflow_name)
 
-            program = self._select_first_dropdown_option(WorkflowPageLocators.APPLICABLE_PROGRAMS_DROPDOWN)
-            trigger_workflow = self._select_first_dropdown_option(WorkflowPageLocators.TRIGGER_WORKFLOW_DROPDOWN)
-            trigger_status = self._select_first_dropdown_option(WorkflowPageLocators.TRIGGER_STATUS_DROPDOWN)
+            # Select program
+            if program_name:
+                program = self._select_dropdown_option_by_text(WorkflowPageLocators.APPLICABLE_PROGRAMS_DROPDOWN, program_name, option2=True)
+            else:
+                program = self._select_first_dropdown_option(WorkflowPageLocators.APPLICABLE_PROGRAMS_DROPDOWN)
+            
+            # Handle trigger configuration
+            if trigger_workflow is None and trigger_status is None:
+                # No trigger - remove trigger rows
+                printf("No trigger specified - removing trigger rows")
+                self.remove_all_trigger_rows()
+                trigger_workflow_result = None
+                trigger_status_result = None
+            else:
+                # Select trigger workflow and status
+                if trigger_workflow:
+                    trigger_workflow_result = self._select_dropdown_option_by_text(WorkflowPageLocators.TRIGGER_WORKFLOW_DROPDOWN, trigger_workflow, option2=True)
+                else:
+                    trigger_workflow_result = self._select_first_dropdown_option(WorkflowPageLocators.TRIGGER_WORKFLOW_DROPDOWN)
+                
+                if trigger_status:
+                    trigger_status_result = self._select_dropdown_option_by_text(WorkflowPageLocators.TRIGGER_STATUS_DROPDOWN, trigger_status, option2=True)
+                else:
+                    trigger_status_result = self._select_first_dropdown_option(WorkflowPageLocators.TRIGGER_STATUS_DROPDOWN)
 
-            self.add_and_remove_additional_trigger()
-
-            self.select_task_and_waiting_period("Call", 1)
+            # Set task and waiting period
+            self.select_task_and_waiting_period(task_name, waiting_period)
             self.add_and_remove_additional_attempt()
 
-            user_group = self._select_first_dropdown_option(WorkflowPageLocators.USER_GROUP_DROPDOWN)
+            # Select user group
+            if user_group_name:
+                self.click(WorkflowPageLocators.USER_GROUP_DROPDOWN)
+                sleep(0.3)
+                self.send_keys(WorkflowPageLocators.USER_GROUP_OPTION_SEARCH_INPUT, user_group_name)
+                sleep(0.5)
+                self.click(WorkflowPageLocators.APPLICABLE_PROGRAM_OPTION(user_group_name))
+                sleep(0.3)
+                self.click(WorkflowPageLocators.USER_GROUP_DROPDOWN)
+                user_group = user_group_name
+            else:
+                user_group = self._select_first_dropdown_option(WorkflowPageLocators.USER_GROUP_DROPDOWN)
 
+            printf(f"Filled workflow form: Name={workflow_name}, Program={program}, Trigger Workflow={trigger_workflow_result}, Trigger Status={trigger_status_result}, User Group={user_group}")
+            
             return {
                 "name": workflow_name,
                 "program": program,
-                "trigger_workflow": trigger_workflow,
-                "trigger_status": trigger_status,
-                "task": "Call",
-                "waiting_period": 1,
+                "trigger_workflow": trigger_workflow_result,
+                "trigger_status": trigger_status_result,
+                "task": task_name,
+                "waiting_period": waiting_period,
                 "user_group": user_group,
             }
         except NoSuchElementException as e:
             printf(f"Error filling create workflow form: {e}")
             raise
+            
+    def remove_all_trigger_rows(self):
+        """Remove all trigger rows from the workflow form."""
+        try:
+            # Try to remove trigger rows while they exist
+            for _ in range(5):  # Safety limit
+                if self.is_element_visible(WorkflowPageLocators.TRIGGER_ROW_DELETE_BUTTON, timeout=1):
+                    self.click(WorkflowPageLocators.TRIGGER_ROW_DELETE_BUTTON)
+                    self.wait_for_dom_stability()
+                    sleep(0.5)
+                else:
+                    break
+            printf("Removed all trigger rows")
+            return True
+        except Exception as e:
+            printf(f"Error removing trigger rows: {e}")
+            return False
 
     def add_and_remove_additional_trigger(self):
         try:
@@ -286,6 +383,7 @@ class WorkflowPage(BasePage):
     def confirm_workflow_delete(self):
         try:
             self.click(WorkflowPageLocators.DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON)
+            self.wait_for_loader(loader_locators=WorkflowPageLocators.DELETE_CONFIRMATION_DIALOG)
             return True
         except NoSuchElementException as e:
             printf(f"Error confirming workflow deletion: {e}")

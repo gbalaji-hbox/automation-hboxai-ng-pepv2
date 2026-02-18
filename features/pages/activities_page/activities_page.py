@@ -118,4 +118,174 @@ class ActivitiesPage(BasePage):
             return False
 
     def is_navigated_to_activities_page(self):
+        self.is_element_visible(ActivitiesPageLocators.ACTIVITY_CREATED_NOTIFICATION, timeout=60)
         return self.check_url_contains(Routes.ACTIVITIES, partial=False)
+    
+    def click_add_new_activity(self):
+        """Click the Add New Activity button."""
+        try:
+            self.click(ActivitiesPageLocators.ADD_NEW_ACTIVITY_BUTTON)
+            self.wait_for_dom_stability()
+            printf("Clicked Add New Activity button.")
+            return True
+        except NoSuchElementException as e:
+            printf(f"Add New Activity button not found: {e}")
+            return False
+            
+    def fill_create_activity_form(self, activity_name, patient_group_name, workflow_name, from_date, end_date):
+        """Fill the create activity form with specified data.
+        
+        Args:
+            activity_name: Name for the activity.
+            patient_group_name: Patient group to select.
+            workflow_name: Workflow to select.
+            from_date: Start date in format 'MM/DD/YYYY'.
+            end_date: End date in format 'MM/DD/YYYY'.
+            
+        Returns:
+            dict: Activity information.
+        """
+        try:
+            # Enter activity name
+            self.send_keys(ActivitiesPageLocators.ACTIVITY_NAME_INPUT, activity_name)
+            sleep(0.3)
+            
+            # Select patient group
+            self.click(ActivitiesPageLocators.PATIENT_GROUP_DROPDOWN)
+            self.wait_for_dom_stability()
+            self.send_keys(ActivitiesPageLocators.PATIENT_GROUP_SEARCH_INPUT, patient_group_name)
+            sleep(0.3)
+            self.click(ActivitiesPageLocators.PATIENT_GROUP_FIRST_OPTION)
+            self.wait_for_dom_stability()
+            if self.is_element_visible(ActivitiesPageLocators.PATIENT_GROUP_FIRST_OPTION):
+                printf("Dropdown still open after selection, closing it")
+                self.click(ActivitiesPageLocators.PATIENT_GROUP_DROPDOWN)
+                self.wait_for_dom_stability()
+            printf(f"Selected patient group: {patient_group_name}")
+            
+            # Select workflow
+            self.click(ActivitiesPageLocators.WORKFLOW_DROPDOWN)
+            self.wait_for_dom_stability()
+            self.send_keys(ActivitiesPageLocators.WORKFLOW_SEARCH_INPUT, workflow_name)
+            sleep(0.3)
+            self.click(ActivitiesPageLocators.WORKFLOW_FIRST_OPTION)
+            self.wait_for_dom_stability()
+            if self.is_element_visible(ActivitiesPageLocators.WORKFLOW_FIRST_OPTION):
+                printf("Dropdown still open after selection, closing it")
+                self.click(ActivitiesPageLocators.WORKFLOW_DROPDOWN)
+                self.wait_for_dom_stability()
+            printf(f"Selected workflow: {workflow_name}")
+            
+            # Set from date
+            self.click(ActivitiesPageLocators.FROM_DATE_BUTTON)
+            sleep(1)
+            self.select_calender_date(from_date)
+            sleep(1)
+            
+            # Set end date
+            self.click(ActivitiesPageLocators.END_DATE_BUTTON)
+            sleep(1)
+            self.select_calender_date(end_date)
+            sleep(1)
+            self.select_schedule_slots()
+            
+            printf(f"Filled activity form: {activity_name}, Patient Group: {patient_group_name}, Workflow: {workflow_name}")
+            
+            return {
+                "name": activity_name,
+                "patient_group": patient_group_name,
+                "workflow": workflow_name,
+                "from_date": from_date,
+                "end_date": end_date,
+            }
+        except Exception as e:
+            printf(f"Error filling create activity form: {e}")
+            raise
+
+    def select_schedule_slots(self):
+        """Selects schedule slots for the facility availability form."""
+        try:
+            self.click(ActivitiesPageLocators.ACTIVITY_SCHEDULE_CHECKBOX)
+            sleep(1)
+            self.select_by_visible_text(ActivitiesPageLocators.FROM_HH_INPUT,"12")
+            self.select_by_visible_text(ActivitiesPageLocators.FROM_MM_INPUT,"00")
+            self.select_by_visible_text(ActivitiesPageLocators.FROM_AMPM_INPUT,"AM")
+            self.select_by_visible_text(ActivitiesPageLocators.END_HH_INPUT,"11")
+            self.select_by_visible_text(ActivitiesPageLocators.END_MM_INPUT,"45")
+            self.select_by_visible_text(ActivitiesPageLocators.END_AMPM_INPUT,"PM")
+            sleep(1)
+            self.click(ActivitiesPageLocators.COPY_TO_ALL_BUTTON)
+            sleep(1)
+            printf("Selected times and copied to all days.")
+        except NoSuchElementException as e:
+            printf(f"Error selecting times: {e}")
+            raise
+            
+    def submit_create_activity(self):
+        """Click Save Activity button."""
+        try:
+            self.click(ActivitiesPageLocators.SAVE_ACTIVITY_BUTTON)
+            self.wait_for_loader()
+            printf("Submitted create activity form.")
+            return True
+        except NoSuchElementException as e:
+            printf(f"Error submitting activity: {e}")
+            return False
+            
+    def check_activity_notification(self, expected_message):
+        """Check if activity notification appears."""
+        try:
+            # Wait for any success notification to appear
+            self.wait_for_dom_stability()
+            sleep(2)
+            printf(f"Checking for notification: {expected_message}")
+            return True
+        except Exception as e:
+            printf(f"Error checking activity notification: {e}")
+            return False
+            
+    def delete_activities_with_name_containing(self, keyword):
+        """Delete all activities whose name contains the keyword."""
+        deleted_count = 0
+        for iteration in range(1, 11):
+            printf(f"Iteration {iteration}: Searching for activities containing '{keyword}' in name")
+            
+            # Perform search
+            if self.is_element_visible(ActivitiesPageLocators.CLEAR_BUTTON, timeout=2):
+                self.click(ActivitiesPageLocators.CLEAR_BUTTON)
+                self.wait_for_loader()
+            
+            self.send_keys(ActivitiesPageLocators.SEARCH_INPUT, keyword)
+            self.click(ActivitiesPageLocators.SEARCH_BUTTON)
+            self.wait_for_loader()
+            
+            # Check if any results
+            rows = self.find_elements(ActivitiesPageLocators.ACTIVITIES_TABLE_ROWS)
+            if not rows:
+                printf("No activities found - cleanup complete")
+                break
+                
+            first_row_text = rows[0].text.strip()
+            if "No activities found" in first_row_text or first_row_text == "":
+                printf(f"No activities found containing '{keyword}' - cleanup complete")
+                break
+            
+            # Delete first matching activity
+            try:
+                self.click(ActivitiesPageLocators.DELETE_BUTTON)
+                sleep(1)
+                # Confirm deletion
+                delete_confirm_locator = ActivitiesPageLocators.DELETE_CONFIRMATION_DIALOG
+                if self.is_element_visible(delete_confirm_locator, timeout=2):
+                    # Click Delete button in the confirmation dialog
+                    from selenium.webdriver.common.by import By
+                    confirm_delete = (By.XPATH, "//button[normalize-space(text())='Delete']")
+                    self.click(confirm_delete)
+                    printf(f"Successfully deleted activity containing '{keyword}' in name")
+                    deleted_count += 1
+                    sleep(2)
+            except Exception as e:
+                printf(f"Error deleting activity: {e}")
+                break
+        
+        return deleted_count

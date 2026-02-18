@@ -67,16 +67,33 @@ class UserGroupPage(BasePage):
             printf("Add New User Group button not found.")
             raise
 
-    def fill_create_user_group_form(self):
-        """Fill the create user group form with valid generated data."""
+    def fill_create_user_group_form(self, group_name=None, user_emails=None):
+        """Fill the create user group form with valid generated data or specific values.
+        
+        Args:
+            group_name: Optional specific group name. If None, generates automation name.
+            user_emails: Optional list of specific user emails to add. If None, adds 2 ES users.
+            
+        Returns:
+            dict: Group information.
+        """
         try:
-            name = f"Automation-Test Group {self.faker.unique.random_int(1000, 9999)}"
+            if group_name is None:
+                name = f"Automation-Test Group {self.faker.unique.random_int(1000, 9999)}"
+            else:
+                name = group_name
+                
             self.send_keys(UserGroupPageLocators.GROUP_NAME_INPUT, name)
             # Add users
             self.click(UserGroupPageLocators.ADD_USERS_BUTTON)
             self.wait_for_dom_stability()
-            # Select a user, e.g., test_user_1512
-            self.add_users_by_type(count=2, user_type="ES")
+            
+            if user_emails is not None:
+                self.add_specific_users_by_email(user_emails)
+            else:
+                # Select a user, e.g., test_user_1512
+                self.add_users_by_type(count=2, user_type="ES")
+                
             printf(f"Filled create user group form for {name}.")
             return {"name": name}
         except Exception as e:
@@ -105,6 +122,42 @@ class UserGroupPage(BasePage):
             printf(f"Added {selected} users of type {user_type} to the group.")
         except Exception as e:
             printf(f"Error adding users by type: {e}")
+            raise
+            
+    def add_specific_users_by_email(self, user_emails):
+        """Add specific users to the group by their email addresses.
+        
+        Args:
+            user_emails: List of email addresses of users to add.
+        """
+        try:
+            self.wait_for_dom_stability()
+            self.custom_select_by_locator(UserGroupPageLocators.ADD_USERS_FILTER_DROPDOWN, UserGroupPageLocators.ADD_USER_FILTER_OPTION("Email"))
+            self.wait_for_dom_stability()
+            
+            selected = 0
+            for email in user_emails:
+                # Search for the specific user by email
+                self.clear_field(UserGroupPageLocators.ADD_USERS_SEARCH_INPUT)
+                self.send_keys(UserGroupPageLocators.ADD_USERS_SEARCH_INPUT, email)
+                self.wait_for_dom_stability()
+                sleep(1)
+                
+                # Find and click the checkbox for this user
+                user_checkboxes = self.find_elements(UserGroupPageLocators.ADD_USER_SELECTION_CHECKBOX)
+                if user_checkboxes:
+                    user_checkboxes[0].click()
+                    selected += 1
+                    printf(f"Selected user with email: {email}")
+                else:
+                    printf(f"Warning: User with email {email} not found")
+                    
+            self.wait_for_dom_stability()
+            self.click(UserGroupPageLocators.ADD_USERS_ADD_BUTTON)
+            self.wait_for_dom_stability()
+            printf(f"Added {selected} specific users to the group.")
+        except Exception as e:
+            printf(f"Error adding specific users by email: {e}")
             raise
 
     def submit_user_group_form(self):
@@ -168,7 +221,7 @@ class UserGroupPage(BasePage):
         """Find user group by name and delete."""
         try:
             self.wait_for_loader()
-            self.perform_search_by_field("Group Name", name)
+            self.perform_search_by_field("User Group Name", name)
             self.click(UserGroupPageLocators.DELETE_BUTTON)
             printf(f"Deleting user group {name}.")
         except Exception as e:

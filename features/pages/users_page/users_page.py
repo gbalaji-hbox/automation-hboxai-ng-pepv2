@@ -165,24 +165,46 @@ class UsersPage(BasePage):
             printf("Add New User button not found.")
             raise
 
-    def fill_create_user_form(self):
-        """Fill the create user form with valid generated data."""
+    def fill_create_user_form(self, user_role=None, email=None, password=None):
+        """Fill the create user form with valid generated data or specific values.
+        
+        Args:
+            user_role: Optional specific role (ES, CS, PE, etc.). If None, defaults to ES.
+            email: Optional specific email. If None, generates automation email.
+            password: Optional specific password. If None, defaults to Password123.
+            
+        Returns:
+            dict: User information including all fields.
+        """
         try:
             first_name = f"Automation-{self.faker.first_name()}"
             last_name = self.faker.last_name()
-            email = f"{first_name.lower()}.{last_name.lower()}@hbox.ai"
+            
+            if email is None:
+                email = f"{first_name.lower()}.{last_name.lower()}@hbox.ai"
+            
             phone = self.faker.numerify(text="##########")
-            password = "Password123"
-            user_type = "ES"
+            
+            if password is None:
+                password = "Password123"
+                
+            if user_role is None:
+                user_type = "ES"
+            else:
+                user_type = user_role
+                
             self.send_keys(UsersPageLocators.FIRST_NAME_INPUT, first_name)
             self.send_keys(UsersPageLocators.LAST_NAME_INPUT, last_name)
             self.send_keys(UsersPageLocators.EMAIL_INPUT, email)
             self.send_keys(UsersPageLocators.PHONE_INPUT, phone)
             self.send_keys(UsersPageLocators.PASSWORD_INPUT, password)
             self.select_user_type(user_type)
-            self.select_dates()
+            if not email is None:
+                self.select_dates(days_offset=60)
+            else:
+                self.select_dates()
             self.select_times()
-            printf(f"Filled create user form for {first_name} {last_name}.")
+            printf(f"Filled create user form for {first_name} {last_name} with role {user_type}.")
             return {
                 "first_name": first_name,
                 "last_name": last_name,
@@ -204,11 +226,11 @@ class UsersPage(BasePage):
             printf(f"Error selecting user type: {e}")
             raise
 
-    def select_dates(self):
+    def select_dates(self, days_offset=1):
         """Select from and end dates."""
         try:
             start_date = get_current_date(date_format="%d-%m-%Y")
-            end_date = get_current_date(date_format="%d-%m-%Y", days_offset=1)
+            end_date = get_current_date(date_format="%d-%m-%Y", days_offset=days_offset)
             self.click(UsersPageLocators.FROM_DATE_BUTTON)
             sleep(1)
             self.select_calender_date(start_date)
