@@ -40,6 +40,11 @@ class Routes:
     CREATE_NEW_PATIENT_GROUP_BY_FILTERS = "/admin/patient-groups/create-by-filters"
     CREATE_NEW_PATIENT_GROUP_BY_EXCEL = "/admin/patient-groups/create-by-excel"
     ADD_PATIENTS_TO_GROUP = "/add-patients"
+    FACILITY_AVAILABILITY = "/admin/facility-availability"
+    ADD_FACILITY_AVAILABILITY = "/admin/facility-availability/add"
+    FACILITY_AVAILABILITY_EDIT = "/admin/facility-availability/edit/"
+    SEARCH_PATIENTS = "/global-search"
+    PATIENT_DETAILS = "/es-dashboard"
 
 
     @staticmethod
