@@ -85,13 +85,6 @@ def step_impl(context):
         "Patient added successfully notification not appeared"
 
 
-@then(u'I am redirected to the dashboard')
-def step_impl(context):
-    context.add_patient_page.wait_for_dom_stability()
-    assert context.add_patient_page.is_redirected_to_dashboard(), \
-        "Not redirected to dashboard after patient creation"
-
-
 @then(u'the Continue button should be disabled')
 def step_impl(context):
     context.add_patient_page = AddPatientPage(context.driver)

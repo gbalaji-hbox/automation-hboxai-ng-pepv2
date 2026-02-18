@@ -444,6 +444,62 @@ class WorkflowPageLocators:
     WORKFLOW_DELETED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Success']")
 
 
+class ActivitiesPageLocators:
+    """Locators for the Activities page elements."""
+    ACTIVITIES_TABLE = (By.XPATH, "//table[@id='table-admin-activities']")
+    ACTIVITIES_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-activities']/tbody/tr")
+    SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Search by Activity Name']")
+    SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
+    CLEAR_BUTTON = (By.XPATH, "//button[normalize-space()='Clear']")
+    PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
+    DROPDOWN_OPTION = lambda option_text: (
+        By.XPATH,
+        f"//div[@role='option']/span[normalize-space(text())='{option_text}']",
+    )
+    ADD_NEW_ACTIVITY_BUTTON = (By.XPATH, "//button[normalize-space()='Add New Activity']")
+
+    HISTORY_BUTTON = (By.XPATH,
+                      "//table[@id='table-admin-activities']/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
+    DUPLICATE_BUTTON = (By.XPATH,
+                        "//table[@id='table-admin-activities']/tbody/tr[1]/td[last()]//button[contains(@id,'duplicate')][1]")
+    EDIT_BUTTON = (By.XPATH,
+                   "//table[@id='table-admin-activities']/tbody/tr[1]/td[last()]//button[contains(@id,'edit')][1]")
+    DELETE_BUTTON = (By.XPATH,
+                     "//table[@id='table-admin-activities']/tbody/tr[1]/td[last()]//button[contains(@id,'delete')][1]")
+
+    OPERATION_HISTORY_DIALOG = (By.XPATH, "//div[@role='dialog']//h2[normalize-space()='Activity Operation History']")
+    OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
+    DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//div[@role='alertdialog']//h2[normalize-space()='Are you sure?']")
+    DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+
+    ACTIVITY_NAME_INPUT = (By.XPATH, "//input[@placeholder='Enter activity name']")
+    PATIENT_GROUP_DROPDOWN = (By.XPATH,
+                              "//label[normalize-space(text())='Patient Group *']/following-sibling::button")
+    PATIENT_GROUP_OPTION = lambda option_text: (
+        By.XPATH,
+        f"//div[@role='option']//span[normalize-space(text())='{option_text}']",
+    )
+    WORKFLOW_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Workflow *']/following-sibling::button")
+    WORKFLOW_OPTION = lambda option_text: (
+        By.XPATH,
+        f"//div[@role='option']//span[normalize-space(text())='{option_text}']",
+    )
+
+    FROM_DATE_BUTTON = (By.XPATH, "//label[normalize-space(text())='From Date *']/following-sibling::button")
+    END_DATE_BUTTON = (By.XPATH, "//label[normalize-space(text())='End Date *']/following-sibling::button")
+    TIMEZONE_DROPDOWN = (By.XPATH, "//label[normalize-space(text())='Timezone']/following-sibling::button")
+
+    ACTIVE_DAY_CHECKBOX = lambda day: (
+        By.XPATH,
+        f"//label[normalize-space(text())='{day}']/preceding-sibling::button[@role='checkbox']",
+    )
+    ADD_ANOTHER_SLOT_BUTTON = (By.XPATH, "//button[normalize-space()='Add Another Slot']")
+
+    SAVE_ACTIVITY_BUTTON = (By.XPATH, "//button[normalize-space()='Save Activity']")
+    CANCEL_ACTIVITY_BUTTON = (By.XPATH, "//button[normalize-space()='Cancel']")
+    CREATE_DUPLICATE_BUTTON = (By.XPATH, "//button[normalize-space()='Create Duplicate']")
+    UPDATE_ACTIVITY_BUTTON = (By.XPATH, "//button[normalize-space()='Update Activity']")
+
 class WorkflowStatusPageLocators:
     """Locators for Workflow Status tab under Workflow & Tasks page."""
     WORKFLOW_STATUS_TAB = (By.XPATH, "//button[@role='tab' and normalize-space()='Workflow Status']")
@@ -584,6 +640,9 @@ class FacilityAvailabilityPageLocators:
                                                         "//div[contains(normalize-space(text()),'Failed to delete facility availability')]")
     FACILITY_AVAILABILITY_DELETE_NOTIFICATION = (By.XPATH,"//div[contains(normalize-space(text()),'Facility availability deleted successfully')]")
 
+
+
+
 class SearchPatientsPageLocators:
     """Locators for the Search Patients (Global Search) page elements."""
 
@@ -641,7 +700,7 @@ class AddPatientPageLocators:
     GENDER_DROPDOWN = (By.XPATH, "//button[@id='add_patient_gender']")
     GENDER_OPTION = lambda gender: (By.XPATH, f"//div[@role='option']//span[normalize-space(text())='{gender}']")
     HEIGHT_FEET_DROPDOWN = (By.XPATH, "//button[@id='add_patient_height_feet']")
-    HEIGHT_INCHES_DROPDOWN = (By.XPATH, "//button[@id='add_patient_height_feet']")
+    HEIGHT_INCHES_DROPDOWN = (By.XPATH, "//button[@id='add_patient_height_inches']")
     HEIGHT_OPTION = lambda value: (By.XPATH, f"//div[@role='option']//span[normalize-space(text())='{value}']")
 
     # Step 1 - Patient Details - Medical Records
