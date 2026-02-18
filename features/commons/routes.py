@@ -45,6 +45,7 @@ class Routes:
     FACILITY_AVAILABILITY_EDIT = "/admin/facility-availability/edit/"
     SEARCH_PATIENTS = "/global-search"
     PATIENT_DETAILS = "/es-dashboard"
+    ADD_PATIENT = "/add-patient"
 
 
     @staticmethod
