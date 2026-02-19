@@ -75,6 +75,34 @@ def convert_dob_ddmmyyyy_to_yyyymmdd(dob_str: str) -> str:
     except ValueError: # Catching the specific exception for date parsing errors
         return dob_str
 
+def to_ddmmyyyy(date_input: str) -> str:
+    """
+    Converts various date formats into dd/mm/yyyy.
+    Supported examples:
+    - Feb 19, 2026
+    - February 19, 2026
+    - 2026-02-19
+    - 19-02-2026
+    - 19/02/2026
+    """
+
+    formats = [
+        "%b %d, %Y",   # Feb 19, 2026
+        "%B %d, %Y",   # February 19, 2026
+        "%Y-%m-%d",    # 2026-02-19
+        "%d-%m-%Y",    # 19-02-2026
+        "%d/%m/%Y",    # 19/02/2026
+    ]
+
+    for fmt in formats:
+        try:
+            parsed = datetime.strptime(date_input.strip(), fmt)
+            return parsed.strftime("%d/%m/%Y")
+        except ValueError:
+            continue
+
+    raise ValueError(f"Unsupported date format: {date_input}")
+
 
 def convert_to_human_readable_date(date_str, expected_format=None):
     """

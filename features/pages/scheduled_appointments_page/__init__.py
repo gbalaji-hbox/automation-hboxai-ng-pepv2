@@ -1,0 +1,3 @@
+from features.pages.scheduled_appointments_page.scheduled_appointments_page import ScheduledAppointmentsPage
+
+__all__ = ["ScheduledAppointmentsPage"]
