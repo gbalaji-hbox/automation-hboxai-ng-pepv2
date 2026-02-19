@@ -1,4 +1,4 @@
-@login_parallel
+@login_parallel @e2e
 Feature: tc16 - Activities CRUD E2E Test with Patient Workflow Movement
   As an Enroller Admin
   I want to create a complete workflow system with users, groups, patient groups, workflows, and activities
@@ -16,16 +16,17 @@ Feature: tc16 - Activities CRUD E2E Test with Patient Workflow Movement
     When I create ES user with automation email and password "123456"
     Then notification "User Created" appears
     And I store the created user email as "ES_User_Email"
-    
+
     When I create CS user with automation email and password "123456"
     Then notification "User Created" appears
     And I store the created user email as "CS_User_Email"
-    
+
     When I create PE user with automation email and password "123456"
     Then notification "User Created" appears
     And I store the created user email as "PE_User_Email"
     
     # Create 3 groups and assign users
+
     Given I am on the Users page
     And I am on the User Group tab from Users
     When I create user group "ES_Group" and assign user with email stored as "ES_User_Email"
@@ -80,34 +81,44 @@ Feature: tc16 - Activities CRUD E2E Test with Patient Workflow Movement
     # ES_User changes patient status to Consent
     Given I login as ES user with stored email "ES_User_Email" and password "123456" as "es_user"
     When I navigate to dashboard as "es_user"
-#    And I change enrollment status to "Consent" as "es_user"
-#    And I Change workflow status to "Call Answered" as "es_user"
-#    And I enter the comment of the update as "es_user"
-#    And I click on save button for status update as "es_user"
-#    Then status update notification appears for "es_user"
-#    When I click on next patient button as "es_user"
-#    Then I should see next patient loaded in dashboard as "es_user"
-#    And I logout from the application as "es_user"
+    And I change enrollment status to "Consent" as "es_user"
+    And I Change workflow status to "Call Answered" as "es_user"
+    And I enter the comment of the update as "es_user"
+    And I click on save button for status update as "es_user"
+    Then status update notification appears for "es_user"
+    When I click on next patient button as "es_user"
+    Then I should see next patient loaded in dashboard as "es_user"
+    And I logout from the application as "es_user"
 
-#     # Verify patient moved to Workflow_2 (CS_User can see it)
-#     Given I login as CS user with stored email "CS_User_Email" and password "123456" as "cs_user"
-#     When I navigate to dashboard as "cs_user"
-#     Then I should see patients in my dashboard as "cs_user"
-#
-#     # CS_User changes patient status to Enrolled
-#     When I open the first patient from dashboard as "cs_user"
-#     And I change program status to "Enrolled" as "cs_user"
-#     Then status update notification appears for "cs_user"
-#     And I logout from the application as "cs_user"
-#
-#     # Verify patient moved to Workflow_3 (PE_User can see it)
-#     Given I login as PE user with stored email "PE_User_Email" and password "123456" as "pe_user"
-#     When I navigate to dashboard as "pe_user"
-#     Then I should see patients in my dashboard as "pe_user"
-#     And I logout from the application as "pe_user"
+     # Verify patient moved to Workflow_2 (CS_User can see it)
+    Given I login as CS user with stored email "CS_User_Email" and password "123456" as "cs_user"
+    When I navigate to dashboard as "cs_user"
+    Then I should see patient from previous workflow step in my dashboard as "cs_user"
+    When I change enrollment status to "Enrolled (Virtual)" as "cs_user"
+    And I Change workflow status to "Call Answered" as "cs_user"
+    And I enter the comment of the update as "cs_user"
+    And I click on save button for status update as "cs_user"
+    Then status update notification appears for "cs_user"
+    When I click on next patient button as "cs_user"
+    Then I should see next patient loaded in dashboard as "cs_user"
+    And I logout from the application as "cs_user"
+
+     # Verify patient moved to Workflow_3 (PE_User can see it)
+    Given I login as PE user with stored email "PE_User_Email" and password "123456" as "pe_user"
+    When I navigate to dashboard as "pe_user"
+    Then I should see patient from previous workflow step in my dashboard as "pe_user"
+    When I change enrollment status to "Transferred" as "pe_user"
+    And I Change workflow status to "Call Answered" as "pe_user"
+    And I enter the comment of the update as "pe_user"
+    And I click on save button for status update as "pe_user"
+    Then status update notification appears for "pe_user"
+    When I click on next patient button as "pe_user"
+    Then I should see next patient loaded in dashboard as "pe_user"
+    And I logout from the application as "pe_user"
 
     # Cleanup: Delete all created entities
-    Given I am on the Activities page
+    Given I returned to "enroller_admin" dashboard
+    And I am on the Activities page
     When I delete all activities containing "Automation_TC16_Test_Activity" in their name
     Then all test activities should be deleted
 #
@@ -148,3 +159,29 @@ Feature: tc16 - Activities CRUD E2E Test with Patient Workflow Movement
     When I find and delete user with email stored as "ES_User_Email"
     Then notification "User deleted successfully" appears
     Then I close all browser instances for parallel users
+
+  @regression @allure.label.severity:critical
+  Scenario: Master Cleanup - Delete all remaining test activities
+    Given I login as "enroller_admin"
+    And I am on the Activities page
+    When I delete all activities containing "Automation" in their name
+    Then all test activities should be deleted
+
+    Given I am on the Workflow & Tasks page
+    And I am on the Workflow tab from workflow tasks
+    When I delete all workflows containing "Automation" in their name
+    Then all test automation workflows should be deleted
+
+    Given I am on the Patient Groups page
+    When I delete all patient groups containing "Automation" in their name
+    Then all test automation patient groups should be deleted
+
+    Given I am on the Users page
+    And I am on the User Group tab from Users
+    When I delete all user groups containing "Automation" in their name
+    Then all test automation user groups should be deleted
+
+    Given I am on the Users page
+    And I am on the User tab from Users
+    When I delete all users containing "Automation" in their email
+    Then all test automation users should be deleted

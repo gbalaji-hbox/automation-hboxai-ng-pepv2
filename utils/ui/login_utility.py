@@ -139,6 +139,38 @@ class LoginHelper:
         return driver
 
     @staticmethod
+    def quit_driver_for_role(context, user_role):
+        """
+        Quit and remove a driver for a role from context.user_drivers.
+        Also clears active driver references if they point to the removed driver.
+
+        Args:
+            context: Behave context object.
+            user_role: Role string used for the parallel login driver.
+        """
+        driver_manager: DriverManager = context.driver_manager
+
+        if not hasattr(context, "user_drivers"):
+            printf("No context.user_drivers found to quit driver by role")
+            return
+
+        driver = context.user_drivers.get(user_role)
+        if not driver:
+            printf(f"No driver found for role '{user_role}' in context.user_drivers")
+            return
+
+        driver_manager.quit_driver(user_role)
+        context.user_drivers.pop(user_role, None)
+        printf(f"Removed driver for role '{user_role}' from context.user_drivers")
+
+        if getattr(context, "active_step_driver", None) is driver:
+            context.active_step_driver = None
+        if getattr(context, "driver", None) is driver:
+            context.driver = None
+        if getattr(context, "current_driver", None) is driver:
+            context.current_driver = None
+
+    @staticmethod
     def handle_automatic_login(context, feature):
         """Handle automatic login for features with login tags using role-based driver management."""
 

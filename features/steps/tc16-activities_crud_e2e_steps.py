@@ -5,6 +5,7 @@ from time import sleep
 
 from faker import Faker
 
+from features.pages.dashboard_page.dashboard_page import DashboardPage
 from features.pages.login_page.login_page import LoginPage
 from features.pages.users_page.users_page import UsersPage
 from features.pages.users_page.user_group_page import UserGroupPage
@@ -13,6 +14,7 @@ from features.pages.workflow_tasks_page.workflow_page import WorkflowPage
 from features.pages.activities_page.activities_page import ActivitiesPage
 from features.pages.search_patients_page.search_patients_page import SearchPatientsPage
 from features.pages.patient_details_page.patient_details_page import PatientDetailsPage
+from features.pages.user_dashboard_page.user_dashboard_page import UserDashboardPage
 from features.commons.routes import Routes
 from utils.logger import printf
 from utils.ui.login_utility import LoginHelper
@@ -29,6 +31,15 @@ def step_impl(context, user_role):
     login_page.navigate_to_login()
     login_page.login_as_role(user_role)
     login_page.is_login_successful()
+
+    context.driver = driver
+    printf(f"Logged in as {user_role}")
+
+@given(u'I returned to "{user_role}" dashboard')
+def step_impl(context, user_role):
+    """Login as a specific user role (e.g., enroller_admin)."""
+    # Get or create driver for this user role
+    driver = LoginHelper.get_driver_for_role(context, user_role)
 
     context.driver = driver
     printf(f"Logged in as {user_role}")
@@ -143,14 +154,19 @@ def step_impl(context, workflow_name, program_name):
     """Create a workflow with no trigger."""
     context.workflow_page = WorkflowPage(context.driver)
     context.workflow_page.click_create_new_workflow()
-    
+
+    unique_workflow_name = f"{workflow_name}-{datetime.now().strftime('%y%m%d-%H%M%S')}"
+
     # Store workflow name for later operations
     if not hasattr(context, 'current_workflow'):
         context.current_workflow = {}
-    context.current_workflow['name'] = workflow_name
+    if not hasattr(context, 'created_workflows'):
+        context.created_workflows = {}
+    context.current_workflow['name'] = unique_workflow_name
     context.current_workflow['program'] = program_name
-    
-    printf(f"Preparing to create workflow '{workflow_name}' with program '{program_name}' (no trigger)")
+    context.created_workflows[workflow_name] = unique_workflow_name
+
+    printf(f"Preparing to create workflow '{unique_workflow_name}' with program '{program_name}' (no trigger)")
 
 
 @when(u'I create workflow "{workflow_name}" with program "{program_name}" triggered by "{trigger_workflow}" status "{trigger_status}"')
@@ -158,16 +174,23 @@ def step_impl(context, workflow_name, program_name, trigger_workflow, trigger_st
     """Create a workflow with a specific trigger."""
     context.workflow_page = WorkflowPage(context.driver)
     context.workflow_page.click_create_new_workflow()
-    
+
+    unique_workflow_name = f"{workflow_name}-{datetime.now().strftime('%y%m%d-%H%M%S')}"
+    if hasattr(context, 'created_workflows'):
+        trigger_workflow = context.created_workflows.get(trigger_workflow, trigger_workflow)
+
     # Store workflow configuration
     if not hasattr(context, 'current_workflow'):
         context.current_workflow = {}
-    context.current_workflow['name'] = workflow_name
+    if not hasattr(context, 'created_workflows'):
+        context.created_workflows = {}
+    context.current_workflow['name'] = unique_workflow_name
     context.current_workflow['program'] = program_name
     context.current_workflow['trigger_workflow'] = trigger_workflow
     context.current_workflow['trigger_status'] = trigger_status
-    
-    printf(f"Preparing to create workflow '{workflow_name}' triggered by '{trigger_workflow}' status '{trigger_status}'")
+    context.created_workflows[workflow_name] = unique_workflow_name
+
+    printf(f"Preparing to create workflow '{unique_workflow_name}' triggered by '{trigger_workflow}' status '{trigger_status}'")
 
 
 @when(u'I assign task "{task_name}" with {waiting_period:d} days waiting period')
@@ -240,20 +263,27 @@ def step_impl(context):
 def step_impl(context, activity_name, patient_group, workflow):
     """Fill the activity creation form."""
     context.activities_page = ActivitiesPage(context.driver)
+
+    unique_activity_name = f"{activity_name}-{datetime.now().strftime('%y%m%d-%H%M%S')}"
+    workflow = context.created_workflows.get(workflow, workflow) if hasattr(context, 'created_workflows') else workflow
     
     # Calculate dates: from today to 3 months
-    from_date = get_current_date(date_format="%d-%m-%Y")
+    from_date = get_current_date(date_format="%d-%m-%Y", days_offset=-1)
     end_date = get_current_date(date_format="%d-%m-%Y", days_offset=90)
     
     context.activity_info = context.activities_page.fill_create_activity_form(
-        activity_name=activity_name,
+        activity_name=unique_activity_name,
         patient_group_name=patient_group,
         workflow_name=workflow,
         from_date=from_date,
         end_date=end_date,
     )
-    
-    printf(f"Filled activity form: {activity_name}")
+
+    if not hasattr(context, 'created_activities'):
+        context.created_activities = {}
+    context.created_activities[activity_name] = unique_activity_name
+
+    printf(f"Filled activity form: {unique_activity_name}")
 
 
 @when(u'I set activity execution timeline from yesterday to {months:d} months as per timezone')
@@ -304,65 +334,77 @@ def step_impl(context, role, email_variable, password, user_role):
 def step_impl(context, user_role):
     """Navigate to the dashboard page for specific user session."""
     driver = LoginHelper.get_driver_for_role(context, f"{user_role}_parallel")
-    dashboard_page = VpeUserDashboardPage(driver)
-    dashboard_page.wait_for_loader()
+    dashboard_page = UserDashboardPage(driver)
+    dashboard_page.navigate_to_dashboard("Dashboard")
+    dashboard_page.wait_for_dom_stability(timeout=2)
+    dashboard_page.wait_for_patient_details_to_load()
+    context.patient_name = dashboard_page.get_patient_name_from_dashboard()
     printf(f"Navigated to dashboard as {user_role}")
 
 
-@when(u'I open the first patient from dashboard as "{user_role}"')
+@when(u'I change enrollment status to "{status}" as "{user_role}"')
+def step_impl(context, status, user_role):
+    """Change enrollment status from the dashboard for the specified user session."""
+    driver = LoginHelper.get_driver_for_role(context, f"{user_role}_parallel")
+    dashboard_page = UserDashboardPage(driver)
+    dashboard_page.wait_for_patient_details_to_load()
+    dashboard_page.set_enrollment_status(status)
+    printf(f"Enrollment status set to '{status}' as {user_role}")
+
+
+@when(u'I Change workflow status to "{status}" as "{user_role}"')
+def step_impl(context, status, user_role):
+    """Change workflow status from the dashboard for the specified user session."""
+    driver = LoginHelper.get_driver_for_role(context, f"{user_role}_parallel")
+    dashboard_page = UserDashboardPage(driver)
+    dashboard_page.set_workflow_status(status)
+    printf(f"Workflow status set to '{status}' as {user_role}")
+
+
+@when(u'I enter the comment of the update as "{user_role}"')
 def step_impl(context, user_role):
-    """Open the first patient from dashboard for specific user session."""
+    """Enter the engagement comment from the dashboard for the specified user session."""
     driver = LoginHelper.get_driver_for_role(context, f"{user_role}_parallel")
-    
-    # Navigate to search patients page
-    search_patients_page = SearchPatientsPage(driver)
-    driver.get(Routes.get_full_url(Routes.SEARCH_PATIENTS))
-    search_patients_page.wait_for_loader()
-    
-    # Perform empty search to show all patients
-    search_patients_page.click_search_button()
-    
-    # Open first patient details
-    search_patients_page.click_view_details_for_first_patient()
-    printf(f"Opened first patient from dashboard as {user_role}")
+    dashboard_page = UserDashboardPage(driver)
+    dashboard_page.set_comment_for_engagement()
+    printf(f"Entered engagement comment as {user_role}")
 
 
-@then(u'I should see patients in my dashboard as "{user_role}"')
+@when(u'I click on save button for status update as "{user_role}"')
 def step_impl(context, user_role):
-    """Verify patients appear in the user's dashboard for specific user session."""
-    from selenium.webdriver.common.by import By
-    
+    """Save the status update from the dashboard for the specified user session."""
     driver = LoginHelper.get_driver_for_role(context, f"{user_role}_parallel")
-    
-    # Navigate to search patients page
-    search_patients_page = SearchPatientsPage(driver)
-    driver.get(Routes.get_full_url(Routes.SEARCH_PATIENTS))
-    search_patients_page.wait_for_loader()
-    
-    # Perform empty search to show all patients assigned to this user
-    search_patients_page.click_search_button()
-    
-    # Check if at least one patient row exists
-    rows_locator = (By.XPATH, "//table[@id='table-search-patients']/tbody/tr")
-    rows = driver.find_elements(*rows_locator)
-    
-    assert len(rows) > 0, "No patients found in dashboard"
-    
-    # Verify it's not a "No patients found" message
-    first_row_text = rows[0].text
-    assert "No patients found" not in first_row_text, "No patients assigned to this user"
-    
-    printf(f"Patients appeared in dashboard for {user_role}")
+    dashboard_page = UserDashboardPage(driver)
+    dashboard_page.save_patient_enrollment()
+    printf(f"Saved status update as {user_role}")
 
 
-@when(u'I change program status to "{new_status}" as "{user_role}"')
-def step_impl(context, new_status, user_role):
-    """Change the patient's program status for specific user session."""
+@when(u'I click on next patient button as "{user_role}"')
+def step_impl(context, user_role):
+    """Move to the next patient from the dashboard for the specified user session."""
     driver = LoginHelper.get_driver_for_role(context, f"{user_role}_parallel")
-    patient_details_page = PatientDetailsPage(driver)
-    result = patient_details_page.change_program_status(new_status)
-    assert result, f"Failed to change program status to '{new_status}'"
-    printf(f"Changed program status to: {new_status} as {user_role}")
+    dashboard_page = UserDashboardPage(driver)
+    dashboard_page.click_on_next_patient_button()
+    printf(f"Clicked next patient button as {user_role}")
+
+
+@then(u'I should see next patient loaded in dashboard as "{user_role}"')
+def step_impl(context, user_role):
+    """Verify next patient is loaded in the dashboard for the specified user session."""
+    driver = LoginHelper.get_driver_for_role(context, f"{user_role}_parallel")
+    dashboard_page = UserDashboardPage(driver)
+    assert dashboard_page.is_next_patient_loaded(), "Next patient did not load in dashboard"
+    printf(f"Next patient loaded in dashboard as {user_role}")
+
+
+@then(u'I should see patient from previous workflow step in my dashboard as "{user_role}"')
+def step_impl(context, user_role):
+    """Verify patient details appear in the user's dashboard for the specified session."""
+    driver = LoginHelper.get_driver_for_role(context, f"{user_role}_parallel")
+    dashboard_page = UserDashboardPage(driver)
+    patient_name = dashboard_page.get_patient_name_from_dashboard()
+    assert patient_name == context.patient_name, f"Expected patient '{context.patient_name}' but found '{patient_name}' in dashboard"
+    printf(f"Verified patient '{patient_name}' in dashboard as {user_role}")
 
 
 @then(u'status update notification appears for "{user_role}"')
@@ -380,10 +422,11 @@ def step_impl(context, user_role):
     """Logout from the application to clear session for specific user."""
     try:
         driver = LoginHelper.get_driver_for_role(context, f"{user_role}_parallel")
-        from features.pages.dashboard_page.dashboard_page import DashboardPage
         dashboard_page = DashboardPage(driver)
-        dashboard_page.logout()
+        dashboard_page.click_logout_option()
         printf(f"Logged out successfully as {user_role}")
+        LoginHelper.quit_driver_for_role(context, f"{user_role}_parallel")
+        printf(f"Closed browser for {user_role}")
     except Exception as e:
         printf(f"Logout attempted for {user_role} (may already be logged out): {e}")
 
@@ -395,6 +438,8 @@ def step_impl(context, keyword):
     """Delete all activities with keyword in name."""
     context.activities_page = ActivitiesPage(context.driver)
     context.activities_page.navigate_to_listing()
+    if hasattr(context, 'created_activities'):
+        keyword = context.created_activities.get(keyword, keyword)
     deleted_count = context.activities_page.delete_activities_with_name_containing(keyword)
     printf(f"Deleted {deleted_count} activities containing '{keyword}'")
 
@@ -408,6 +453,8 @@ def step_impl(context):
 @when(u'I delete workflow "{workflow_name}"')
 def step_impl(context, workflow_name):
     """Delete a specific workflow."""
+    if hasattr(context, 'created_workflows'):
+        workflow_name = context.created_workflows.get(workflow_name, workflow_name)
     context.workflow_page = WorkflowPage(context.driver)
     context.workflow_page.find_and_delete_workflow(workflow_name)
     context.workflow_page.confirm_workflow_delete()
@@ -417,6 +464,8 @@ def step_impl(context, workflow_name):
 @when(u'I find and delete patient group "{group_name}"')
 def step_impl(context, group_name):
     """Find and delete a patient group."""
+    if hasattr(context, 'patient_group'):
+        group_name = context.patient_group
     context.patient_groups_page = PatientGroupsPage(context.driver)
     context.patient_groups_page.click_delete_patients_button(group_name)
     context.patient_groups_page.confirm_delete_patient_group_button()

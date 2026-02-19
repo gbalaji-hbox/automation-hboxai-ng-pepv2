@@ -3,7 +3,7 @@ from time import sleep
 from faker.proxy import Faker
 from selenium.common import NoSuchElementException
 
-from features.commons.locators import WorkflowPageLocators
+from features.commons.locators import WorkflowPageLocators, DashboardPageLocators
 from features.commons.routes import Routes
 from features.pages.base_page import BasePage
 from utils.logger import printf
@@ -17,6 +17,10 @@ class WorkflowPage(BasePage):
         self.faker = Faker()
 
     def navigate_to_tab(self):
+        if self.is_element_visible(DashboardPageLocators.NOTIFICATION_POPUP, timeout=2):
+            self.click(DashboardPageLocators.NOTIFICATION_CLOSE_BUTTON)
+            sleep(1)
+
         if not self.get_attribute(WorkflowPageLocators.WORKFLOW_SEARCH_INPUT, "value") == "":
             self.refresh_page()
             self.wait_for_loader(timeout=10)

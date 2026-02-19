@@ -245,47 +245,110 @@ class ActivitiesPage(BasePage):
             return False
             
     def delete_activities_with_name_containing(self, keyword):
-        """Delete all activities whose name contains the keyword."""
+        """Delete all activities whose name contains the keyword.
+        
+        Args:
+            keyword: Substring to search for in activity names.
+            
+        Returns:
+            int: Number of activities deleted.
+        """
         deleted_count = 0
         for iteration in range(1, 11):
             printf(f"Iteration {iteration}: Searching for activities containing '{keyword}' in name")
             
-            # Perform search
+            rows = self._perform_activities_search_and_get_rows(keyword)
+            if rows is None:
+                printf(f"No results found for '{keyword}'")
+                break
+            if self._delete_first_matching_activity_by_name(rows, keyword):
+                deleted_count += 1
+                printf(f"Successfully deleted activity containing '{keyword}' in name (#{deleted_count})")
+            else:
+                printf(f"No activity with name containing '{keyword}' found in current results - stopping")
+                break
+            if iteration == 10:
+                printf("Reached maximum iterations (10) - stopping to prevent infinite loop")
+        
+        return deleted_count
+
+    def _perform_activities_search_and_get_rows(self, keyword):
+        """Perform search and return table rows if results exist.
+        
+        Args:
+            keyword: Search keyword for activity name.
+            
+        Returns:
+            List of row elements or None if no results.
+        """
+        # Close any open delete confirmation dialog
+        try:
+            if self.is_element_visible(ActivitiesPageLocators.DELETE_CONFIRMATION_DIALOG, timeout=2):
+                self.click(ActivitiesPageLocators.DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON)
+                self.wait_for_dom_stability()
+
+            # Clear previous search and perform new search
             if self.is_element_visible(ActivitiesPageLocators.CLEAR_BUTTON, timeout=2):
                 self.click(ActivitiesPageLocators.CLEAR_BUTTON)
                 self.wait_for_loader()
-            
+
+            printf(f"Performing search for activities with name containing '{keyword}'")
             self.send_keys(ActivitiesPageLocators.SEARCH_INPUT, keyword)
+            sleep(3)
             self.click(ActivitiesPageLocators.SEARCH_BUTTON)
+            printf(f"search performed, waiting for results...")
             self.wait_for_loader()
-            
-            # Check if any results
+        except Exception as e:
+            printf(f"Error searching for activities: {e}")
+        
+        # Check for table rows
+        try:
             rows = self.find_elements(ActivitiesPageLocators.ACTIVITIES_TABLE_ROWS)
             if not rows:
-                printf("No activities found - cleanup complete")
-                break
-                
+                printf(f"No activities found containing '{keyword}' in name - cleanup complete")
+                return None
+            
             first_row_text = rows[0].text.strip()
             if "No activities found" in first_row_text or first_row_text == "":
-                printf(f"No activities found containing '{keyword}' - cleanup complete")
-                break
+                printf(f"No activities found containing '{keyword}' in name - cleanup complete")
+                return None
             
-            # Delete first matching activity
-            try:
-                self.click(ActivitiesPageLocators.DELETE_BUTTON)
-                sleep(1)
-                # Confirm deletion
-                delete_confirm_locator = ActivitiesPageLocators.DELETE_CONFIRMATION_DIALOG
-                if self.is_element_visible(delete_confirm_locator, timeout=2):
-                    # Click Delete button in the confirmation dialog
-                    from selenium.webdriver.common.by import By
-                    confirm_delete = (By.XPATH, "//button[normalize-space(text())='Delete']")
-                    self.click(confirm_delete)
-                    printf(f"Successfully deleted activity containing '{keyword}' in name")
-                    deleted_count += 1
-                    sleep(2)
-            except Exception as e:
-                printf(f"Error deleting activity: {e}")
-                break
+            return rows
+        except Exception as e:
+            printf(f"Error checking for activities table rows: {e}")
+            return None
+
+    def _delete_first_matching_activity_by_name(self, rows, keyword):
+        """Find and delete the first activity row matching the keyword.
         
-        return deleted_count
+        Args:
+            rows: List of table row elements.
+            keyword: Substring to match in activity name.
+            
+        Returns:
+            bool: True if deletion was successful, False otherwise.
+        """
+        try:
+            for row in rows:
+                # Get activity name from first column (td[1])
+                name_cell = row.find_element("xpath", ".//td[1]")
+                activity_name = name_cell.text.strip()
+                
+                if keyword.lower() in activity_name.lower():
+                    # Find and click the delete button in the last column
+                    delete_button = row.find_element("xpath", ".//td[last()]//button[contains(@id,'delete')]")
+                    delete_button.click()
+                    self.wait_for_dom_stability()
+                    
+                    # Confirm deletion using the locator
+                    self.click(ActivitiesPageLocators.DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON)
+                    
+                    # Wait for dialog to disappear and loader to complete
+                    self.wait_for_loader(loader_locators=ActivitiesPageLocators.DELETE_CONFIRMATION_DIALOG)
+                    printf(f"Deleted activity '{activity_name}'")
+                    return True
+            
+            return False
+        except Exception as e:
+            printf(f"Error deleting activity: {e}")
+            return False

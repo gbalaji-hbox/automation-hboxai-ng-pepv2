@@ -39,6 +39,16 @@ class UserDashboardPage(BasePage):
             printf(f"Error waiting for patient details to load: {e}")
             return False
 
+    def get_patient_name_from_dashboard(self):
+        """Get the patient name displayed in the dashboard."""
+        try:
+            patient_name = self.get_attribute(UserDashboardPageLocators.FIRST_NAME_INPUT, "value")
+            printf(f"Patient name retrieved from dashboard: {patient_name}")
+            return patient_name
+        except Exception as e:
+            printf(f"Error retrieving patient name from dashboard: {e}")
+            return None
+
     def set_enrollment_status(self, enrollment_status):
         """Set the enrollment status for a patient."""
         try:
@@ -48,6 +58,8 @@ class UserDashboardPage(BasePage):
             sleep(0.3)
             self.click(UserDashboardPageLocators.ENROLLMENT_STATUS_OPTION(enrollment_status))
             self.wait_for_dom_stability()
+            if self.is_element_visible(UserDashboardPageLocators.ENROLLMENT_STATUS_OPTION(enrollment_status)):
+                self.click(UserDashboardPageLocators.ENROLLMENT_STATUS_DROPDOWN)
             printf(f"Enrollment status set to '{enrollment_status}'.")
         except Exception as e:
             printf(f"Error setting enrollment status: {e}")
@@ -59,6 +71,8 @@ class UserDashboardPage(BasePage):
             self.wait_for_dom_stability()
             self.click(UserDashboardPageLocators.DROP_DOWN_OPTION(workflow_status))
             self.wait_for_dom_stability()
+            if self.is_element_visible(UserDashboardPageLocators.DROP_DOWN_OPTION(workflow_status)):
+                self.click(UserDashboardPageLocators.WORKFLOW_STATUS_DROPDOWN)
             printf(f"Workflow status set to '{workflow_status}'.")
         except Exception as e:
             printf(f"Error setting workflow status: {e}")
@@ -68,6 +82,9 @@ class UserDashboardPage(BasePage):
         try:
             self.custom_select_by_locator(UserDashboardPageLocators.APPOINTMENT_TYPE_DROPDOWN,
                                           UserDashboardPageLocators.DROP_DOWN_OPTION(appointment_type))
+
+            if self.is_element_visible(UserDashboardPageLocators.DROP_DOWN_OPTION(appointment_type)):
+                self.click(UserDashboardPageLocators.APPOINTMENT_TYPE_DROPDOWN)
             printf(f"Appointment type set to '{appointment_type}'.")
         except Exception as e:
             printf(f"Error setting appointment type: {e}")
@@ -80,6 +97,9 @@ class UserDashboardPage(BasePage):
             self.send_keys(UserDashboardPageLocators.DROP_DOWN_OPTION_SEARCH, user_name)
             self.wait_for_dom_stability()
             self.click(UserDashboardPageLocators.DROP_DOWN_OPTION(user_name))
+            if self.is_element_visible(UserDashboardPageLocators.DROP_DOWN_OPTION(user_name)):
+                self.click(UserDashboardPageLocators.SELECT_RESOURCE_DROPDOWN)
+            self.wait_for_dom_stability()
             printf("First available resource selected.")
         except Exception as e:
             printf(f"Error selecting first available resource: {e}")
@@ -90,6 +110,10 @@ class UserDashboardPage(BasePage):
             self.click(UserDashboardPageLocators.SELECT_FACILITY_DROPDOWN)
             self.wait_for_dom_stability()
             self.click(UserDashboardPageLocators.DROP_DOWN_OPTION("facility_01"))
+            self.wait_for_dom_stability()
+            if self.is_element_visible(UserDashboardPageLocators.DROP_DOWN_OPTION("facility_01")):
+                self.click(UserDashboardPageLocators.SELECT_FACILITY_DROPDOWN)
+            self.wait_for_dom_stability()
             printf("First available facility selected.")
         except Exception as e:
             printf(f"Error selecting first available facility: {e}")
@@ -214,7 +238,12 @@ class UserDashboardPage(BasePage):
     def is_next_patient_loaded(self):
         """Check if the next patient details are visible in the dashboard."""
         try:
-            return self.is_element_visible(UserDashboardPageLocators.NEXT_PATIENT_BUTTON_DISABLED, timeout=30)
+            if self.is_element_visible(UserDashboardPageLocators.GROUP_COMPLETION_DIALOG, timeout=5):
+                self.click(UserDashboardPageLocators.GROUP_COMPLETION_DIALOG_CLOSE_BUTTON)
+                self.wait_for_dom_stability()
+                return True
+            else:
+                return self.is_element_visible(UserDashboardPageLocators.NEXT_PATIENT_BUTTON_DISABLED, timeout=30)
         except Exception as e:
             printf(f"Error checking if next patient details are visible: {e}")
             return False

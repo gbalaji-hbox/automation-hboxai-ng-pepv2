@@ -32,10 +32,13 @@ class DashboardPageLocators:
     HEADER_LOGO = (By.XPATH, "//img[@id='admin_header_logo']")
     LOGOUT_BUTTON = (By.XPATH, "//button[@id='sidebar_logout_btn']")
     LOGOUT_DIALOG_CONFIRM_BUTTON = (By.XPATH, "//button[@id='logout_dialog_confirm_btn']")
+    NOTIFICATION_POPUP = (By.XPATH, "//div[@id='appointment-reminder-popup']")
+    NOTIFICATION_CLOSE_BUTTON = (By.XPATH, "//button[@id='appointment-reminder-close-btn']")
 
 
 class UsersPageLocators:
     """Locators for the users page elements."""
+    MAIN_DIV = (By.XPATH, "//h3[normalize-space()='Add New User']/ancestor::div[2]")
     USER_TAB = (By.XPATH, "//button[@id='users_page_tab_user']")
     SEARCH_TYPE_DROPDOWN = (By.XPATH, "(//button[@role='combobox'])[1]")
     SEARCH_TYPE_OPTION = lambda option_text: (By.XPATH,
@@ -475,6 +478,7 @@ class ActivitiesPageLocators:
     OPERATION_HISTORY_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[contains(.,'Close')]")
     DELETE_CONFIRMATION_DIALOG = (By.XPATH, "//div[@role='alertdialog']//h2[normalize-space()='Are you sure?']")
     DELETE_CONFIRMATION_DIALOG_CANCEL_BUTTON = (By.XPATH, "//button[normalize-space(text())='Cancel']")
+    DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
 
     ACTIVITY_NAME_INPUT = (By.XPATH, "//input[@placeholder='Enter activity name']")
     PATIENT_GROUP_DROPDOWN = (By.XPATH,
@@ -879,3 +883,5 @@ class UserDashboardPageLocators:
     NEXT_PATIENT_BUTTON_DISABLED = (By.XPATH, "//button[@id='es-save-patient']")
     NEXT_AVAILABLE_DAY = lambda days_after: (By.XPATH, f"//button[@name='day' and not(@disabled)][{days_after}]")
     PATIENT_ENROLLMENT_SAVED_NOTIFICATION = (By.XPATH, "//div[normalize-space()='Patient enrollment saved successfully']")
+    GROUP_COMPLETION_DIALOG = (By.XPATH, "//div[@id='group-completion-dialog']")
+    GROUP_COMPLETION_DIALOG_CLOSE_BUTTON = (By.XPATH, "//button[text()='Ok']")

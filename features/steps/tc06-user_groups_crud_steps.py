@@ -46,10 +46,10 @@ def step_impl(context):
 def step_impl(context):
     assert context.user_page.is_returned_to_users_page(), "Modal did not close properly"
 
-@when(u'I delete all user groups containing "automation" in their name')
-def step_impl(context):
+@when(u'I delete all user groups containing "{text}" in their name')
+def step_impl(context, text):
     context.user_group_page = UserGroupPage(context.driver)
-    context.user_group_page.delete_user_groups_with_name_containing("automation")
+    context.user_group_page.delete_user_groups_with_name_containing(text)
 
 @then(u'all test automation user groups should be deleted')
 def step_impl(context):

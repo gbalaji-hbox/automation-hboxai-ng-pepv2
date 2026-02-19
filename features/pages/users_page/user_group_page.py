@@ -260,7 +260,7 @@ class UserGroupPage(BasePage):
         if self.is_element_visible(UserGroupPageLocators.DELETE_DIALOG, timeout=2):
             self.click(UserGroupPageLocators.DELETE_DIALOG_CANCEL_BUTTON)
 
-        self.perform_search_by_field("Group Name", keyword)
+        self.perform_search_by_field("User Group Name", keyword)
 
         try:
             self.wait_for_loader()
@@ -307,6 +307,10 @@ class UserGroupPage(BasePage):
         """Perform search in the user groups table by specified field and value."""
         try:
             printf(f"Performing search for field '{field}' with value '{value}'")
+            if self.is_element_visible(UserGroupPageLocators.CLEAR_SEARCH_BUTTON, timeout=2):
+                self.click(UserGroupPageLocators.CLEAR_SEARCH_BUTTON)
+                self.wait_for_dom_stability()
+
             self.click(UserGroupPageLocators.SEARCH_TYPE_DROPDOWN)
             from time import sleep
             sleep(1)
