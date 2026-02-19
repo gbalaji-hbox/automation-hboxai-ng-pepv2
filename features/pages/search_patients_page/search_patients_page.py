@@ -45,6 +45,12 @@ class SearchPatientsPage(BasePage):
             sleep(1)
             if field.lower() == 'dob':
                 return self.perform_dob_search(value)
+            elif field.lower() == 'clinic name':
+                self.select_by_visible_text(SearchPatientsPageLocators.CLINIC_DROPDOWN, value)
+                sleep(0.3)
+                self.click(SearchPatientsPageLocators.SEARCH_BUTTON)
+                self.wait_for_loader(timeout=30)
+                return True
             else:
                 self.send_keys(SearchPatientsPageLocators.SEARCH_INPUT, value)
                 self.click(SearchPatientsPageLocators.SEARCH_BUTTON)
