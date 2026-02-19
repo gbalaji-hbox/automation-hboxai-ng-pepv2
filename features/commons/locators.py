@@ -708,6 +708,7 @@ class SearchPatientsPageLocators:
     MONTH_SELECT_DROPDOWN = (By.XPATH, "//button[contains(.,'Month')]/following-sibling::select[1]")
     DAY_SELECT_DROPDOWN = (By.XPATH, "//button[contains(.,'Day')]/following-sibling::select[1]")
     YEAR_SELECT_DROPDOWN = (By.XPATH, "//button[contains(.,'Year')]/following-sibling::select[1]")
+    CLINIC_DROPDOWN = (By.XPATH, "//button[contains(.,'Select Clinic Name')]/following-sibling::select")
 
     # Results table
     PATIENTS_TABLE = (By.XPATH, "//table[@id='table-search-patients']")
