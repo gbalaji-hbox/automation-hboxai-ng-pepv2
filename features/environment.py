@@ -40,7 +40,7 @@ def before_feature(context, feature):
     # Handle automatic login for features with login tags (this now handles driver creation internally)
     LoginHelper.handle_automatic_login(context, feature)
 
-    PopupHandler.inject_appointment_reminder_killer(context.driver)
+    PopupHandler.enable_appointment_reminder_handler(context)
 
     # Assign Allure suite for the feature
     AllureHelper.assign_feature_suite(context, feature)
