@@ -251,6 +251,32 @@ class PatientGroupsPage(BasePage):
         except Exception as e:
             printf(f"Failed to extract EMR IDs: {e}")
             return []
+    
+    def extract_patient_names_from_selected_patients(self, count=1):
+        """Extract patient names (Full Name) from the first 'count' selected patients.
+        
+        Args:
+            count: Number of patient names to extract.
+            
+        Returns:
+            list: List of patient full names.
+        """
+        patient_names = []
+        try:
+            self.is_element_visible(PatientGroupsPageLocators.FILTER_APPLIED_NOTIFICATION)
+            sleep(2)
+            # Patient name is typically in the second column (td[2])
+            for i in range(1, count + 1):
+                from selenium.webdriver.common.by import By
+                name_locator = (By.XPATH, f"//table//tbody/tr[{i}]/td[2]")
+                name_element = self.find_element(name_locator)
+                patient_name = name_element.text.strip()
+                patient_names.append(patient_name)
+                printf(f"Extracted patient name: {patient_name}")
+            return patient_names
+        except Exception as e:
+            printf(f"Failed to extract patient names: {e}")
+            return []
 
     def return_to_patient_groups_page(self):
         """Return to the Patient Groups page."""
@@ -272,10 +298,15 @@ class PatientGroupsPage(BasePage):
             printf(f"Failed to click Create Group button: {e}")
             return False
 
-    def enter_group_name_and_note(self):
-        """Enter group name and save the patient group."""
+    def enter_group_name_and_note(self, group_name=None):
+        """Enter group name and save the patient group.
+        
+        Args:
+            group_name: Optional custom group name. If None, generates automation name.
+        """
         try:
-            group_name = f"Automation Group {self.faker.unique.random_int(1000, 9999)}"
+            if group_name is None:
+                group_name = f"Automation Group {self.faker.unique.random_int(1000, 9999)}"
             note = f"Note for {group_name} created by automation test. \
             \nThis group was created to verify the functionality of creating patient groups by filters."
             self.click_create_group_button()

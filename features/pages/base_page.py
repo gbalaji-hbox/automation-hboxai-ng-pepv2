@@ -101,10 +101,11 @@ class BasePage:
     LOADER_XPATH = (By.XPATH, "//div[@data-component-file='LoaderComponent.tsx' and @data-component-line='27']")
     VPE_LOADER_XPATH = (By.XPATH, "//p[contains(normalize-space(.), 'Loading patient')]")
     SPINNER_LOADER_XPATH = (By.XPATH, "//div[contains(@class, 'animate-spin')]")
+    ANIMATED_PULSE_XPATH = (By.XPATH, "(//*[contains(@class, 'animate-pulse')])[1]")
     LUCID_LOADER_XPATH = (By.XPATH, "//svg[contains(@class,'lucide-loader-circle') and contains(@class,'animate-spin')]")
     
     # All loader locators
-    ALL_LOADER_LOCATORS = [LOADER_XPATH, VPE_LOADER_XPATH, SPINNER_LOADER_XPATH]
+    ALL_LOADER_LOCATORS = [LOADER_XPATH, VPE_LOADER_XPATH, SPINNER_LOADER_XPATH, ANIMATED_PULSE_XPATH, LUCID_LOADER_XPATH]
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
@@ -439,12 +440,29 @@ class BasePage:
     def switch_to_default_content(self):
         self.driver.switch_to.default_content()
 
-    def scroll_to_visible_element(self, locator):
-        """Scroll element into view (returns True on success)."""
+    def scroll_to_visible_element(self, locator, container_locator=None):
+        """Scroll element into view. Supports optional scroll container."""
+
+        def _scroll(loc):
+            element = self.find_element(loc)
+
+            if container_locator:
+                container = self.find_element(container_locator)
+                self.driver.execute_script(
+                    "arguments[1].scrollTop = arguments[0].offsetTop;",
+                    element,
+                    container
+                )
+            else:
+                self.driver.execute_script(
+                    "arguments[0].scrollIntoView({block:'center'});",
+                    element
+                )
+
         return self._retry_action(
-            action=lambda loc: self.driver.execute_script("arguments[0].scrollIntoView(true);", self.find_element(loc)),
+            action=_scroll,
             locator=locator,
-            wait_condition=ec.presence_of_element_located,
+            wait_condition=ec.visibility_of_element_located,
             suppress_timeout=False,
         )
 

@@ -26,7 +26,6 @@ Feature: tc15 - Activities management and operations
       | Edit         | Edit activity page loads                          |
       | Delete       | Activity delete confirmation dialog appears       |
 
-  @only
   Scenario Outline: Activities Table Pagination - <records> Records per View
     Given I am on the Activities page
     When I select <records> records per page for activities table
