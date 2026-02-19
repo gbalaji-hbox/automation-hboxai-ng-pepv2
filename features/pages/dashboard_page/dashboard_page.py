@@ -26,7 +26,7 @@ class DashboardPage(BasePage):
     def navigate_to_dashboard(self, page_name="dashboard"):
         """Navigate to the main dashboard page."""
         try:
-            if self.is_element_visible(DashboardPageLocators.NOTIFICATION_POPUP, timeout=2):
+            if self.is_element_visible(DashboardPageLocators.NOTIFICATION_POPUP, timeout=1):
                 self.click(DashboardPageLocators.NOTIFICATION_CLOSE_BUTTON)
                 sleep(1)
             self.click_dynamic_hamburger_menu_option(page_name)

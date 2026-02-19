@@ -665,6 +665,34 @@ class FacilityAvailabilityPageLocators:
                                                         "//div[contains(normalize-space(text()),'Failed to delete facility availability')]")
     FACILITY_AVAILABILITY_DELETE_NOTIFICATION = (By.XPATH,
                                                  "//div[contains(normalize-space(text()),'Facility availability deleted successfully')]")
+    
+class ScheduledAppointmentsPageLocators:
+    """Locators for the Scheduled Appointments page elements."""
+    # Tab navigation
+    VIRTUAL_TAB = (By.XPATH, "//button[@id='scheduled_appointments_tab_virtual']")
+    IN_PERSON_TAB = (By.XPATH, "//button[@id='scheduled_appointments_tab_in_person']")
+    
+    # Table locators
+    SCHEDULED_APPOINTMENTS_TABLE = (By.XPATH, "//table[contains(@id,'table-scheduled-appointments')]")
+    SCHEDULED_APPOINTMENTS_TABLE_ROWS = (By.XPATH, "//table[contains(@id,'table-scheduled-appointments')]/tbody/tr")
+
+    PATIENT_NAME_SEARCH_INPUT = (By.XPATH, "//input[contains(@id,'patientName')]")
+    APPOINTMENT_DATE_BUTTON = (By.XPATH, "//button[contains(@id,'appointment_date_picker')]")
+    CLINIC_NAME_SEARCH_INPUT = (By.XPATH, "//input[contains(@id,'clinicName')]")
+    USER_NAME_SEARCH_INPUT = (By.XPATH, "//input[contains(@id,'userName')]")
+    FACILITY_NAME_SEARCH_INPUT = (By.XPATH, "//input[@id='userName_in-person']")
+    SEARCH_BUTTON = (By.XPATH, "//button[contains(@id,'scheduled_appointments_search')]")
+    RESET_BUTTON = (By.XPATH, "//button[contains(@id,'scheduled_appointments_reset')]")
+
+    REFRESH_BUTTON = (By.XPATH, "//button[@id='scheduled_appointments_refresh_btn']")
+
+    
+    # Patient name button (clickable to navigate to ES dashboard)
+    PATIENT_NAME_BUTTON = (By.XPATH, "//table[contains(@id,'table-scheduled-appointments')]/tbody/tr[1]/td[1]//button")
+    
+    # Pagination
+    PAGE_LIMIT_DROPDOWN = (By.XPATH, "//select[@id='pagination_records_per_page_select']")
+    PAGE_INFO_TEXT = (By.XPATH, "//span[@id='pagination_page_info']")
 
 
 class SearchPatientsPageLocators:
@@ -812,6 +840,9 @@ class PatientDetailsPageLocators:
     WORKFLOW_TAB = lambda workflow_name: (By.XPATH,
                                           f"//button[@role='tab' and contains(normalize-space(), '{workflow_name}')]")
     ACTIVE_WORKFLOW_SECTION = (By.XPATH, "//div[contains(@class, 'workflow-section')]")
+
+
+
 
 class UserDashboardPageLocators:
     """Locators for User Dashboard page elements."""

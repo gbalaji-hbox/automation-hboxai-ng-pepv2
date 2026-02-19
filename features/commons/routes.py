@@ -51,6 +51,7 @@ class Routes:
     PATIENT_DETAILS = "/es-dashboard"
     ADD_PATIENT = "/add-patient"
     USER_DASHBOARD= "/dashboard"
+    SCHEDULED_APPOINTMENTS = "/scheduled-appointments"
 
 
     @staticmethod
