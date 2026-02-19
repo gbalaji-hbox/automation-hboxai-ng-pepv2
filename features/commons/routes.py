@@ -50,6 +50,7 @@ class Routes:
     SEARCH_PATIENTS = "/global-search"
     PATIENT_DETAILS = "/es-dashboard"
     ADD_PATIENT = "/add-patient"
+    USER_DASHBOARD= "/dashboard"
 
 
     @staticmethod
