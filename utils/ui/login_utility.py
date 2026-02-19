@@ -59,7 +59,8 @@ def perform_role_based_login_with_driver(driver_manager, user_role: str, browser
         'pes_admin': DriverRole.PES_ADMIN,
         'vpe_user': DriverRole.VPE_USER,
         'cs_user': DriverRole.CS_USER,
-        'pes_user': DriverRole.PES_USER
+        'pes_user': DriverRole.PES_USER,
+        'enroller_admin': DriverRole.ENROLLER_ADMIN,
     }
     driver_role = role_mapping.get(user_role, DriverRole.DEFAULT)
 

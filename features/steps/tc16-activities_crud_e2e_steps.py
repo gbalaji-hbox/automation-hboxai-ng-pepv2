@@ -6,13 +6,11 @@ from time import sleep
 from faker import Faker
 
 from features.pages.login_page.login_page import LoginPage
-from features.pages.user_dashboard_page.vpe_user_dashboard_page import VpeUserDashboardPage
 from features.pages.users_page.users_page import UsersPage
 from features.pages.users_page.user_group_page import UserGroupPage
 from features.pages.patient_groups_page.patient_groups_page import PatientGroupsPage
 from features.pages.workflow_tasks_page.workflow_page import WorkflowPage
 from features.pages.activities_page.activities_page import ActivitiesPage
-from features.pages.dashboard_page.dashboard_page import DashboardPage
 from features.pages.search_patients_page.search_patients_page import SearchPatientsPage
 from features.pages.patient_details_page.patient_details_page import PatientDetailsPage
 from features.commons.routes import Routes
@@ -258,7 +256,7 @@ def step_impl(context, activity_name, patient_group, workflow):
     printf(f"Filled activity form: {activity_name}")
 
 
-@when(u'I set activity execution timeline from today to {months:d} months')
+@when(u'I set activity execution timeline from yesterday to {months:d} months as per timezone')
 def step_impl(context, months):
     """Note: Dates are already set in the previous step. This is a placeholder."""
     printf(f"Activity timeline set to {months} months")

@@ -5,7 +5,7 @@ Feature: tc16 - Activities CRUD E2E Test with Patient Workflow Movement
   and validate patient movement across sequential workflows based on status changes
   So that I can ensure the entire patient care coordination system works end-to-end
 
-  @regression @smoke @allure.label.severity:blocker @only
+  @regression @smoke @allure.label.severity:blocker
   Scenario: Complete E2E Activities CRUD with Patient Workflow Movement
     # ===== SETUP PHASE: Create Users, Groups, Patient Groups, Workflows =====
     
@@ -71,7 +71,7 @@ Feature: tc16 - Activities CRUD E2E Test with Patient Workflow Movement
     Given I am on the Activities page
     When I click Add New Activity button
     And I fill activity form with name "Automation_TC16_Test_Activity" for patient group "Automation_Patient_Group_10" and workflow "Automation_Workflow_1"
-    And I set activity execution timeline from today to 3 months
+    And I set activity execution timeline from yesterday to 3 months as per timezone
     And I submit the activity
     Then the activity should be created successfully
 
