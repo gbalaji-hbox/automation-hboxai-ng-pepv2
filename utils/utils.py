@@ -50,18 +50,18 @@ def get_fixed_start_date(years=1, date_format='%d-%m-%Y'):
     return past_date
 
 
-def get_current_date(date_format='%d-%m-%Y', days_offset=0):
+def get_current_date(date_format='%d-%m-%Y', days_offset=0, years_offset=0):
     """
     Returns today's date as a string, with optional offset for past or future dates.
 
     Args:
         date_format (str): Format for the output date string. Default is '%d-%m-%Y'.
         days_offset (int): Number of days to offset from today. Positive for future, negative for past. Default is 0.
-
+        years_offset (int): Number of years to offset from today. Positive for future, negative for past. Default is 0.
     Returns:
         str: Formatted date string.
     """
-    return (datetime.now() + timedelta(days=days_offset)).strftime(date_format)
+    return (datetime.now() + timedelta(days=days_offset) + relativedelta(years=years_offset)).strftime(date_format)
 
 
 def convert_dob_ddmmyyyy_to_yyyymmdd(dob_str: str) -> str:
@@ -74,6 +74,34 @@ def convert_dob_ddmmyyyy_to_yyyymmdd(dob_str: str) -> str:
         return dob_obj.strftime("%Y-%m-%d")
     except ValueError: # Catching the specific exception for date parsing errors
         return dob_str
+
+def to_ddmmyyyy(date_input: str) -> str:
+    """
+    Converts various date formats into dd/mm/yyyy.
+    Supported examples:
+    - Feb 19, 2026
+    - February 19, 2026
+    - 2026-02-19
+    - 19-02-2026
+    - 19/02/2026
+    """
+
+    formats = [
+        "%b %d, %Y",   # Feb 19, 2026
+        "%B %d, %Y",   # February 19, 2026
+        "%Y-%m-%d",    # 2026-02-19
+        "%d-%m-%Y",    # 19-02-2026
+        "%d/%m/%Y",    # 19/02/2026
+    ]
+
+    for fmt in formats:
+        try:
+            parsed = datetime.strptime(date_input.strip(), fmt)
+            return parsed.strftime("%d/%m/%Y")
+        except ValueError:
+            continue
+
+    raise ValueError(f"Unsupported date format: {date_input}")
 
 
 def convert_to_human_readable_date(date_str, expected_format=None):

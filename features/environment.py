@@ -2,11 +2,13 @@ import traceback
 
 from features.commons.routes import Routes
 from utils.logger import printf
+from utils.ui.allure_helper import AllureHelper
 from utils.ui.config_reader import read_configuration
 from utils.ui.driver_manger import DriverManager
-from utils.ui.allure_helper import AllureHelper
-from utils.ui.login_utility import LoginHelper
 from utils.ui.driver_manger import DriverRole
+from utils.ui.login_utility import LoginHelper
+from utils.ui.popup_handler import PopupHandler
+
 
 def before_all(context):
     # Setup Allure folders
@@ -15,7 +17,6 @@ def before_all(context):
     # Initialize DriverManager once for the entire test run
     context.driver_manager = DriverManager()
     printf("DriverManager initialized.")
-
 
     # Setup environment configuration
     context.environment = context.config.userdata.get("env", "stg").lower()
@@ -26,7 +27,7 @@ def before_all(context):
         printf(f"Tests will run against {context.environment} environment: {context.base_url}")
     except KeyError:
         printf(f"Warning: URL for environment '{context.environment}' not found in config.ini. "
-              "Falling back to a default or raising an error.")
+               "Falling back to a default or raising an error.")
         context.base_url = "https://ngpepv2-sandbox.hbox.ai/"
 
     Routes.set_base_url(context.base_url, context.environment)
@@ -38,6 +39,8 @@ def before_feature(context, feature):
 
     # Handle automatic login for features with login tags (this now handles driver creation internally)
     LoginHelper.handle_automatic_login(context, feature)
+
+    PopupHandler.enable_appointment_reminder_handler(context)
 
     # Assign Allure suite for the feature
     AllureHelper.assign_feature_suite(context, feature)

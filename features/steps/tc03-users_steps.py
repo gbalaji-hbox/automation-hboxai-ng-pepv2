@@ -21,14 +21,7 @@ def step_impl(context, field):
         context.first_row_data = context.user_page.get_first_row_data()
 
     context.search_criteria = field
-    if field == 'Email':
-        data_field = 'Email Address'
-    elif field == 'Group Name':
-        data_field = 'User Group Name'
-    else:
-        data_field = field
-
-    context.search_value = context.first_row_data.get(data_field)
+    context.search_value = context.first_row_data.get(field)
 
     result = context.user_page.perform_search_by_field(field, context.search_value)
 

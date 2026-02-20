@@ -86,10 +86,10 @@ def step_impl(context):
     assert context.user_page.is_returned_to_users_page(), "Modal did not close properly"
 
 
-@when(u'I delete all users containing "automation" in their email')
-def step_impl(context):
+@when(u'I delete all users containing "{text}" in their email')
+def step_impl(context, text):
     context.user_page = UsersPage(context.driver)
-    context.user_page.delete_users_with_email_containing("automation")
+    context.user_page.delete_users_with_email_containing(text)
 
 
 @then(u'all test automation users should be deleted')

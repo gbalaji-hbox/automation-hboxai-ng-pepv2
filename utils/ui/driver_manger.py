@@ -14,6 +14,7 @@ class DriverRole(Enum):
     VPE_USER = "vpe_user"
     CS_USER = "cs_user"
     PES_USER = "pes_user"
+    ENROLLER_ADMIN = "enroller_admin"
 
 
 class DriverManager:

@@ -12,11 +12,11 @@ Feature: tc04- User Group Management CRUD Operations
     Then the user groups table should filter results to show matching groups
 
     Examples:
-      | field        |
-      | Group Name   |
-      | Total Users  |
-      | Created Date |
-      | Updated Date |
+      | field           |
+      | User Group Name |
+      | Total Users     |
+      | Created Date    |
+      | Updated Date    |
 
   Scenario Outline: Users Action Buttons in Table
     Given I am on the Users page

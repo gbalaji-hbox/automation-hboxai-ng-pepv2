@@ -2,10 +2,9 @@ from time import sleep
 
 from faker.proxy import Faker
 from selenium.common import NoSuchElementException
-from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 
-from features.commons.locators import UsersPageLocators, UserGroupPageLocators
+from features.commons.locators import UsersPageLocators, UserGroupPageLocators, DashboardPageLocators
 from features.commons.routes import Routes
 from features.pages.base_page import BasePage
 from utils.logger import printf
@@ -20,6 +19,10 @@ class UsersPage(BasePage):
 
     def click_on_tab(self, tab_name):
         """Click on the specified tab in the users page."""
+        if self.is_element_visible(DashboardPageLocators.NOTIFICATION_POPUP, timeout=2):
+            self.click(DashboardPageLocators.NOTIFICATION_CLOSE_BUTTON)
+            sleep(1)
+
         if tab_name == 'User':
             tab_locator = UsersPageLocators.USER_TAB
         else:
@@ -31,7 +34,7 @@ class UsersPage(BasePage):
                 self.wait_for_dom_stability_full()
 
             tab_ele = self.find_element(tab_locator)
-            if self.get_attribute(tab_ele,"aria-selected") == "true":
+            if self.get_attribute(tab_ele, "aria-selected") == "true":
                 printf(f"Tab '{tab_name}' is already selected.")
                 return
             tab_ele.click()
@@ -48,6 +51,9 @@ class UsersPage(BasePage):
         """Perform search in the users table by specified field and value."""
         try:
             printf(f"Performing search for field '{field}' with value '{value}'")
+            if self.is_element_visible(UsersPageLocators.CLEAR_SEARCH_BUTTON, timeout=2):
+                self.click(UsersPageLocators.CLEAR_SEARCH_BUTTON)
+                self.wait_for_dom_stability_full()
             # Click on the search type dropdown
             self.click(UsersPageLocators.SEARCH_TYPE_DROPDOWN)
             sleep(1)
@@ -139,7 +145,8 @@ class UsersPage(BasePage):
     def select_records_per_page(self, count):
         """Select number of records per page from pagination dropdown."""
         try:
-            self.custom_select_by_locator(UsersPageLocators.PAGE_LIMIT_DROPDOWN, UsersPageLocators.SEARCH_TYPE_OPTION(count))
+            self.custom_select_by_locator(UsersPageLocators.PAGE_LIMIT_DROPDOWN,
+                                          UsersPageLocators.SEARCH_TYPE_OPTION(count))
         except NoSuchElementException as e:
             printf(f"Error during selecting records per page: {e}")
             raise
@@ -165,24 +172,46 @@ class UsersPage(BasePage):
             printf("Add New User button not found.")
             raise
 
-    def fill_create_user_form(self):
-        """Fill the create user form with valid generated data."""
+    def fill_create_user_form(self, user_role=None, email=None, password=None):
+        """Fill the create user form with valid generated data or specific values.
+        
+        Args:
+            user_role: Optional specific role (ES, CS, PE, etc.). If None, defaults to ES.
+            email: Optional specific email. If None, generates automation email.
+            password: Optional specific password. If None, defaults to Password123.
+            
+        Returns:
+            dict: User information including all fields.
+        """
         try:
             first_name = f"Automation-{self.faker.first_name()}"
             last_name = self.faker.last_name()
-            email = f"{first_name.lower()}.{last_name.lower()}@hbox.ai"
+
+            if email is None:
+                email = f"{first_name.lower()}.{last_name.lower()}@hbox.ai"
+
             phone = self.faker.numerify(text="##########")
-            password = "Password123"
-            user_type = "ES"
+
+            if password is None:
+                password = "Password123"
+
+            if user_role is None:
+                user_type = "ES"
+            else:
+                user_type = user_role
+
             self.send_keys(UsersPageLocators.FIRST_NAME_INPUT, first_name)
             self.send_keys(UsersPageLocators.LAST_NAME_INPUT, last_name)
             self.send_keys(UsersPageLocators.EMAIL_INPUT, email)
             self.send_keys(UsersPageLocators.PHONE_INPUT, phone)
             self.send_keys(UsersPageLocators.PASSWORD_INPUT, password)
             self.select_user_type(user_type)
-            self.select_dates()
+            if not email is None:
+                self.select_dates(days_offset=60)
+            else:
+                self.select_dates()
             self.select_times()
-            printf(f"Filled create user form for {first_name} {last_name}.")
+            printf(f"Filled create user form for {first_name} {last_name} with role {user_type}.")
             return {
                 "first_name": first_name,
                 "last_name": last_name,
@@ -198,17 +227,21 @@ class UsersPage(BasePage):
     def select_user_type(self, user_type):
         """Select user type from combobox."""
         try:
-            self.custom_select_by_locator(UsersPageLocators.USER_TYPE_COMBOBOX, UsersPageLocators.SEARCH_TYPE_OPTION(user_type))
+            self.custom_select_by_locator(UsersPageLocators.USER_TYPE_COMBOBOX,
+                                          UsersPageLocators.SEARCH_TYPE_OPTION(user_type))
             printf(f"Selected user type: {user_type}")
         except NoSuchElementException as e:
             printf(f"Error selecting user type: {e}")
             raise
 
-    def select_dates(self):
+    def select_dates(self, days_offset=1):
         """Select from and end dates."""
         try:
             start_date = get_current_date(date_format="%d-%m-%Y")
-            end_date = get_current_date(date_format="%d-%m-%Y", days_offset=1)
+            end_date = get_current_date(date_format="%d-%m-%Y", days_offset=days_offset)
+            self.scroll_to_visible_element(UsersPageLocators.FROM_DATE_BUTTON,
+                                           container_locator=UsersPageLocators.MAIN_DIV)
+            sleep(0.5)
             self.click(UsersPageLocators.FROM_DATE_BUTTON)
             sleep(1)
             self.select_calender_date(start_date)
@@ -224,16 +257,16 @@ class UsersPage(BasePage):
             raise
 
     def select_times(self):
-        """Select from and end times."""
+        """Select from and end times for the slots"""
         try:
             self.click(UsersPageLocators.SCHEDULE_DAY_CHECKBOX)
             sleep(1)
-            self.select_by_visible_text(UsersPageLocators.START_TIME_HOUR_SELECT,"12")
-            self.select_by_visible_text(UsersPageLocators.START_TIME_MINUTE_SELECT,"00")
-            self.select_by_visible_text(UsersPageLocators.START_TIME_AM_PM_SELECT,"AM")
-            self.select_by_visible_text(UsersPageLocators.END_TIME_HOUR_SELECT,"11")
-            self.select_by_visible_text(UsersPageLocators.END_TIME_MINUTE_SELECT,"45")
-            self.select_by_visible_text(UsersPageLocators.END_TIME_AM_PM_SELECT,"PM")
+            self.select_by_visible_text(UsersPageLocators.START_TIME_HOUR_SELECT, "12")
+            self.select_by_visible_text(UsersPageLocators.START_TIME_MINUTE_SELECT, "00")
+            self.select_by_visible_text(UsersPageLocators.START_TIME_AM_PM_SELECT, "AM")
+            self.select_by_visible_text(UsersPageLocators.END_TIME_HOUR_SELECT, "11")
+            self.select_by_visible_text(UsersPageLocators.END_TIME_MINUTE_SELECT, "45")
+            self.select_by_visible_text(UsersPageLocators.END_TIME_AM_PM_SELECT, "PM")
             sleep(1)
             self.click(UsersPageLocators.COPY_TO_ALL_DAYS_BUTTON)
             sleep(1)
@@ -285,7 +318,7 @@ class UsersPage(BasePage):
     def update_user_last_name(self, new_last_name):
         """Update last name in edit form."""
         try:
-            new_last_name = " "+ new_last_name
+            new_last_name = " " + new_last_name
             self.send_keys(UsersPageLocators.LAST_NAME_INPUT, new_last_name)
             last_name = self.get_attribute(UsersPageLocators.LAST_NAME_INPUT, "value")
             printf(f"Updated last name to {last_name}.")
@@ -297,7 +330,7 @@ class UsersPage(BasePage):
         """Find user by email and delete."""
         try:
             self.wait_for_loader()
-            self.perform_search_by_field("Email", email)
+            self.perform_search_by_field("Email Address", email)
             self.click(UsersPageLocators.DELETE_BUTTON)
             printf(f"Deleting user {email}.")
         except NoSuchElementException as e:
@@ -410,7 +443,7 @@ class UsersPage(BasePage):
             sleep(1)
 
         # Perform search by email field with the keyword (assuming search supports partial match)
-        self.perform_search_by_field("Email", keyword)
+        self.perform_search_by_field("Email Address", keyword)
 
         # Check if "No users found" message or similar
         try:

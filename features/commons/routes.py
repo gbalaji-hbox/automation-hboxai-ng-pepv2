@@ -40,6 +40,18 @@ class Routes:
     CREATE_NEW_PATIENT_GROUP_BY_FILTERS = "/admin/patient-groups/create-by-filters"
     CREATE_NEW_PATIENT_GROUP_BY_EXCEL = "/admin/patient-groups/create-by-excel"
     ADD_PATIENTS_TO_GROUP = "/add-patients"
+    FACILITY_AVAILABILITY = "/admin/facility-availability"
+    ADD_FACILITY_AVAILABILITY = "/admin/facility-availability/add"
+    FACILITY_AVAILABILITY_EDIT = "/admin/facility-availability/edit/"
+    ACTIVITIES = "/admin/activity"
+    ACTIVITY_ADD = "/admin/activity/add"
+    ACTIVITY_EDIT = "/admin/activity/edit/"
+    ACTIVITY_DUPLICATE = "/admin/activity/duplicate/"
+    SEARCH_PATIENTS = "/global-search"
+    PATIENT_DETAILS = "/es-dashboard"
+    ADD_PATIENT = "/add-patient"
+    USER_DASHBOARD= "/dashboard"
+    SCHEDULED_APPOINTMENTS = "/scheduled-appointments"
 
 
     @staticmethod

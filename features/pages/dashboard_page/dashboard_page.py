@@ -25,7 +25,15 @@ class DashboardPage(BasePage):
 
     def navigate_to_dashboard(self, page_name="dashboard"):
         """Navigate to the main dashboard page."""
-        self.click_dynamic_hamburger_menu_option(page_name)
+        try:
+            if self.is_element_visible(DashboardPageLocators.NOTIFICATION_POPUP, timeout=1):
+                self.click(DashboardPageLocators.NOTIFICATION_CLOSE_BUTTON)
+                sleep(1)
+            self.click_dynamic_hamburger_menu_option(page_name)
+            self.wait_for_dom_stability(timeout=5)
+        except Exception as e:
+            printf(f"Error navigating to dashboard: {e}")
+
 
     def click_dynamic_hamburger_menu_option(self, option_name):
         """Click on a dynamic option in the hamburger menu."""
