@@ -47,7 +47,7 @@ class WebDriverHelper:
             options.add_argument("--log-level=3")
             options.add_experimental_option("excludeSwitches", ["enable-logging"])
 
-            if is_headless_mode() or is_running_in_pipeline():
+            if is_headless_mode():
                 options.add_argument("--headless=new")
                 printf("Running Chrome in headless mode")
 
@@ -116,7 +116,7 @@ class WebDriverHelper:
         # Setup browser options
         if browser_name == "chrome":
             options = ChromeOptions()
-            if is_headless_mode() or is_running_in_pipeline():
+            if is_headless_mode():
                 options.add_argument("--headless=new")
                 printf("Running Chrome in headless mode")
 
