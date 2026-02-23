@@ -5,16 +5,21 @@ pipeline {
         choice(name: 'ENVIRONMENT', choices: ['stg', 'prod'])
         choice(name: 'TEST_SUITE', choices: [
             'all',
-            '00_login',
-            '01_VPE_Admin',
-            '02_VPE_User',
-            '03_CS_Admin',
-            '04_CS_User',
-            '05_PES_Admin',
-            '06_PES_User'
+            '00_Login',
+            '01_Dashboard',
+            '02_Users',
+            '03_Program_Type',
+            '04_Patient_Groups',
+            '05_Activities',
+            '06_Workflow_and_Tasks',
+            '07_Facility_Availability',
+            '09_Scheduled_Appointments',
+            '10_Search_Patients',
+            '12_Add_Patient',
+            '13_User_Dashboard'
         ])
         string(name: 'SINGLE_FEATURE_FILE', defaultValue: '', description: 'Enter single feature file path relative to features/all_features/')
-        choice(name: 'PARALLEL_PROCESSES', choices: ['1','2','3','4','5'])
+        choice(name: 'PARALLEL_PROCESSES', choices: ['1','2'])
         choice(name: 'PARALLEL_SCHEME', choices: ['feature','scenario'])
         choice(name: 'HEADLESS_MODE', choices: ['false','true'])
         choice(name: 'REPORT_TYPE', choices: ['consolidated', 'current'])
