@@ -18,3 +18,4 @@ package-lock.json
 *.pyc
 __pycache__/
 configuration/config.ini
+configuration/jenkins-config.ini
