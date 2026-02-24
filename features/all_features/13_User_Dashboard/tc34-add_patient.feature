@@ -49,7 +49,7 @@ Feature: tc29 - Add Patient
     And I click "Previous" button to go back
     Then I should be on the Patient Details step
 
-  @regression @allure.label.severity:critical @only
+  @regression @allure.label.severity:critical
   Scenario: Facility and Provider dropdowns are disabled before selecting clinic
     Given I am on the Add Patient page
     Then the Facility dropdown should be disabled

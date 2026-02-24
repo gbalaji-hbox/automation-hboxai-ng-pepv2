@@ -198,7 +198,7 @@ class UserGroupPage(BasePage):
         """Find user group by name and click edit."""
         try:
             self.wait_for_loader()
-            self.perform_search_by_field("Group Name", name)
+            self.perform_search_by_field("User Group Name", name)
             self.click(UserGroupPageLocators.EDIT_BUTTON)
             printf(f"Found and clicked edit for user group {name}.")
         except Exception as e:

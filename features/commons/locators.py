@@ -42,7 +42,7 @@ class UsersPageLocators:
     USER_TAB = (By.XPATH, "//button[@id='users_page_tab_user']")
     SEARCH_TYPE_DROPDOWN = (By.XPATH, "(//button[@role='combobox'])[1]")
     SEARCH_TYPE_OPTION = lambda option_text: (By.XPATH,
-                                              f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+                                              f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
     SEARCH_INPUT = (By.XPATH, "//button[@role='combobox']/following-sibling::input[1]")
     SEARCH_DATEPICKER_INPUT = (By.XPATH, "//button[@role='combobox']/following-sibling::button[1]")
     SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
@@ -100,7 +100,7 @@ class UserGroupPageLocators:
     USER_GROUP_TAB = (By.XPATH, "//button[@id='users_page_tab_user_group']")
     SEARCH_TYPE_DROPDOWN = (By.XPATH, "(//button[@role='combobox'])[1]")
     SEARCH_TYPE_OPTION = lambda option_text: (By.XPATH,
-                                              f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+                                              f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
     SEARCH_INPUT = (By.XPATH, "//button[@role='combobox']/following-sibling::input[1]")
     SEARCH_DATEPICKER_INPUT = (By.XPATH, "//button[@role='combobox']/following-sibling::button[1]")
     SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
@@ -131,8 +131,8 @@ class UserGroupPageLocators:
     ADD_USERS_SEARCH_INPUT = (By.XPATH, "//input[@id='user_group_modal_search_input']")
     ADD_USERS_FILTER_DROPDOWN = (By.XPATH, "//button[@id='user_group_modal_filter_select']")
     ADD_USER_FILTER_OPTION = lambda option_text: (By.XPATH,
-                                                  f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
-    ADD_USER_SELECTION_CHECKBOX = (By.XPATH, "//h4/following::div//input[@data-lov-name='input']")
+                                                  f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
+    ADD_USER_SELECTION_CHECKBOX = (By.XPATH, "(//h4/following::input[@type='checkbox'])[1]")
     ADD_USERS_ADD_BUTTON = (By.XPATH, "//button[@id='user_group_modal_add_btn']")
     ADD_USERS_CANCEL_BUTTON = (By.XPATH, "//button[@id='user_group_modal_cancel_btn']")
     ADD_USERS_CLOSE_BUTTON = (By.XPATH, "//div[@id='user_group_add_users_dialog']/button[contains(.,'Close')]")

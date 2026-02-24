@@ -45,6 +45,7 @@ class UsersPage(BasePage):
 
     def get_first_row_data(self):
         self.wait_for_loader()
+        self.is_element_visible(UsersPageLocators.HISTORY_BUTTON)
         return extract_table_row_as_dict(self, UsersPageLocators.USERS_TABLE)
 
     def perform_search_by_field(self, field, value):
@@ -71,6 +72,7 @@ class UsersPage(BasePage):
             sleep(1)
             # Click the search button
             self.click(UsersPageLocators.SEARCH_BUTTON)
+            self.wait_for_loader()
 
             return True
         except NoSuchElementException as e:
@@ -79,12 +81,12 @@ class UsersPage(BasePage):
 
     def verify_search_results(self, search_criteria, search_value, tab_name):
         """Verify search results contain the matching patient data."""
-        self.wait_for_loader(timeout=10)
         if tab_name == 'User':
             table_locator = UsersPageLocators.USERS_TABLE_ROWS
         else:
             table_locator = UserGroupPageLocators.USER_GROUPS_TABLE_ROWS
 
+        sleep(3)
         return verify_search_results_in_table(
             self,
             search_value,
@@ -308,7 +310,7 @@ class UsersPage(BasePage):
         """Find user by email and click edit."""
         try:
             self.wait_for_loader()
-            self.perform_search_by_field("Email", email)
+            self.perform_search_by_field("Email Address", email)
             self.click(UsersPageLocators.EDIT_BUTTON)
             printf(f"Found and clicked edit for user {email}.")
         except NoSuchElementException as e:
