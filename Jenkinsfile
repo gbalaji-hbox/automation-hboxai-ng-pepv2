@@ -19,9 +19,9 @@ pipeline {
             '13_User_Dashboard'
         ])
         string(name: 'SINGLE_FEATURE_FILE', defaultValue: '', description: 'Enter single feature file path relative to features/all_features/')
-        choice(name: 'PARALLEL_PROCESSES', choices: ['1','2'])
+        choice(name: 'PARALLEL_PROCESSES', choices: ['1','2','3','4','5'])
         choice(name: 'PARALLEL_SCHEME', choices: ['feature','scenario'])
-        choice(name: 'HEADLESS_MODE', choices: ['false','true'])
+        choice(name: 'HEADLESS_MODE', choices: ['true','false'])
         choice(name: 'REPORT_TYPE', choices: ['consolidated', 'current'])
         string(name: 'TEST_TAGS', defaultValue: '')
     }

@@ -389,7 +389,7 @@ class WorkflowPageLocators:
     WORKFLOW_SEARCH_DROPDOWN = (By.XPATH,
                                 "//button[@role='combobox'][.//span[normalize-space()='Workflow Name'] or normalize-space()='Workflow Name']")
     DROPDOWN_OPTION = lambda option_text: (By.XPATH,
-                                           f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+                                           f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
     APPLICABLE_PROGRAM_OPTION = lambda program_name: (By.XPATH,
                                                       f"//div[@role='option' and normalize-space(text())='{program_name}']")
     WORKFLOW_SEARCH_INPUT = (By.XPATH, "//button[normalize-space()='Search']/preceding-sibling::input")

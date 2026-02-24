@@ -298,6 +298,7 @@ class ActivitiesPage(BasePage):
             self.click(ActivitiesPageLocators.SEARCH_BUTTON)
             printf(f"search performed, waiting for results...")
             self.wait_for_loader()
+            sleep(3)
         except Exception as e:
             printf(f"Error searching for activities: {e}")
         
