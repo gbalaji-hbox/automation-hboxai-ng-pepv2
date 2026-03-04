@@ -783,13 +783,23 @@ class BasePage:
             printf(msg)
             return False
 
-    def select_calender_date(self, date_str: str):
+    def select_calender_date(self, date_str: str, date_format: str = None):
         """
         Select a date in the calendar popup.
         Assumes the calendar is already open.
-        date_str format: dd/mm/yyyy or dd-mm-yyyy
+        
+        Args:
+            date_str: Date string to select
+            date_format: Optional date format string (e.g., "%d-%m-%Y" for dd-mm-yyyy).
+                        If not provided, will try multiple formats automatically.
+        
+        Common formats:
+            - "%d-%m-%Y" for dd-mm-yyyy (e.g., 04-03-1954)
+            - "%d/%m/%Y" for dd/mm/yyyy (e.g., 04/03/1954)
+            - "%m-%d-%Y" for mm-dd-yyyy (e.g., 03-04-1954)
+            - "%Y-%m-%d" for yyyy-mm-dd (e.g., 1954-03-04)
         """
-        # Try multiple date formats dynamically
+        # Backup formats to try if no specific format provided
         date_formats = [
         "%m-%d-%y",  # 03-04-54
         "%m-%d-%Y",  # 03-04-1954
@@ -799,15 +809,30 @@ class BasePage:
         "%Y/%m/%d",  # 1954/03/04
         "%m/%d/%Y",  # 03/04/1954 (US style)
         ]
+        
         date = None
-        for fmt in date_formats:
+        
+        # If specific format provided, try it first
+        if date_format:
             try:
-                date = datetime.strptime(date_str, fmt)
-                break
+                date = datetime.strptime(date_str, date_format)
+                printf(f"Successfully parsed date '{date_str}' using format '{date_format}'")
             except ValueError:
-                continue
+                printf(f"Failed to parse date '{date_str}' with specified format '{date_format}', trying backup formats...")
+        
+        # If date not parsed yet, try all backup formats
+        if date is None:
+            for fmt in date_formats:
+                try:
+                    date = datetime.strptime(date_str, fmt)
+                    printf(f"Successfully parsed date '{date_str}' using format '{fmt}'")
+                    break
+                except ValueError:
+                    continue
+        
         if date is None:
             raise ValueError(f"time data '{date_str}' does not match any expected format {date_formats}")
+        
         day = date.day
         month = date.month
         year = date.year

@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 from time import sleep
 
 from selenium.common import NoSuchElementException
@@ -100,7 +99,8 @@ class FacilityAvailabilityPage(BasePage):
         try:
             self.wait_for_loader()
             self.wait_for_dom_stability_full()
-            actual_count = self.get_number_of_table_rows(FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_TABLE_ROWS)
+            actual_count = self.get_number_of_table_rows(
+                FacilityAvailabilityPageLocators.FACILITY_AVAILABILITY_TABLE_ROWS)
             printf(f"Expected rows per page: {records}, Actual rows displayed: {actual_count}")
             return row_count_check(records, actual_count)
         except Exception as e:
@@ -119,11 +119,15 @@ class FacilityAvailabilityPage(BasePage):
             printf(f"Error clicking 'Add Facility Availability' button: {e}")
             return False
 
-    def fill_create_facility_availability_form(self, clinic_name = "HBox Internal",facility_name = "facility_02", timezone = "US/Pacific"):
+    def fill_create_facility_availability_form(self, clinic_name="HBox Internal", facility_name="facility_02",
+                                               timezone="US/Pacific"):
         """Fills the create facility availability form with provided or default data and returns the filled data as a dictionary."""
 
         start_date = get_current_date(days_offset=0, years_offset=1)
         end_date = get_current_date(days_offset=30, years_offset=1)
+        printf(
+            f"Filling create facility availability form with Clinic: {clinic_name}, Facility: {facility_name}, \
+            Start Date: {start_date}, End Date: {end_date}, Timezone: {timezone}")
 
         try:
             self.click(FacilityAvailabilityPageLocators.SELECT_CLINIC_DROPDOWN)
@@ -142,11 +146,11 @@ class FacilityAvailabilityPage(BasePage):
 
             self.click(FacilityAvailabilityPageLocators.FROM_DATE_BUTTON)
             self.wait_for_dom_stability()
-            self.select_calender_date(start_date)
+            self.select_calender_date(start_date, date_format="%d-%m-%Y")
             sleep(1)
             self.click(FacilityAvailabilityPageLocators.TO_DATE_BUTTON)
             self.wait_for_dom_stability()
-            self.select_calender_date(end_date)
+            self.select_calender_date(end_date, date_format="%d-%m-%Y")
             sleep(1)
 
             self.click(FacilityAvailabilityPageLocators.TIMEZONE_DROPDOWN)
@@ -174,12 +178,12 @@ class FacilityAvailabilityPage(BasePage):
         try:
             self.click(FacilityAvailabilityPageLocators.SCHEDULE_DAY_CHECKBOX)
             sleep(1)
-            self.select_by_visible_text(FacilityAvailabilityPageLocators.START_TIME_HOUR_SELECT,"12")
-            self.select_by_visible_text(FacilityAvailabilityPageLocators.START_TIME_MINUTE_SELECT,"00")
-            self.select_by_visible_text(FacilityAvailabilityPageLocators.START_TIME_AM_PM_SELECT,"AM")
-            self.select_by_visible_text(FacilityAvailabilityPageLocators.END_TIME_HOUR_SELECT,"11")
-            self.select_by_visible_text(FacilityAvailabilityPageLocators.END_TIME_MINUTE_SELECT,"45")
-            self.select_by_visible_text(FacilityAvailabilityPageLocators.END_TIME_AM_PM_SELECT,"PM")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.START_TIME_HOUR_SELECT, "12")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.START_TIME_MINUTE_SELECT, "00")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.START_TIME_AM_PM_SELECT, "AM")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.END_TIME_HOUR_SELECT, "11")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.END_TIME_MINUTE_SELECT, "45")
+            self.select_by_visible_text(FacilityAvailabilityPageLocators.END_TIME_AM_PM_SELECT, "PM")
             sleep(1)
             self.click(FacilityAvailabilityPageLocators.COPY_TO_ALL_DAYS_BUTTON)
             sleep(1)
@@ -213,7 +217,7 @@ class FacilityAvailabilityPage(BasePage):
             self.click(FacilityAvailabilityPageLocators.TO_DATE_BUTTON)
             self.wait_for_dom_stability()
             new_end_date = get_current_date(days_offset=60, years_offset=1)
-            self.select_calender_date(new_end_date)
+            self.select_calender_date(new_end_date, date_format="%d-%m-%Y")
             return new_end_date
         except NoSuchElementException as e:
             printf(f"Error updating facility availability end date: {e}")

@@ -17,16 +17,30 @@ class WorkflowPage(BasePage):
         self.faker = Faker()
 
     def navigate_to_tab(self):
-        if self.is_element_visible(DashboardPageLocators.NOTIFICATION_POPUP, timeout=2):
-            self.click(DashboardPageLocators.NOTIFICATION_CLOSE_BUTTON)
-            sleep(1)
+        try:
+            if self.is_element_visible(DashboardPageLocators.NOTIFICATION_POPUP, timeout=2):
+                self.click(DashboardPageLocators.NOTIFICATION_CLOSE_BUTTON)
+                sleep(1)
 
-        if not self.get_attribute(WorkflowPageLocators.WORKFLOW_SEARCH_INPUT, "value") == "":
-            self.refresh_page()
-            self.wait_for_loader(timeout=10)
+            if self.is_element_visible(WorkflowPageLocators.WORKFLOW_SEARCH_INPUT,
+                                       timeout=2) and not self.get_attribute(WorkflowPageLocators.WORKFLOW_SEARCH_INPUT,
+                                                                             "value") == "":
+                printf("Search input is not empty, refreshing the page to reset filters")
+                self.refresh_page()
+                self.wait_for_loader(timeout=10)
 
-        self.click(WorkflowPageLocators.WORKFLOW_TAB)
-        self.wait_for_loader()
+            if self.is_element_visible(WorkflowPageLocators.WORKFLOW_ASSIGNED_GROUP_DROPDOWN,
+                                       timeout=2) and self.is_clickable(
+                WorkflowPageLocators.WORKFLOW_ASSIGNED_GROUP_DROPDOWN, timeout=5):
+                printf("Filter is not cleared, refreshing the page to reset filters")
+                self.refresh_page()
+                self.wait_for_loader(timeout=10)
+
+            self.click(WorkflowPageLocators.WORKFLOW_TAB)
+            self.wait_for_loader()
+        except Exception as e:
+            printf(f"Error navigating to Workflow tab: {e}")
+            raise
 
     def get_workflow_first_row_data(self):
         self.wait_for_loader()
@@ -137,8 +151,8 @@ class WorkflowPage(BasePage):
         except NoSuchElementException as e:
             printf(f"Failed selecting first option for dropdown {dropdown_locator}: {e}")
             return None
-            
-    def _select_dropdown_option_by_text(self, dropdown_locator, option_text, option2 = False):
+
+    def _select_dropdown_option_by_text(self, dropdown_locator, option_text, option2=False):
         """Select a specific dropdown option by its text value.
         
         Args:
@@ -170,7 +184,8 @@ class WorkflowPage(BasePage):
             printf(f"Failed selecting dropdown option '{option_text}': {e}")
             return None
 
-    def fill_create_workflow_form(self, program_name=None, workflow_name=None, trigger_workflow=None, trigger_status=None, user_group_name=None, task_name="Call", waiting_period=0):
+    def fill_create_workflow_form(self, program_name=None, workflow_name=None, trigger_workflow=None,
+                                  trigger_status=None, user_group_name=None, task_name="Call", waiting_period=0):
         """Fill the create workflow form with optional specific values.
         
         Args:
@@ -192,10 +207,11 @@ class WorkflowPage(BasePage):
 
             # Select program
             if program_name:
-                program = self._select_dropdown_option_by_text(WorkflowPageLocators.APPLICABLE_PROGRAMS_DROPDOWN, program_name, option2=True)
+                program = self._select_dropdown_option_by_text(WorkflowPageLocators.APPLICABLE_PROGRAMS_DROPDOWN,
+                                                               program_name, option2=True)
             else:
                 program = self._select_first_dropdown_option(WorkflowPageLocators.APPLICABLE_PROGRAMS_DROPDOWN)
-            
+
             # Handle trigger configuration
             if trigger_workflow is None and trigger_status is None:
                 # No trigger - remove trigger rows
@@ -206,14 +222,18 @@ class WorkflowPage(BasePage):
             else:
                 # Select trigger workflow and status
                 if trigger_workflow:
-                    trigger_workflow_result = self._select_dropdown_option_by_text(WorkflowPageLocators.TRIGGER_WORKFLOW_DROPDOWN, trigger_workflow, option2=True)
+                    trigger_workflow_result = self._select_dropdown_option_by_text(
+                        WorkflowPageLocators.TRIGGER_WORKFLOW_DROPDOWN, trigger_workflow, option2=True)
                 else:
-                    trigger_workflow_result = self._select_first_dropdown_option(WorkflowPageLocators.TRIGGER_WORKFLOW_DROPDOWN)
-                
+                    trigger_workflow_result = self._select_first_dropdown_option(
+                        WorkflowPageLocators.TRIGGER_WORKFLOW_DROPDOWN)
+
                 if trigger_status:
-                    trigger_status_result = self._select_dropdown_option_by_text(WorkflowPageLocators.TRIGGER_STATUS_DROPDOWN, trigger_status, option2=True)
+                    trigger_status_result = self._select_dropdown_option_by_text(
+                        WorkflowPageLocators.TRIGGER_STATUS_DROPDOWN, trigger_status, option2=True)
                 else:
-                    trigger_status_result = self._select_first_dropdown_option(WorkflowPageLocators.TRIGGER_STATUS_DROPDOWN)
+                    trigger_status_result = self._select_first_dropdown_option(
+                        WorkflowPageLocators.TRIGGER_STATUS_DROPDOWN)
 
             # Set task and waiting period
             self.select_task_and_waiting_period(task_name, waiting_period)
@@ -232,8 +252,9 @@ class WorkflowPage(BasePage):
             else:
                 user_group = self._select_first_dropdown_option(WorkflowPageLocators.USER_GROUP_DROPDOWN)
 
-            printf(f"Filled workflow form: Name={workflow_name}, Program={program}, Trigger Workflow={trigger_workflow_result}, Trigger Status={trigger_status_result}, User Group={user_group}")
-            
+            printf(
+                f"Filled workflow form: Name={workflow_name}, Program={program}, Trigger Workflow={trigger_workflow_result}, Trigger Status={trigger_status_result}, User Group={user_group}")
+
             return {
                 "name": workflow_name,
                 "program": program,
@@ -246,7 +267,7 @@ class WorkflowPage(BasePage):
         except NoSuchElementException as e:
             printf(f"Error filling create workflow form: {e}")
             raise
-            
+
     def remove_all_trigger_rows(self):
         """Remove all trigger rows from the workflow form."""
         try:

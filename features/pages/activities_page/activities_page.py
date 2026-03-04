@@ -179,13 +179,13 @@ class ActivitiesPage(BasePage):
             # Set from date
             self.click(ActivitiesPageLocators.FROM_DATE_BUTTON)
             sleep(1)
-            self.select_calender_date(from_date)
+            self.select_calender_date(from_date, date_format="%d-%m-%Y")
             sleep(1)
             
             # Set end date
             self.click(ActivitiesPageLocators.END_DATE_BUTTON)
             sleep(1)
-            self.select_calender_date(end_date)
+            self.select_calender_date(end_date, date_format="%d-%m-%Y")
             sleep(1)
             self.select_schedule_slots()
             

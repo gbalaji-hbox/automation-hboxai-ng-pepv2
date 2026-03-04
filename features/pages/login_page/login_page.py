@@ -42,7 +42,7 @@ class LoginPage(BasePage):
     def is_login_successful(self):
         """Verify if login_page was successful by checking for header logo."""
         try:
-            return self.is_element_visible(LoginPageLocators.HEADER_LOGO)
+            return self.is_element_visible(LoginPageLocators.HEADER_LOGO, timeout=30)
         except TimeoutException:
             return False
 

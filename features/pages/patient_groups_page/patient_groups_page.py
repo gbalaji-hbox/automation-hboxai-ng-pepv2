@@ -411,6 +411,8 @@ class PatientGroupsPage(BasePage):
     def click_add_selected_button(self):
         """Click the add selected button to add patients to the group."""
         try:
+            self.wait_for_loader()
+            self.is_element_visible(PatientGroupsPageLocators.GROUP_ADD_SELECTED_BUTTON)
             self.click(PatientGroupsPageLocators.GROUP_ADD_SELECTED_BUTTON)
             return True
         except Exception as e:

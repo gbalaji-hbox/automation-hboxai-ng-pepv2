@@ -167,7 +167,7 @@ class ProgramPageLocators:
     PROGRAM_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-program-types']/tbody/tr")
     PROGRAM_SEARCH_DROPDOWN = (By.XPATH, "//button[@id='program_type_filter_select']")
     DROPDOWN_OPTION = lambda option_text: (By.XPATH,
-                                           f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+                                           f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
     PROGRAM_SEARCH_DATE_PICKER_INPUT = (By.XPATH, "//button[@role='combobox']/following-sibling::button[1]")
     PROGRAM_SEARCH_INPUT = (By.XPATH, "//input[@id='program_type_search_input']")
     PROGRAM_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space(text())='Search']")
@@ -211,7 +211,7 @@ class PatientProgramStatusPageLocators:
     PATIENT_PROGRAM_STATUS_TABLE = (By.XPATH, "//table[@id='table-admin-program-status']")
     PATIENT_PROGRAM_STATUS_TABLE_ROWS = (By.XPATH, "//table[@id='table-admin-program-status']/tbody/tr")
     DROPDOWN_OPTION = lambda option_text: (By.XPATH,
-                                           f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+                                           f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
     PATIENT_PROGRAM_STATUS_SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Search by Status Name']")
     PATIENT_PROGRAM_STATUS_HISTORY_BUTTON = (By.XPATH,
                                              "//table[@id='table-admin-program-status']/tbody/tr/td[last()]//button[contains(@id,'history')][1]")
@@ -393,9 +393,9 @@ class WorkflowPageLocators:
     APPLICABLE_PROGRAM_OPTION = lambda program_name: (By.XPATH,
                                                       f"//div[@role='option' and normalize-space(text())='{program_name}']")
     WORKFLOW_SEARCH_INPUT = (By.XPATH, "//button[normalize-space()='Search']/preceding-sibling::input")
-    WORKFLOW_ASSIGNED_GROUP_DROPDOWN = (By.XPATH, "//button[normalize-space()='Select user groups...']")
+    WORKFLOW_ASSIGNED_GROUP_DROPDOWN = (By.XPATH, "(//button[@role='combobox']/following-sibling::button)[1]")
     WORKFLOW_ASSIGNED_GROUP_SEARCH_INPUT = (By.XPATH,
-                                            "//button[normalize-space()='Select user groups...']/following::input[@placeholder='Search user groups...']")
+                                            "(//button[@role='combobox']/following-sibling::button)[1]/following::input[@placeholder='Search user groups...']")
     WORKFLOW_ASSIGNED_GROUP_OPTION = lambda group_name: (By.XPATH,
                                                          f"//div[@role='option']/following::span[normalize-space(text())='{group_name}']")
     WORKFLOW_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
@@ -461,7 +461,7 @@ class ActivitiesPageLocators:
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
     DROPDOWN_OPTION = lambda option_text: (
         By.XPATH,
-        f"//div[@role='option']/span[normalize-space(text())='{option_text}']",
+        f"//div[@role='option']//span[normalize-space(text())='{option_text}']",
     )
     ADD_NEW_ACTIVITY_BUTTON = (By.XPATH, "//button[normalize-space()='Add New Activity']")
 
@@ -547,7 +547,7 @@ class WorkflowStatusPageLocators:
     DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
     DROPDOWN_OPTION = lambda option_text: (By.XPATH,
-                                           f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+                                           f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
     WORKFLOW_STATUS_NAME_INPUT = (By.XPATH, "//input[@placeholder='Enter workflow status name']")
     WORKFLOW_STATUS_SAVE_BUTTON = (By.XPATH, "//button[normalize-space()='Save']")
     WORKFLOW_STATUS_UPDATE_BUTTON = (By.XPATH, "//button[normalize-space()='Update']")
@@ -587,7 +587,7 @@ class TasksPageLocators:
     DELETE_CONFIRMATION_DIALOG_CONFIRM_BUTTON = (By.XPATH, "//button[normalize-space(text())='Delete']")
     PAGE_LIMIT_DROPDOWN = (By.XPATH, "//span[text()='Show']/following-sibling::button")
     DROPDOWN_OPTION = lambda option_text: (By.XPATH,
-                                           f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+                                           f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
     TASK_NAME_INPUT = (By.XPATH, "//input[@id='task_form_name_input']")
     TASK_SAVE_BUTTON = (By.XPATH, "//button[normalize-space()='Save']")
     TASK_UPDATE_BUTTON = (By.XPATH, "//button[normalize-space()='Update']")
@@ -616,7 +616,7 @@ class FacilityAvailabilityPageLocators:
     FACILITY_AVAILABILITY_SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
     FACILITY_AVAILABILITY_CLEAR_BUTTON = (By.XPATH, "//button[normalize-space()='Clear']")
     DROPDOWN_OPTION = lambda option_text: (By.XPATH,
-                                           f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+                                           f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
     FACILITY_AVAILABILITY_HISTORY_BUTTON = (By.XPATH,
                                             "//table[@id='table-admin-facility-availability']/tbody/tr[1]/td[last()]//button[contains(@id,'history')][1]")
     FACILITY_AVAILABILITY_EDIT_BUTTON = (By.XPATH,
@@ -701,7 +701,7 @@ class SearchPatientsPageLocators:
     # Search bar
     SEARCH_TYPE_DROPDOWN = (By.XPATH, "//button[@id='search_form_searchby_select']")
     SEARCH_TYPE_OPTION = lambda option_text: (By.XPATH,
-                                              f"//div[@role='option']/span[normalize-space(text())='{option_text}']")
+                                              f"//div[@role='option']//span[normalize-space(text())='{option_text}']")
     SEARCH_INPUT = (By.XPATH, "//input[@placeholder='Search']")
     SEARCH_BUTTON = (By.XPATH, "//button[normalize-space()='Search']")
     RESET_BUTTON = (By.XPATH, "//button[@id='search_form_reload_btn']")
