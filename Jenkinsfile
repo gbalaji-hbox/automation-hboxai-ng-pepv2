@@ -2,7 +2,7 @@ pipeline {
     agent { label 'jenkins-agent' }
 
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['local','stg', 'prod'])
+        choice(name: 'ENVIRONMENT', choices: ['stg', 'prod'])
         choice(name: 'TEST_SUITE', choices: [
             'all',
             '00_Login',
